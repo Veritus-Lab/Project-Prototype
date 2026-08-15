@@ -1689,6 +1689,11 @@
                     </button>
                 </form>
 
+                <div class="presentation-access" aria-label="Acessos de demonstração">
+                    <span>Modo apresentação</span>
+                    <button type="button" id="btn-demo-athlete"><i class="fas fa-person-running"></i> Ver visão do atleta</button>
+                </div>
+
                 <div class="register-link">
                     Não tem uma conta? <a id="link-mostrar-cadastro">Crie sua assessoria</a>
                 </div>
@@ -2382,6 +2387,17 @@
             document.getElementById('athlete-dashboard-view').classList.add('hidden');
             dashboardView.classList.remove('hidden');
         }
+
+        // Acesso exclusivo para demonstração visual; contas reais seguem a API e o campo `tipo`.
+        document.getElementById('btn-demo-athlete').addEventListener('click', () => {
+            setLoggedInUser({
+                nome: 'Lucas Silva',
+                assessoria: 'FLERNK Running',
+                email: 'lucas@demonstracao.flernk',
+                tipo: 'atleta'
+            });
+            showToast('Visualização de demonstração do atleta carregada.', 'info');
+        });
 
         // ----------------------------------------------------
         // AÇÃO DE LOGIN
