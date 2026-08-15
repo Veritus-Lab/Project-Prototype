@@ -1,15 +1,37 @@
-# Dependências e arquivos gerados localmente
+# Dependências, logs e arquivos de runtime
 node_modules/
+jspm_packages/
+web_modules/
+logs/
+*.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.pid
+*.pid.lock
 
-# Banco local: não versionar dados de desenvolvimento ou credenciais futuras
+# Banco local: não versionar dados de desenvolvimento
 banco.sqlite
 banco.sqlite-shm
 banco.sqlite-wal
 
-# Variáveis de ambiente e arquivos do sistema
+# Variáveis de ambiente
 .env
 .env.*
 !.env.example
+
+# Build, cache e cobertura
+coverage/
+.nyc_output/
+.cache/
+.parcel-cache/
+.next/
+out/
+dist/
+.vite/
+*.tsbuildinfo
+
+# Arquivos do sistema/editor
 .DS_Store
 Thumbs.db
+.vscode-test
