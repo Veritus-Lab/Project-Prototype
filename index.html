@@ -1659,9 +1659,13 @@
 
             <!-- FORMULÁRIO DE LOGIN -->
             <div id="login-container">
+                <div class="auth-role-selector" role="group" aria-label="Escolha o tipo de acesso">
+                    <button type="button" class="active" data-role="treinador"><i class="fas fa-user-tie"></i> Treinador</button>
+                    <button type="button" data-role="atleta"><i class="fas fa-person-running"></i> Atleta</button>
+                </div>
                 <div class="header-text">
-                    <h2>Bem-vindo de volta!</h2>
-                    <p>Acesse sua área de atleta ou treinador para continuar.</p>
+                    <h2 id="login-title">Bem-vindo de volta!</h2>
+                    <p id="login-subtitle">Acesse seu painel de treinador para continuar.</p>
                 </div>
 
                 <form id="formLogin">
@@ -1689,32 +1693,27 @@
                     </button>
                 </form>
 
-                <div class="presentation-access" aria-label="Acessos de demonstração">
-                    <span>Modo apresentação</span>
-                    <button type="button" id="btn-demo-athlete"><i class="fas fa-person-running"></i> Ver visão do atleta</button>
-                </div>
-
                 <div class="register-link">
-                    Não tem uma conta? <a id="link-mostrar-cadastro">Crie sua assessoria</a>
+                    Não tem uma conta? <a id="link-mostrar-cadastro">Crie seu acesso</a>
                 </div>
             </div>
 
             <!-- FORMULÁRIO DE CADASTRO -->
             <div id="register-container" class="hidden">
                 <div class="header-text">
-                    <h2>Crie sua Assessoria</h2>
-                    <p>Cadastre sua equipe e comece a gerenciar atletas.</p>
+                    <h2 id="register-title">Crie sua Assessoria</h2>
+                    <p id="register-subtitle">Cadastre sua equipe e comece a gerenciar atletas.</p>
                 </div>
 
                 <form id="formCadastro">
                     <div class="input-group">
-                        <label for="nome-treinador">Seu Nome (Treinador)</label>
+                        <label for="nome-treinador" id="register-name-label">Seu Nome (Treinador)</label>
                         <i class="fas fa-user"></i>
                         <input type="text" id="nome-treinador" placeholder="Ex: Matheus Gonçalves" required autocomplete="name">
                     </div>
 
                     <div class="input-group">
-                        <label for="nome-assessoria">Nome da Assessoria</label>
+                        <label for="nome-assessoria" id="register-association-label">Nome da Assessoria</label>
                         <i class="fas fa-flag"></i>
                         <input type="text" id="nome-assessoria" placeholder="Ex: FLERNK Running" required>
                     </div>
@@ -2358,6 +2357,28 @@
         const registerContainer = document.getElementById('register-container');
         const linkMostrarCadastro = document.getElementById('link-mostrar-cadastro');
         const linkMostrarLogin = document.getElementById('link-mostrar-login');
+        let selectedRole = 'treinador';
+
+        function updateRoleCopy() {
+            const isAthlete = selectedRole === 'atleta';
+            document.querySelectorAll('[data-role]').forEach(button => {
+                button.classList.toggle('active', button.dataset.role === selectedRole);
+                button.setAttribute('aria-pressed', button.dataset.role === selectedRole ? 'true' : 'false');
+            });
+            document.getElementById('login-title').innerText = isAthlete ? 'Olá, atleta!' : 'Bem-vindo de volta!';
+            document.getElementById('login-subtitle').innerText = isAthlete ? 'Acesse sua rotina e seus treinos.' : 'Acesse seu painel de treinador para continuar.';
+            document.getElementById('register-title').innerText = isAthlete ? 'Crie sua conta de atleta' : 'Crie sua Assessoria';
+            document.getElementById('register-subtitle').innerText = isAthlete ? 'Informe a assessoria da qual você faz parte.' : 'Cadastre sua equipe e comece a gerenciar atletas.';
+            document.getElementById('register-name-label').innerText = isAthlete ? 'Seu Nome (Atleta)' : 'Seu Nome (Treinador)';
+            document.getElementById('register-association-label').innerText = isAthlete ? 'Assessoria da qual faz parte' : 'Nome da Assessoria';
+        }
+
+        document.querySelectorAll('[data-role]').forEach(button => {
+            button.addEventListener('click', () => {
+                selectedRole = button.dataset.role;
+                updateRoleCopy();
+            });
+        });
 
         // Alternância entre formulários de Login e Cadastro
         linkMostrarCadastro.addEventListener('click', (e) => {
@@ -2388,17 +2409,6 @@
             dashboardView.classList.remove('hidden');
         }
 
-        // Acesso exclusivo para demonstração visual; contas reais seguem a API e o campo `tipo`.
-        document.getElementById('btn-demo-athlete').addEventListener('click', () => {
-            setLoggedInUser({
-                nome: 'Lucas Silva',
-                assessoria: 'FLERNK Running',
-                email: 'lucas@demonstracao.flernk',
-                tipo: 'atleta'
-            });
-            showToast('Visualização de demonstração do atleta carregada.', 'info');
-        });
-
         // ----------------------------------------------------
         // AÇÃO DE LOGIN
         // ----------------------------------------------------
@@ -2418,7 +2428,7 @@
                 const resposta = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha })
+                    body: JSON.stringify({ email, senha, tipo: selectedRole })
                 });
 
                 const resultado = await resposta.json();
@@ -2430,13 +2440,12 @@
                     showToast(resultado.erro || 'Falha no login.', 'error');
                 }
             } catch (erro) {
-                console.warn('Backend offline ou inacessível. Acessando em modo demonstração local:', erro);
-                // Modo demonstração offline caso o servidor sqlite não esteja rodando no terminal
+                console.warn('Backend offline ou inacessível. Acessando em modo local:', erro);
                 const fallbackUser = {
-                    nome: 'Matheus Gonçalves',
+                    nome: selectedRole === 'atleta' ? 'Lucas Silva' : 'Matheus Gonçalves',
                     assessoria: 'FLERNK Running',
-                    email: email || 'treinador@flernk.com',
-                    tipo: 'treinador'
+                    email: email || `${selectedRole}@flernk.com`,
+                    tipo: selectedRole
                 };
                 showToast(`Bem-vindo, ${fallbackUser.nome}!`, 'success');
                 setLoggedInUser(fallbackUser);
@@ -2460,7 +2469,7 @@
                 assessoria: document.getElementById('nome-assessoria').value.trim(),
                 email: document.getElementById('reg-email').value.trim(),
                 senha: document.getElementById('reg-password').value,
-                tipo: 'treinador'
+                tipo: selectedRole
             };
 
             btnSubmitCadastro.disabled = true;

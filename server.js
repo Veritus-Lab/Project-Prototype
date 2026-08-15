@@ -106,16 +106,23 @@ app.post('/api/cadastro', async (req, res) => {
 // ROTA 2: FAZER LOGIN
 // ==========================================
 app.post('/api/login', (req, res) => {
-    const { email, senha } = req.body;
+    const { email, senha, tipo } = req.body;
 
     if (!email || !senha) {
         return res.status(400).json({ erro: 'E-mail e senha são obrigatórios.' });
     }
 
+    if (tipo && !['treinador', 'atleta'].includes(tipo)) {
+        return res.status(400).json({ erro: 'Tipo de usuário inválido.' });
+    }
+
     const emailFormatado = email.trim().toLowerCase();
-    const sql = `SELECT * FROM usuarios WHERE email = ?`;
+    const sql = tipo
+        ? `SELECT * FROM usuarios WHERE email = ? AND tipo = ?`
+        : `SELECT * FROM usuarios WHERE email = ?`;
     
-    db.get(sql, [emailFormatado], async (err, usuario) => {
+    const loginParams = tipo ? [emailFormatado, tipo] : [emailFormatado];
+    db.get(sql, loginParams, async (err, usuario) => {
         if (err) {
             console.error('Erro ao buscar usuário:', err);
             return res.status(500).json({ erro: 'Erro no servidor ao buscar usuário.' });
