@@ -1,0 +1,15 @@
+# Dependências e arquivos gerados localmente
+node_modules/
+npm-debug.log*
+
+# Banco local: não versionar dados de desenvolvimento ou credenciais futuras
+banco.sqlite
+banco.sqlite-shm
+banco.sqlite-wal
+
+# Variáveis de ambiente e arquivos do sistema
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
