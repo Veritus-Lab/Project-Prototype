@@ -1,5 +1,7 @@
 # Dependências, logs e arquivos de runtime
 node_modules/
+.worktrees/
+.superpowers/
 jspm_packages/
 web_modules/
 logs/
