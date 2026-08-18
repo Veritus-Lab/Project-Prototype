@@ -22,12 +22,15 @@ banco.sqlite-wal
 .env.*
 !.env.example
 
+# Next.js
+.next/
+next-env.d.ts
+
 # Build, cache e cobertura
 coverage/
 .nyc_output/
 .cache/
 .parcel-cache/
-.next/
 out/
 dist/
 .vite/
