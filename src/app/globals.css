@@ -8,6 +8,23 @@
   --color-surface-elevated: #1a1e23;
   --color-border: #23272d;
   --color-foreground: #f3f4f6;
+  --color-muted: #cbd5e1;
+  --color-subtle: #94a3b8;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-brand: #e2ff00;
+  --color-brand-hover: #c8e200;
+  --color-background: #0a0c0e;
+  --color-surface: #14171a;
+  --color-surface-elevated: #1a1e23;
+  --color-border: #23272d;
+  --color-foreground: #f3f4f6;
+  --color-muted: #cbd5e1;
+  --color-subtle: #94a3b8;
+  --color-ink: #080a0b;
+  --font-sans: var(--font-inter);
 }
 
 * {
@@ -16,6 +33,7 @@
 
 html {
   background: var(--color-background);
+  scroll-behavior: smooth;
 }
 
 body {
@@ -24,6 +42,86 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-inter), Arial, sans-serif;
+  overflow-x: hidden;
+  letter-spacing: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: var(--color-brand);
+  color: #080a0b;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand); }
+
+.container {
+  width: min(100% - 2rem, 80rem);
+  margin-inline: auto;
+}
+
+.section-block {
+  padding-block: clamp(4rem, 8vw, 6rem);
+}
+
+.section-heading {
+  max-width: 48rem;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.section-heading h2,
+.section-title {
+  margin-top: 0.75rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  line-height: 1.08;
+  color: #fff;
+}
+
+.section-heading p:last-child {
+  margin-top: 1rem;
+  color: var(--color-subtle);
+}
+
+.eyebrow {
+  color: var(--color-brand);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.text-hero {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  line-height: 0.98;
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hero-visual {
+  background-image:
+    radial-gradient(circle at 50% 30%, rgba(226,255,0,.12), transparent 40%),
+    linear-gradient(160deg, #1a1e23 0%, #0a0c0e 70%);
+}
+
+.dashboard-preview {
+  background-image: linear-gradient(145deg, rgba(226,255,0,.045), transparent 45%);
 }
 
 :focus-visible {
