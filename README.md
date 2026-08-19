@@ -25,4 +25,8 @@ As integrações futuras com Supabase devem ficar em services e Server Actions. 
 
 Nunca inclua segredos, chaves `service_role`, senhas de banco ou tokens persistidos no repositório ou no cliente. Mantenha valores de ambiente apenas em arquivos `.env*` locais, partindo de um `.env.example` sem valores sensíveis.
 
+O cadastro de treinador exige confirmação de e-mail. No projeto Supabase hospedado,
+habilite **Authentication → Providers → Email → Confirm email** e cadastre a URL
+`/auth/callback` da origem pública em Redirect URLs.
+
 Antes de publicar, execute `npm test`, `npm run typecheck` e `npm run build`. O diretório `legacy/` contém o protótipo histórico e não deve ser removido durante a operação do aplicativo atual.

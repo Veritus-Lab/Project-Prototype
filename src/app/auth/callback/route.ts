@@ -9,6 +9,14 @@ function confirmationUrl(origin: string) {
 
 export async function GET(request: NextRequest) {
   const origin = getConfiguredAppOrigin();
+
+  if (!origin) {
+    return NextResponse.json(
+      { error: "Não foi possível concluir a confirmação agora." },
+      { status: 500 },
+    );
+  }
+
   const code = request.nextUrl.searchParams.get("code");
 
   if (!code) {

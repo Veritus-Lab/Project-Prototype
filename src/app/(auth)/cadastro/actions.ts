@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { signUpTrainer } from "@/lib/services/auth.service";
+import { genericSignupError, signUpTrainer } from "@/lib/services/auth.service";
 import { trainerSignupSchema } from "@/lib/validators/auth";
 
 export type SignupActionState = {
@@ -16,22 +16,35 @@ export async function signUpTrainerAction(
   _previousState: SignupActionState,
   formData: FormData,
 ): Promise<SignupActionState> {
-  const parsedInput = trainerSignupSchema.safeParse({
-    nome: formData.get("nome"),
-    assessoria: formData.get("assessoria"),
-    email: formData.get("email"),
-    senha: formData.get("senha"),
-  });
+  let email: string | undefined;
 
-  if (!parsedInput.success) {
-    return { fieldErrors: parsedInput.error.flatten().fieldErrors };
+  try {
+    const parsedInput = trainerSignupSchema.safeParse({
+      nome: formData.get("nome"),
+      assessoria: formData.get("assessoria"),
+      email: formData.get("email"),
+      senha: formData.get("senha"),
+    });
+
+    if (!parsedInput.success) {
+      return { fieldErrors: parsedInput.error.flatten().fieldErrors };
+    }
+
+    const result = await signUpTrainer(parsedInput.data);
+
+    if ("error" in result) {
+      return { error: result.error };
+    }
+
+    email = result.data.email;
+  } catch {
+    return { error: genericSignupError };
   }
 
-  const result = await signUpTrainer(parsedInput.data);
-
-  if ("error" in result) {
-    return { error: result.error };
+  if (!email) {
+    return { error: genericSignupError };
   }
 
-  redirect(`/confirmar-email?email=${encodeURIComponent(result.data.email)}`);
+  // The redirect is intentionally outside the catch so Next.js can perform it.
+  redirect(`/confirmar-email?email=${encodeURIComponent(email)}`);
 }

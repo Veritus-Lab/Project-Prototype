@@ -31,15 +31,20 @@ describe("signUpTrainer", () => {
     vi.unstubAllEnvs();
   });
 
-  it("returns a public error when the configured app origin is unavailable", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+  it.each(["", "not a URL", "ftp://app.example.com"])(
+    "returns a public error when the configured app origin is invalid (%s)",
+    async (configuredUrl) => {
+      vi.stubEnv("NEXT_PUBLIC_SITE_URL", configuredUrl);
 
-    await expect(signUpTrainer(validTrainer)).resolves.toEqual({ error: genericError });
-  });
+      await expect(signUpTrainer(validTrainer)).resolves.toEqual({
+        error: genericError,
+      });
+    },
+  );
 
-  it("returns a public error when the Supabase client throws", async () => {
+  it("returns a public error when Supabase signup throws", async () => {
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://app.example.com");
-    mocks.createServerClient.mockRejectedValueOnce(new Error("network unavailable"));
+    mocks.signUp.mockRejectedValueOnce(new Error("network unavailable"));
 
     await expect(signUpTrainer(validTrainer)).resolves.toEqual({ error: genericError });
   });

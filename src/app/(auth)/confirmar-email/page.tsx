@@ -4,13 +4,31 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { Card } from "@/components/ui/card";
 
 interface ConfirmEmailPageProps {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ email?: string; erro?: string }>;
 }
 
 export default async function ConfirmEmailPage({
   searchParams,
 }: ConfirmEmailPageProps) {
-  const { email } = await searchParams;
+  const { email, erro } = await searchParams;
+
+  if (erro) {
+    return (
+      <AuthShell>
+        <Card className="auth-card confirmation-card" elevated>
+          <p className="eyebrow">Confirmação indisponível</p>
+          <h1>Não foi possível confirmar seu e-mail.</h1>
+          <p className="auth-lead">
+            O link pode ter expirado ou já ter sido usado. Solicite um novo link
+            para tentar novamente.
+          </p>
+          <Link className="button button-secondary" href="/cadastro">
+            Tentar novamente
+          </Link>
+        </Card>
+      </AuthShell>
+    );
+  }
 
   return (
     <AuthShell>
