@@ -21,7 +21,11 @@ export function Hero() {
             A plataforma ideal para treinadores e atletas alcançarem seus
             melhores resultados juntos.
           </p>
-          <div className="hero-actions" aria-label="Escolha como acessar">
+          <div
+            className="hero-actions"
+            role="group"
+            aria-label="Escolha como acessar"
+          >
             <Link className={buttonClassName()} href="/cadastro">
               Sou Treinador
               <ArrowRight size={18} aria-hidden="true" />
