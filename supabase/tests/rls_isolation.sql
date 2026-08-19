@@ -2,6 +2,11 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
+-- The remote pg_prove session does not guarantee that the extensions schema
+-- is visible or that its temporary login role inherits postgres privileges.
+set local role postgres;
+set local search_path = public, extensions, auth, private, pg_catalog;
+
 select plan(65);
 
 -- Fixed IDs keep every assertion deterministic and independent from remote data.
@@ -146,7 +151,7 @@ select results_eq(
   array['∅|∅|invalido'::text],
   'empty invitation hash has a safe response'
 );
-reset role;
+set local role postgres;
 
 -- Trainer Alfa sees its tenant and nothing from Beta.
 select set_config('request.jwt.claims', '{"sub":"10000000-0000-0000-0000-000000000001","role":"authenticated"}', true);
@@ -159,7 +164,7 @@ select results_eq($$select count(*) from public.treinos where assessoria_id = 'a
 select results_eq($$select count(*) from public.treinos where assessoria_id = 'b0000000-0000-0000-0000-000000000001'$$, array[0::bigint], 'trainer Alfa cannot see Beta workouts');
 select results_eq($$select count(*) from public.treinos_atletas where assessoria_id = 'a0000000-0000-0000-0000-000000000001'$$, array[2::bigint], 'trainer Alfa sees Alfa links');
 select results_eq($$select count(*) from public.treinos_atletas where assessoria_id = 'b0000000-0000-0000-0000-000000000001'$$, array[0::bigint], 'trainer Alfa cannot see Beta links');
-reset role;
+set local role postgres;
 
 -- Trainer Beta sees its tenant and nothing from Alfa.
 select set_config('request.jwt.claims', '{"sub":"10000000-0000-0000-0000-000000000002","role":"authenticated"}', true);
@@ -172,7 +177,7 @@ select results_eq($$select count(*) from public.treinos where assessoria_id = 'b
 select results_eq($$select count(*) from public.treinos where assessoria_id = 'a0000000-0000-0000-0000-000000000001'$$, array[0::bigint], 'trainer Beta cannot see Alfa workouts');
 select results_eq($$select count(*) from public.treinos_atletas where assessoria_id = 'b0000000-0000-0000-0000-000000000001'$$, array[1::bigint], 'trainer Beta sees Beta links');
 select results_eq($$select count(*) from public.treinos_atletas where assessoria_id = 'a0000000-0000-0000-0000-000000000001'$$, array[0::bigint], 'trainer Beta cannot see Alfa links');
-reset role;
+set local role postgres;
 
 -- An athlete sees only its own identity, extension, links and assigned workouts.
 select set_config('request.jwt.claims', '{"sub":"20000000-0000-0000-0000-000000000001","role":"authenticated"}', true);
@@ -196,7 +201,7 @@ select throws_ok(
   'sessao nao corresponde ao usuario',
   'acceptance rejects a client-supplied user different from auth.uid()'
 );
-reset role;
+set local role postgres;
 
 select set_config('request.jwt.claims', '{"sub":"20000000-0000-0000-0000-000000000004","role":"authenticated"}', true);
 set local role authenticated;
@@ -206,7 +211,7 @@ select lives_ok(
 );
 select results_eq($$select count(*) from public.profiles where id = '20000000-0000-0000-0000-000000000004' and papel = 'atleta'$$, array[1::bigint], 'acceptance creates athlete profile');
 select results_eq($$select count(*) from public.atletas where id = '20000000-0000-0000-0000-000000000004'$$, array[1::bigint], 'acceptance creates athlete extension');
-reset role;
+set local role postgres;
 select results_eq(
   $$select (status::text || '|' || (usado_em is not null)::text) from public.convites_atletas where id = '50000000-0000-0000-0000-000000000003'$$,
   array['aceito|true'::text],
@@ -219,7 +224,7 @@ select throws_ok(
   'convite ja utilizado',
   'used invitation cannot be accepted again'
 );
-reset role;
+set local role postgres;
 
 select * from finish();
 rollback;
