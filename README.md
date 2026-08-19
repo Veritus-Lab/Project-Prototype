@@ -4,7 +4,7 @@ Plataforma SaaS para assessorias esportivas de corrida, construída com Next.js 
 
 ## Desenvolvimento
 
-Requer Node.js 20.9 ou mais recente e npm.
+Requer Node.js 22.22.2 ou mais recente e npm. Essa versão atende aos requisitos das ferramentas de teste do projeto.
 
 ```bash
 npm install
