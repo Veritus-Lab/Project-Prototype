@@ -138,6 +138,33 @@
             letter-spacing: -0.5px;
         }
 
+        .logo img {
+            width: 38px;
+            height: 38px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .sidebar .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+        }
+
+        .auth-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .auth-back-link:hover { color: var(--accent-yellow); }
+
         .sidebar .logo {
             font-size: 24px;
             margin-bottom: 30px;
@@ -1651,9 +1678,10 @@
          ========================================= -->
     <div id="auth-view">
         <div class="login-wrapper">
+            <a href="/" class="auth-back-link"><i class="fas fa-arrow-left"></i> Voltar para o início</a>
             <div class="logo-container">
                 <div class="logo">
-                    <i class="fas fa-bolt"></i> FLERNK
+                    <img src="assets/flernk-logo.jpg" alt="Símbolo da FLERNK"> FLERNK
                 </div>
             </div>
 
@@ -1752,7 +1780,7 @@
         <!-- Barra Lateral -->
         <aside class="sidebar">
             <div class="logo">
-                <i class="fas fa-bolt"></i> FLERNK
+                <img src="assets/flernk-logo.jpg" alt="Símbolo da FLERNK"> FLERNK
             </div>
             <nav class="nav-menu">
                 <ul>
@@ -2359,6 +2387,11 @@
         const linkMostrarLogin = document.getElementById('link-mostrar-login');
         let selectedRole = 'treinador';
 
+        const requestedRole = new URLSearchParams(window.location.search).get('role');
+        if (requestedRole === 'atleta' || requestedRole === 'treinador') {
+            selectedRole = requestedRole;
+        }
+
         function updateRoleCopy() {
             const isAthlete = selectedRole === 'atleta';
             document.querySelectorAll('[data-role]').forEach(button => {
@@ -2379,6 +2412,12 @@
                 updateRoleCopy();
             });
         });
+        updateRoleCopy();
+
+        if (new URLSearchParams(window.location.search).get('mode') === 'cadastro') {
+            loginContainer.classList.add('hidden');
+            registerContainer.classList.remove('hidden');
+        }
 
         // Alternância entre formulários de Login e Cadastro
         linkMostrarCadastro.addEventListener('click', (e) => {

@@ -12,7 +12,7 @@ app.use(cors()); // Permite requisições de outros domínios/arquivos locais
 app.use(express.json()); // Permite que a API receba dados em JSON
 
 // Servir arquivos estáticos (HTML, CSS, JS, Imagens)
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, { index: false }));
 
 // Configuração do Banco de Dados SQLite
 const dbPath = path.resolve(__dirname, 'banco.sqlite');
@@ -41,6 +41,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
 // ROTA PRINCIPAL (Servir SPA)
 // ==========================================
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'landing.html'));
+});
+
+app.get('/app', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 

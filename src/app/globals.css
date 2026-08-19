@@ -1,0 +1,30 @@
+:root {
+  --color-accent: #e2ff00;
+  --color-accent-hover: #c8e200;
+  --color-background: #0a0c0e;
+  --color-surface: #14171a;
+  --color-surface-elevated: #1a1e23;
+  --color-border: #23272d;
+  --color-text: #f3f4f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-background);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}

@@ -1,5 +1,7 @@
 # Dependências, logs e arquivos de runtime
 node_modules/
+.worktrees/
+.superpowers/
 jspm_packages/
 web_modules/
 logs/
@@ -29,6 +31,9 @@ coverage/
 out/
 dist/
 .vite/
+.vercel/
+playwright-report/
+test-results/
 *.tsbuildinfo
 
 # Arquivos do sistema/editor
