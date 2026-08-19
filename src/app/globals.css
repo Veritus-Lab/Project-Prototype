@@ -182,6 +182,93 @@ input {
   color: #9299a4;
 }
 
+.auth-page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background-image: linear-gradient(#ffffff08 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+}
+
+.auth-shell {
+  width: min(100%, 31rem);
+  display: grid;
+  gap: 1.5rem;
+}
+
+.auth-card {
+  min-height: 0;
+}
+
+.auth-card h1 {
+  margin: 0 0 0.8rem;
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.auth-lead {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.signup-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.field-hint,
+.field-error,
+.form-error {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.field-hint {
+  color: var(--color-text-muted);
+}
+
+.field-error,
+.form-error {
+  color: #ffb4ad;
+}
+
+.form-error {
+  padding: 0.75rem;
+  border: 1px solid #8d413d;
+  border-radius: var(--radius-sm);
+  background: #3f1c1a;
+}
+
+.auth-footer {
+  margin: 1.5rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.auth-footer a {
+  color: var(--color-accent);
+  font-weight: 750;
+}
+
+.confirmation-card .button {
+  width: 100%;
+  margin-top: 1.75rem;
+}
+
 .header-login {
   flex: 0 0 auto;
 }
