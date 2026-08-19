@@ -7,24 +7,66 @@ type PublicEnvironment = Partial<
   >
 >;
 
-function isLegacyAnonJwt(value: string): boolean {
-  const parts = value.split(".");
+const base64UrlSegment = /^[A-Za-z0-9_-]+$/;
 
-  if (parts.length !== 3 || parts.some((part) => part.length === 0)) {
-    return false;
+function decodeBase64Url(value: string): string | undefined {
+  if (!base64UrlSegment.test(value)) {
+    return undefined;
   }
 
   try {
-    const encodedPayload = parts[1]
-      .replace(/-/g, "+")
-      .replace(/_/g, "/")
-      .padEnd(Math.ceil(parts[1].length / 4) * 4, "=");
-    const payload = JSON.parse(atob(encodedPayload)) as { role?: unknown };
-
-    return payload.role === "anon";
+    return atob(
+      value
+        .replace(/-/g, "+")
+        .replace(/_/g, "/")
+        .padEnd(Math.ceil(value.length / 4) * 4, "="),
+    );
   } catch {
+    return undefined;
+  }
+}
+
+function decodeJwtJson(value: string): Record<string, unknown> | undefined {
+  const decoded = decodeBase64Url(value);
+
+  if (!decoded) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(decoded) as unknown;
+
+    return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)
+      ? parsed as Record<string, unknown>
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function isLegacyAnonJwt(value: string): boolean {
+  const [encodedHeader, encodedPayload, encodedSignature, ...extraParts] =
+    value.split(".");
+
+  if (
+    extraParts.length > 0 ||
+    !encodedHeader ||
+    !encodedPayload ||
+    !encodedSignature
+  ) {
     return false;
   }
+
+  const header = decodeJwtJson(encodedHeader);
+  const payload = decodeJwtJson(encodedPayload);
+  const signature = decodeBase64Url(encodedSignature);
+
+  return (
+    header?.alg === "HS256" &&
+    header.typ === "JWT" &&
+    payload?.role === "anon" &&
+    signature !== undefined
+  );
 }
 
 const publicEnvironmentSchema = z.object({
@@ -51,7 +93,13 @@ const publicEnvironmentSchema = z.object({
 });
 
 export function getPublicEnv(environment?: PublicEnvironment) {
-  const parsed = publicEnvironmentSchema.parse(environment ?? process.env);
+  const parsed = publicEnvironmentSchema.parse(
+    environment ?? {
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    },
+  );
 
   return {
     supabaseUrl: parsed.NEXT_PUBLIC_SUPABASE_URL,
