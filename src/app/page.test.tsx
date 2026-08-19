@@ -6,3 +6,15 @@ it("renders the FLERNK product name", () => {
 
   expect(screen.getByRole("heading", { name: /flernk/i })).toBeInTheDocument();
 });
+
+it("links athlete and coach calls to action", () => {
+  render(<HomePage />);
+
+  expect(
+    screen.getByRole("link", { name: /sou treinador/i }),
+  ).toHaveAttribute("href", "/cadastro");
+  expect(screen.getByRole("link", { name: /sou atleta/i })).toHaveAttribute(
+    "href",
+    "/login",
+  );
+});
