@@ -2,6 +2,9 @@
 
 Plataforma SaaS para assessorias esportivas de corrida, construída com Next.js App Router.
 
+O estado atual, as tasks concluídas, as pendências e o roadmap estão em
+[`docs/STATUS_E_ROADMAP.md`](docs/STATUS_E_ROADMAP.md).
+
 ## Desenvolvimento
 
 Requer Node.js 22.22.2–22.x, 24.15.0–24.x ou 26.0.0+ e npm. Esse intervalo atende aos requisitos das ferramentas de teste do projeto.
