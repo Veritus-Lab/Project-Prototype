@@ -38,7 +38,8 @@ Os arquivos em `legacy/` são referência histórica e não fazem parte do runti
 
 - Repositório: `https://github.com/Veritus-Lab/Project-Prototype`
 - Branch publicada: `feat/nextjs-supabase-etapa-1`
-- Commit remoto estável confirmado em 21/08/2026: `575e61a189cf084db56061f86f0be182a04cfb6c`
+- Último commit de aplicação estável: `575e61a189cf084db56061f86f0be182a04cfb6c`.
+- Commits documentais posteriores podem avançar o HEAD remoto sem alterar o código da aplicação; consulte `git ls-remote` para o SHA atual.
 - A branch ainda não foi mesclada em `main`.
 
 ### Worktree local
@@ -46,8 +47,8 @@ Os arquivos em `legacy/` são referência histórica e não fazem parte do runti
 - Caminho: `Project p/Project p/.worktrees/feat-nextjs-supabase-etapa-1`
 - Branch: `feat/nextjs-supabase-etapa-1`
 - HEAD local em 21/08/2026: `34894e6`
-- O HEAD local está um commit à frente do remoto.
-- O commit adicional é deliberadamente RED e contém somente testes iniciais da Task 6.
+- O histórico local diverge do remoto após `575e61a`: o local contém o commit RED `34894e6`, enquanto o remoto contém os commits documentais.
+- O commit RED contém somente testes iniciais da Task 6.
 - Não publicar `34894e6` como entrega estável antes de implementar e revisar a Task 6.
 
 ### Supabase
@@ -243,7 +244,7 @@ Próxima implementação:
 ## 8. Próximos passos imediatos
 
 1. Trabalhar no worktree `feat-nextjs-supabase-etapa-1`.
-2. Confirmar HEAD local `34894e6` e remoto `575e61a`.
+2. Confirmar o HEAD local `34894e6` e consultar o HEAD remoto com `git ls-remote`.
 3. Não apagar os testes RED da Task 6.
 4. Implementar a Task 6 até o GREEN e revisar.
 5. Fazer push apenas do estado aprovado.
