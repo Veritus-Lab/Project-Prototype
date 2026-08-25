@@ -32,6 +32,7 @@ Estado atual:
 | Arquitetura | `docs/ARQUITETURA.md` | Módulos, fluxos e fronteiras da aplicação. |
 | Segurança | `docs/SEGURANCA.md` | RLS, papéis, convites, segredos e operação segura. |
 | Operação | `docs/OPERACAO.md` | Comandos, diagnóstico e publicação. |
+| Roadmap Etapa 2 | `docs/ROADMAP_ETAPA_2.md` e `docs/superpowers/plans/2026-08-25-etapa-2-operacao-assessoria.md` | Tasks 10-24, segurança, treinos, financeiro e WhatsApp. |
 | Checklist | `docs/checklists/etapa-1-acceptance.md` | Evidência de aceite funcional, visual e técnica. |
 | Operação básica | `README.md` | Requisitos, instalação e comandos. |
 | Contrato do banco | `supabase/migrations/202608180001_initial_schema.sql` | Schema, funções, grants e policies. |
@@ -288,6 +289,8 @@ Nunca executar `db reset` no projeto remoto.
 Esta seção é uma proposta e precisa de priorização comercial e aprovação do cliente.
 
 ### Etapa 2 — Operação da assessoria
+
+Roadmap detalhado: `docs/ROADMAP_ETAPA_2.md`. Plano executor task por task: `docs/superpowers/plans/2026-08-25-etapa-2-operacao-assessoria.md`.
 
 - Task 10 concluída em desenvolvimento: dashboards de treinador e atleta passaram a ler dados reais do Supabase via `src/lib/services/dashboard.service.ts`, removendo `src/lib/demo/dashboard.ts`.
 - Task 11 concluída em desenvolvimento: `/treinador/atletas` lista atletas reais do treinador autenticado via `src/lib/services/athlete.service.ts`.
