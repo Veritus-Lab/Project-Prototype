@@ -2,11 +2,16 @@ import { requireRole } from "@/lib/auth/session";
 import {
   createInvitationToken,
   getInvitationState,
+  hashInvitationToken,
   invitationExpiresAt,
   type InvitationState,
 } from "@/lib/invitations/token";
 import { createServerClient } from "@/lib/supabase/server";
-import { invitationEmailSchema } from "@/lib/validators/invitation";
+import {
+  acceptInvitationSchema,
+  invitationEmailSchema,
+  type AcceptInvitationInput,
+} from "@/lib/validators/invitation";
 import type { Database } from "@/types/database";
 
 type InvitationRow = Pick<
@@ -28,6 +33,19 @@ export interface CreatedInvitation extends InvitationSummary {
   link: string;
 }
 
+export type PublicInvitationState =
+  | "active"
+  | "expired"
+  | "used"
+  | "revoked"
+  | "invalid";
+
+export interface PublicInvitation {
+  maskedEmail: string | null;
+  assessoriaNome: string | null;
+  state: PublicInvitationState;
+}
+
 export type InvitationResult<T> =
   | { data: T; error?: never }
   | { data?: never; error: string };
@@ -37,6 +55,9 @@ const genericInvitationError =
 
 const genericRevokeError =
   "Não foi possível revogar o convite agora. Tente novamente.";
+
+const genericAcceptanceError =
+  "Não foi possível aceitar o convite agora. Tente novamente.";
 
 function configuredAppOrigin() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -63,6 +84,26 @@ function mapInvitation(row: InvitationRow, now = new Date()): InvitationSummary 
     ...row,
     state: getInvitationState(row, now),
   };
+}
+
+function mapPublicInvitationState(state: string): PublicInvitationState {
+  if (state === "pendente") {
+    return "active";
+  }
+
+  if (state === "expirado") {
+    return "expired";
+  }
+
+  if (state === "revogado") {
+    return "revoked";
+  }
+
+  if (state === "aceito") {
+    return "used";
+  }
+
+  return "invalid";
 }
 
 export async function createInvitation(
@@ -177,5 +218,116 @@ export async function listInvitations(): Promise<
     return { data: data.map((row) => mapInvitation(row)) };
   } catch {
     return { error: "Não foi possível carregar os convites agora." };
+  }
+}
+
+export async function inspectInvitation(
+  token: string,
+): Promise<InvitationResult<PublicInvitation>> {
+  try {
+    const supabase = await createServerClient();
+    const { data, error } = await supabase.rpc("validar_convite", {
+      hash: hashInvitationToken(token),
+    });
+
+    if (error || !data?.[0]) {
+      return {
+        data: {
+          maskedEmail: null,
+          assessoriaNome: null,
+          state: "invalid",
+        },
+      };
+    }
+
+    const invitation = data[0];
+
+    return {
+      data: {
+        maskedEmail: invitation.email_mascarado,
+        assessoriaNome: invitation.assessoria_nome,
+        state: mapPublicInvitationState(invitation.estado),
+      },
+    };
+  } catch {
+    return {
+      data: {
+        maskedEmail: null,
+        assessoriaNome: null,
+        state: "invalid",
+      },
+    };
+  }
+}
+
+function translateAcceptanceError(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("email nao corresponde")) {
+    return "Use o mesmo e-mail que recebeu o convite.";
+  }
+
+  if (normalized.includes("convite expirado")) {
+    return "Este convite expirou.";
+  }
+
+  if (normalized.includes("convite revogado")) {
+    return "Este convite foi revogado.";
+  }
+
+  if (normalized.includes("convite ja utilizado")) {
+    return "Este convite já foi usado.";
+  }
+
+  return genericAcceptanceError;
+}
+
+export async function acceptInvitation(
+  input: AcceptInvitationInput,
+): Promise<InvitationResult<void>> {
+  const parsedInput = acceptInvitationSchema.safeParse(input);
+
+  if (!parsedInput.success) {
+    return { error: parsedInput.error.issues[0]?.message ?? genericAcceptanceError };
+  }
+
+  const origin = configuredAppOrigin();
+
+  if (!origin) {
+    return { error: genericAcceptanceError };
+  }
+
+  try {
+    const supabase = await createServerClient();
+    const { token, nome, email, senha } = parsedInput.data;
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password: senha,
+      options: {
+        emailRedirectTo: new URL("/auth/callback", origin).toString(),
+        data: {
+          nome,
+          papel: "atleta",
+        },
+      },
+    });
+
+    if (signUpError || !signUpData.user?.id) {
+      return { error: genericAcceptanceError };
+    }
+
+    const { error } = await supabase.rpc("aceitar_convite", {
+      hash: hashInvitationToken(token),
+      user_id: signUpData.user.id,
+      nome,
+    });
+
+    if (error) {
+      return { error: translateAcceptanceError(error.message) };
+    }
+
+    return { data: undefined };
+  } catch {
+    return { error: genericAcceptanceError };
   }
 }

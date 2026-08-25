@@ -18,7 +18,8 @@ Estado atual:
 - branch de Etapa 1 publicada no GitHub até `26e67d2`;
 - Task 6 concluída e publicada em 24/08/2026 (38/38 testes, typecheck, lint sem warnings e build aprovados);
 - Task 7 concluída e publicada em 24/08/2026 (59/59 testes, typecheck, lint e build aprovados);
-- Tasks 8 e 9 ainda não implementadas.
+- Task 8 concluída e publicada em 24/08/2026 (71/71 testes, typecheck, lint e build aprovados);
+- Task 9 ainda não implementada.
 
 ## 2. Fontes de verdade
 
@@ -194,17 +195,25 @@ Evidência de 24/08/2026:
 - `npm run lint` aprovado sem warnings;
 - `npm run build` aprovado, incluindo a rota `/treinador/convites`.
 
-### Task 8 — Cadastro exclusivo do atleta — não iniciada
+### Task 8 — Cadastro exclusivo do atleta — concluída
 
-- Rota `/convite/[token]`.
-- Hash antes das RPCs.
-- Inspeção pública com somente e-mail mascarado, assessoria e estado.
-- Estados desconhecido, expirado, revogado e usado.
-- Cadastro com e-mail fixado pelo convite e metadata `papel=atleta`.
-- Aceite atômico pela RPC `aceitar_convite`.
-- Redirecionamento para `/atleta`.
-- Bloqueio de reutilização do token.
-- Testes do service e formulário.
+- Rota pública `/convite/[token]`.
+- Hash SHA-256 do token antes das RPCs.
+- Inspeção pública via `validar_convite`, expondo somente e-mail mascarado, nome da assessoria e estado.
+- Estados tratados: inválido, expirado, revogado, usado e ativo.
+- Cadastro de atleta por convite com metadata `papel=atleta`.
+- Aceite atômico via RPC `aceitar_convite`.
+- Erro específico para e-mail divergente do convite.
+- Redirecionamento para `/atleta` após aceite.
+- Estados inválidos exibem página definitiva sem formulário.
+- Testes de service, action, formulário e página.
+
+Evidência de 24/08/2026:
+
+- suíte completa: 71/71 em 22 arquivos;
+- `npm run typecheck` aprovado;
+- `npm run lint` aprovado sem warnings;
+- `npm run build` aprovado, incluindo a rota `/convite/[token]`.
 
 ### Task 9 — Validação e documentação — não iniciada
 
@@ -241,9 +250,8 @@ Evidência de 24/08/2026:
 
 ## 8. Próximos passos imediatos
 
-1. Implementar Task 8 em TDD: cadastro exclusivo do atleta por convite.
-2. Executar Task 9 e QA real.
-3. Abrir Pull Request para `main`.
+1. Executar Task 9 e QA real.
+2. Abrir Pull Request para `main`.
 
 Comandos principais:
 
