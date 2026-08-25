@@ -16,3 +16,16 @@ export const trainerSignupSchema = z.object({
 });
 
 export type TrainerSignupInput = z.infer<typeof trainerSignupSchema>;
+
+// Login only proves credentials; the user role always comes from the
+// persisted profile, so the schema deliberately has no role field.
+export const signInSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email("Informe um e-mail válido."),
+  senha: z.string().min(1, "Informe sua senha."),
+});
+
+export type SignInInput = z.infer<typeof signInSchema>;
