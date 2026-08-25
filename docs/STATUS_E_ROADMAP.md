@@ -19,7 +19,7 @@ Estado atual:
 - Task 6 concluída e publicada em 24/08/2026 (38/38 testes, typecheck, lint sem warnings e build aprovados);
 - Task 7 concluída e publicada em 24/08/2026 (59/59 testes, typecheck, lint e build aprovados);
 - Task 8 concluída e publicada em 24/08/2026 (71/71 testes, typecheck, lint e build aprovados);
-- Task 9 ainda não implementada.
+- Task 9 concluída localmente em 24/08/2026 com documentação final, suíte técnica verde e servidor local disponível para QA manual; roteiro Alfa/Beta real e pgTAP desta rodada seguem pendentes por dependerem de ambiente operacional/Docker.
 
 ## 2. Fontes de verdade
 
@@ -29,6 +29,10 @@ Estado atual:
 | Plano | `docs/superpowers/plans/2026-08-18-etapa-1-migracao-nextjs-supabase.md` | Nove tasks e critérios de aceite. |
 | Status | `docs/STATUS_E_ROADMAP.md` | Entregas, pendências, riscos e próximos passos. |
 | Setup do banco | `docs/SETUP_SUPABASE.md` | Ambiente, migrations, Auth, RLS e diagnóstico. |
+| Arquitetura | `docs/ARQUITETURA.md` | Módulos, fluxos e fronteiras da aplicação. |
+| Segurança | `docs/SEGURANCA.md` | RLS, papéis, convites, segredos e operação segura. |
+| Operação | `docs/OPERACAO.md` | Comandos, diagnóstico e publicação. |
+| Checklist | `docs/checklists/etapa-1-acceptance.md` | Evidência de aceite funcional, visual e técnica. |
 | Operação básica | `README.md` | Requisitos, instalação e comandos. |
 | Contrato do banco | `supabase/migrations/202608180001_initial_schema.sql` | Schema, funções, grants e policies. |
 | Isolamento | `supabase/tests/rls_isolation.sql` | Testes reais das regras de segurança. |
@@ -48,8 +52,8 @@ Os arquivos em `legacy/` são referência histórica e não fazem parte do runti
 
 - Caminho atual: `.worktrees/task-6-recovered`
 - Branch: `feat/nextjs-supabase-etapa-1`
-- HEAD local e remoto em 24/08/2026: `26e67d2`
-- Worktree limpo após validações.
+- HEAD local e remoto em 24/08/2026: validar com `git rev-parse --short HEAD` e `git rev-parse --short @{u}`.
+- O servidor local de QA sobe com `npm run dev -- -p 3000` e fica disponível em `http://localhost:3000`.
 
 ### Supabase
 
@@ -215,16 +219,17 @@ Evidência de 24/08/2026:
 - `npm run lint` aprovado sem warnings;
 - `npm run build` aprovado, incluindo a rota `/convite/[token]`.
 
-### Task 9 — Validação e documentação — não iniciada
+### Task 9 — Validação e documentação — concluída localmente
 
-- Executar testes, lint, typecheck e build.
-- Roteiro real com Assessoria Alfa e Assessoria Beta.
-- Validar isolamento entre usuários reais de teste.
-- QA de cadastro, confirmação, login, convite, revogação e aceite.
-- QA visual em `1440x900` e `390x844`.
-- Verificar console, overflow, sobreposição e respostas 4xx/5xx.
-- Finalizar arquitetura, segurança, operação e checklist de aceite.
-- Fazer revisão ampla, Pull Request e merge somente após aprovação.
+- Testes, lint, typecheck e build executados e aprovados.
+- Documentação final atualizada em README, setup, arquitetura, segurança, operação, status e checklist.
+- Smoke HTTP local aprovado em `http://localhost:3000`:
+  - `/`, `/cadastro`, `/login` e `/convite/token-invalido-para-smoke`: 200.
+  - `/treinador`, `/atleta` e `/treinador/convites`: 307 para autenticação.
+- pgTAP local desta rodada bloqueado porque Docker Desktop/Linux engine não estava disponível.
+- pgTAP remoto, roteiro real Alfa/Beta e confirmação de e-mail hospedada não foram executados para evitar uso/mutação remota sem autorização operacional explícita.
+- QA visual desktop/mobile segue como etapa manual no navegador local antes de aprovar merge em `main`.
+- Pull Request e merge em `main` devem ocorrer somente após aprovação.
 
 ## 6. Pendências técnicas conhecidas
 
@@ -250,8 +255,10 @@ Evidência de 24/08/2026:
 
 ## 8. Próximos passos imediatos
 
-1. Executar Task 9 e QA real.
-2. Abrir Pull Request para `main`.
+1. Executar QA manual no servidor local em `http://localhost:3000`.
+2. Com Docker ativo, rodar pgTAP local.
+3. Com autorização operacional, executar roteiro real Alfa/Beta no Supabase hospedado.
+4. Abrir Pull Request para `main`.
 
 Comandos principais:
 

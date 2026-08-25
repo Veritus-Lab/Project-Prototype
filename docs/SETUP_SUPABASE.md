@@ -18,9 +18,11 @@ Copie `.env.example` para `.env.local` e preencha apenas os valores públicos ex
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 A chave publishable (ou a chave `anon` legada) é esperada no cliente. Senha do banco, access token da CLI e `service_role` não pertencem ao arquivo versionado.
+`NEXT_PUBLIC_SITE_URL` define a origem usada nos redirects de Auth e nos links de convite.
 
 ## URLs do Auth
 

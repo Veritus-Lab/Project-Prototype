@@ -5,6 +5,14 @@ Plataforma SaaS para assessorias esportivas de corrida, construída com Next.js 
 O estado atual, as tasks concluídas, as pendências e o roadmap estão em
 [`docs/STATUS_E_ROADMAP.md`](docs/STATUS_E_ROADMAP.md).
 
+Documentação da Etapa 1:
+
+- [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md): módulos e fluxos.
+- [`docs/SEGURANCA.md`](docs/SEGURANCA.md): RLS, papéis, tokens e segredos.
+- [`docs/OPERACAO.md`](docs/OPERACAO.md): comandos, diagnóstico e publicação.
+- [`docs/SETUP_SUPABASE.md`](docs/SETUP_SUPABASE.md): ambiente Supabase e migrations.
+- [`docs/checklists/etapa-1-acceptance.md`](docs/checklists/etapa-1-acceptance.md): aceite e QA.
+
 ## Desenvolvimento
 
 Requer Node.js 22.22.2–22.x, 24.15.0–24.x ou 26.0.0+ e npm. Esse intervalo atende aos requisitos das ferramentas de teste do projeto.
@@ -14,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Use `npm run build` para gerar a versão de produção, `npm run typecheck` para validar os tipos e `npm test` para executar os testes.
+Use `npm run build` para gerar a versão de produção, `npm run typecheck` para validar os tipos, `npm run lint` para lint e `npm test -- --maxWorkers=1` para executar os testes de forma estável no Windows.
 
 ## Arquitetura
 
@@ -33,3 +41,4 @@ habilite **Authentication → Providers → Email → Confirm email** e cadastre
 `/auth/callback` da origem pública em Redirect URLs.
 
 Antes de publicar, execute `npm test`, `npm run typecheck` e `npm run build`. O diretório `legacy/` contém o protótipo histórico e não deve ser removido durante a operação do aplicativo atual.
+Atletas entram somente por convite válido; links de convite armazenam apenas hash SHA-256 no banco e o token bruto aparece somente no momento da criação.
