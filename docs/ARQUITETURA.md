@@ -54,3 +54,7 @@ A Etapa 1 entrega uma fatia vertical do FLERNK em Next.js App Router, TypeScript
 ## Dashboards
 
 Dashboards usam `src/lib/services/dashboard.service.ts` para ler dados reais do Supabase dentro do tenant autenticado. O painel do treinador mostra contadores de atletas, treinos e convites pendentes, além de treinos recentes. O painel do atleta mostra contadores de treinos atribuídos, em andamento e concluídos, além de atribuições recentes.
+
+## Atletas
+
+`/treinador/atletas` usa `src/lib/services/athlete.service.ts` para listar atletas vinculados ao treinador autenticado. A consulta filtra por `assessoria_id` e `treinador_id`; RLS permanece como barreira de segurança principal.

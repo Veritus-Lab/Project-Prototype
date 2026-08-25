@@ -290,6 +290,7 @@ Esta seção é uma proposta e precisa de priorização comercial e aprovação 
 ### Etapa 2 — Operação da assessoria
 
 - Task 10 concluída em desenvolvimento: dashboards de treinador e atleta passaram a ler dados reais do Supabase via `src/lib/services/dashboard.service.ts`, removendo `src/lib/demo/dashboard.ts`.
+- Task 11 concluída em desenvolvimento: `/treinador/atletas` lista atletas reais do treinador autenticado via `src/lib/services/athlete.service.ts`.
 - CRUD de atletas e avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;

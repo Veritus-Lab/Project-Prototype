@@ -14,7 +14,7 @@ const sidebarItems: Record<PapelUsuario, SidebarItem[]> = {
   treinador: [
     { label: "Painel", href: "/treinador" },
     { label: "Convites", href: "/treinador/convites" },
-    { label: "Atletas" },
+    { label: "Atletas", href: "/treinador/atletas" },
     { label: "Treinos" },
     { label: "Calendário" },
     { label: "Mensagens" },
