@@ -1,6 +1,6 @@
 # FLERNK — Status, continuidade e roadmap
 
-> Atualizado em 22 de agosto de 2026. Este documento é a fonte canônica para o estado atual do projeto, o trabalho concluído, as pendências e os próximos passos. Valide informações operacionais com Git, testes e Supabase antes de alterar ambientes compartilhados.
+> Atualizado em 24 de agosto de 2026. Este documento é a fonte canônica para o estado atual do projeto, o trabalho concluído, as pendências e os próximos passos. Valide informações operacionais com Git, testes e Supabase antes de alterar ambientes compartilhados.
 
 ## 1. Resumo executivo
 
@@ -14,8 +14,9 @@ Estado atual:
 - banco multi-tenant aplicado no Supabase remoto;
 - migration local e remota alinhada em `202608180001`;
 - 65 testes pgTAP de RLS aprovados local e remotamente em 19/08/2026;
-- branch estável publicada no GitHub até o commit `575e61a`;
-- Task 6 implementada localmente até o GREEN em 22/08/2026 (34/34 testes, typecheck, lint e build aprovados), aguardando revisão independente e commit;
+- branch `main` saneada no GitHub até `540cffb`, sem banco SQLite rastreado e com o legado restrito a `legacy/`;
+- branch de Etapa 1 publicada no GitHub até `26e67d2`;
+- Task 6 concluída e publicada em 24/08/2026 (38/38 testes, typecheck, lint sem warnings e build aprovados);
 - Tasks 7, 8 e 9 ainda não implementadas.
 
 ## 2. Fontes de verdade
@@ -38,18 +39,15 @@ Os arquivos em `legacy/` são referência histórica e não fazem parte do runti
 
 - Repositório: `https://github.com/Veritus-Lab/Project-Prototype`
 - Branch publicada: `feat/nextjs-supabase-etapa-1`
-- Último commit de aplicação estável: `575e61a189cf084db56061f86f0be182a04cfb6c`.
-- Commits documentais posteriores podem avançar o HEAD remoto sem alterar o código da aplicação; consulte `git ls-remote` para o SHA atual.
+- Último commit de aplicação validado: `26e67d2`.
 - A branch ainda não foi mesclada em `main`.
 
 ### Worktree local
 
-- Caminho: `Project p/Project p/.worktrees/feat-nextjs-supabase-etapa-1`
+- Caminho atual: `.worktrees/task-6-recovered`
 - Branch: `feat/nextjs-supabase-etapa-1`
-- HEAD local em 21/08/2026: `34894e6`
-- O histórico local diverge do remoto após `575e61a`: o local contém o commit RED `34894e6`, enquanto o remoto contém os commits documentais.
-- O commit RED contém somente testes iniciais da Task 6.
-- Não publicar `34894e6` como entrega estável antes de implementar e revisar a Task 6.
+- HEAD local e remoto em 24/08/2026: `26e67d2`
+- Worktree limpo após validações.
 
 ### Supabase
 
@@ -151,9 +149,9 @@ Principais commits: `eb77d22`, `6084ce2`, `3304063`, `6a4f2c2` e `575e61a`.
 
 ## 5. O que falta na Etapa 1
 
-### Task 6 — Login, sessão e dashboards — implementada, aguardando revisão independente
+### Task 6 — Login, sessão e dashboards — concluída
 
-Implementação concluída em 22/08/2026 sobre os testes RED existentes:
+Implementação concluída e publicada em 24/08/2026 sobre os testes RED existentes:
 
 - `src/lib/auth/session.ts`: `requireUser()` com `auth.getUser()` + `profiles` (a autoridade é sempre o profile persistido, nunca metadata) e `requireRole()` com redirecionamento cruzado entre dashboards; anônimo vai para `/login`; usuário autenticado sem profile falha com mensagem segura.
 - `src/lib/services/auth.service.ts`: `signIn()` com `signInWithPassword` e tradução de erros (credenciais inválidas, e-mail não confirmado), e `signOut()` tolerante a falhas.
@@ -162,15 +160,16 @@ Implementação concluída em 22/08/2026 sobre os testes RED existentes:
 - `src/app/(dashboard)/`: layout protegido com sidebar responsiva (itens sem funcionalidade ficam inertes por design), header com papel e logout via `signOutAction`; páginas `/treinador` e `/atleta` com `requireRole`.
 - `src/lib/demo/dashboard.ts`: dados demo centralizados dos dois dashboards, a substituir por repositórios Supabase na Etapa 2.
 
-Evidência de 22/08/2026:
+Evidência de 24/08/2026:
 
-- suíte completa: 34/34 (incluindo os 5 testes de sessão e o do formulário de login, antes RED);
-- typecheck, lint (somente o warning preexistente do `postcss.config.mjs`) e `next build` aprovados;
-- smoke test: `/login` responde 200; `/treinador` e `/atleta` redirecionam anônimos para `/login` (307).
+- suíte completa: 38/38 em 12 arquivos;
+- `npm run typecheck` aprovado;
+- `npm run lint` aprovado sem warnings;
+- `npm run build` aprovado no worktree oficial da Task 6;
+- `vitest.config.ts` estabilizado no Windows com `pool: "threads"` e `fileParallelism: false`.
 
-Pendências da Task 6:
+Observações restantes:
 
-- revisão independente antes de commitar;
 - QA manual do fluxo real (cadastro → confirmação de e-mail → login → dashboard) no projeto hospedado;
 - considerar redirect de `/login` quando já autenticado (não implementado nesta etapa).
 
@@ -214,9 +213,6 @@ Pendências da Task 6:
 - Revisar possível duplicidade de `treinadores_assessoria_idx`.
 - Alinhar limites do validator aos 120 caracteres do banco.
 - Ampliar testes de acessibilidade dos estados de erro e carregamento.
-- Corrigir warning preexistente em `postcss.config.mjs`.
-- Investigar a inicialização lenta dos workers Vitest no Windows.
-- Usar `--maxWorkers=1` enquanto o timeout paralelo persistir.
 
 ## 7. Regras que não podem regredir
 
@@ -234,11 +230,10 @@ Pendências da Task 6:
 
 ## 8. Próximos passos imediatos
 
-1. Revisar a implementação da Task 6 localmente.
-2. Fazer commit da Task 6 e push do HEAD aprovado.
-3. Implementar Tasks 7 e 8 em TDD.
-4. Executar Task 9 e QA real.
-5. Abrir Pull Request para `main`.
+1. Implementar Task 7 em TDD: convites do treinador.
+2. Implementar Task 8 em TDD: cadastro exclusivo do atleta por convite.
+3. Executar Task 9 e QA real.
+4. Abrir Pull Request para `main`.
 
 Comandos principais:
 
