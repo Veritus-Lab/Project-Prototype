@@ -1,6 +1,6 @@
 # FLERNK — Status, continuidade e roadmap
 
-> Atualizado em 24 de agosto de 2026. Este documento é a fonte canônica para o estado atual do projeto, o trabalho concluído, as pendências e os próximos passos. Valide informações operacionais com Git, testes e Supabase antes de alterar ambientes compartilhados.
+> Atualizado em 25 de agosto de 2026. Este documento é a fonte canônica para o estado atual do projeto, o trabalho concluído, as pendências e os próximos passos. Valide informações operacionais com Git, testes e Supabase antes de alterar ambientes compartilhados.
 
 ## 1. Resumo executivo
 
@@ -15,11 +15,11 @@ Estado atual:
 - migration local e remota alinhada em `202608180001`;
 - 65 testes pgTAP de RLS aprovados local e remotamente em 19/08/2026;
 - branch `main` saneada no GitHub até `540cffb`, sem banco SQLite rastreado e com o legado restrito a `legacy/`;
-- branch de Etapa 1 publicada no GitHub até `26e67d2`;
+- branch de Etapa 1 publicada no GitHub até `68fdfe6`;
 - Task 6 concluída e publicada em 24/08/2026 (38/38 testes, typecheck, lint sem warnings e build aprovados);
 - Task 7 concluída e publicada em 24/08/2026 (59/59 testes, typecheck, lint e build aprovados);
 - Task 8 concluída e publicada em 24/08/2026 (71/71 testes, typecheck, lint e build aprovados);
-- Task 9 concluída localmente em 24/08/2026 com documentação final, suíte técnica verde e servidor local disponível para QA manual; roteiro Alfa/Beta real e pgTAP desta rodada seguem pendentes por dependerem de ambiente operacional/Docker.
+- Task 9 concluída localmente em 25/08/2026 com documentação final, suíte técnica verde, hotfix de Server Actions publicado e QA manual validado pelo usuário; roteiro Alfa/Beta formal e pgTAP desta rodada seguem pendentes por dependerem de ambiente operacional/Docker.
 
 ## 2. Fontes de verdade
 
@@ -226,9 +226,11 @@ Evidência de 24/08/2026:
 - Smoke HTTP local aprovado em `http://localhost:3000`:
   - `/`, `/cadastro`, `/login` e `/convite/token-invalido-para-smoke`: 200.
   - `/treinador`, `/atleta` e `/treinador/convites`: 307 para autenticação.
+- QA manual validado pelo usuário em 25/08/2026 no servidor local.
+- Hotfix pós-QA publicado em `68fdfe6` para manter módulos `"use server"` exportando apenas funções async, conforme exigência do Next.js 16.
 - pgTAP local desta rodada bloqueado porque Docker Desktop/Linux engine não estava disponível.
 - pgTAP remoto, roteiro real Alfa/Beta e confirmação de e-mail hospedada não foram executados para evitar uso/mutação remota sem autorização operacional explícita.
-- QA visual desktop/mobile segue como etapa manual no navegador local antes de aprovar merge em `main`.
+- QA visual/manual local validado antes de organizar PR para `main`.
 - Pull Request e merge em `main` devem ocorrer somente após aprovação.
 
 ## 6. Pendências técnicas conhecidas
@@ -255,10 +257,11 @@ Evidência de 24/08/2026:
 
 ## 8. Próximos passos imediatos
 
-1. Executar QA manual no servidor local em `http://localhost:3000`.
-2. Com Docker ativo, rodar pgTAP local.
-3. Com autorização operacional, executar roteiro real Alfa/Beta no Supabase hospedado.
-4. Abrir Pull Request para `main`.
+1. Rodar gate curto pós-validação.
+2. Abrir Pull Request para `main`.
+3. Aprovar e mesclar em `main` somente após revisão.
+4. Com Docker ativo, rodar pgTAP local em uma rodada operacional futura.
+5. Com autorização operacional, executar roteiro formal Alfa/Beta no Supabase hospedado.
 
 Comandos principais:
 

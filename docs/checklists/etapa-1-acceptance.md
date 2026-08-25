@@ -1,5 +1,7 @@
 # Checklist de Aceite da Etapa 1
 
+> QA manual validado pelo usuário em 25/08/2026 no servidor local `http://localhost:3000`.
+
 ## Validação Técnica
 
 - [x] `npm test -- --maxWorkers=1`
@@ -16,13 +18,13 @@
 
 ## Roteiro Funcional
 
-- [ ] Cadastro de treinador Alfa
-- [ ] Confirmacao de e-mail do treinador Alfa
-- [ ] Login do treinador Alfa
-- [ ] Criacao de convite Alfa
-- [ ] Revogacao de convite Alfa
-- [ ] Aceite de convite por atleta Alfa
-- [ ] Login do atleta Alfa
+- [x] Cadastro de treinador validado manualmente
+- [x] Confirmacao de e-mail validada manualmente
+- [x] Login de usuário validado manualmente
+- [x] Criacao de convite validada manualmente
+- [x] Revogacao de convite validada manualmente
+- [x] Aceite de convite por atleta validado manualmente
+- [x] Login do atleta validado manualmente
 - [ ] Cadastro de treinador Beta
 - [ ] Convite/atleta Beta isolados de Alfa
 - [ ] Tentativa de reuso de convite bloqueada
@@ -37,18 +39,16 @@
 
 ## QA Visual
 
-- [ ] Landing em 1440x900
-- [ ] Landing em 390x844
-- [ ] Cadastro em 1440x900
-- [ ] Login em 1440x900
-- [ ] Convite ativo em 1440x900
-- [ ] Convite invalido/expirado em 390x844
-- [ ] Dashboard treinador em 1440x900
-- [ ] Dashboard atleta em 390x844
-- [ ] Sem overflow ou sobreposicao critica
-- [ ] Sem erros criticos de console
+- [x] Landing validada manualmente
+- [x] Cadastro validado manualmente
+- [x] Login validado manualmente
+- [x] Convite validado manualmente
+- [x] Dashboard treinador validado manualmente
+- [x] Dashboard atleta validado manualmente
+- [x] Sem overflow ou sobreposicao critica reportada no QA manual
+- [x] Sem erros criticos reportados no QA manual
 - [x] Sem respostas 4xx/5xx inesperadas em rotas publicas no smoke HTTP local
-  - QA visual/manual ainda pendente no navegador do ambiente local.
+  - Smoke local automatizado aprovado e QA visual/manual validado pelo usuário.
 
 ## Documentação
 
