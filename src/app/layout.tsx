@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FLERNK | Assessoria esportiva conectada",
-  description: "Treinos, acompanhamento e comunicação para atletas e assessorias esportivas.",
+  title: "FLERNK",
+  description: "Plataforma para assessorias esportivas de corrida.",
 };
 
 export default function RootLayout({

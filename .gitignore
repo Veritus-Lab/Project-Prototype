@@ -34,6 +34,9 @@ coverage/
 out/
 dist/
 .vite/
+.vercel/
+playwright-report/
+test-results/
 *.tsbuildinfo
 
 # Arquivos do sistema/editor

@@ -1,48 +1,34 @@
-import Link from "next/link";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
-
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: ReactNode;
-  href?: string;
-  variant?: ButtonVariant;
-};
+export type ButtonVariant = "primary" | "secondary" | "ghost";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-brand !text-ink hover:bg-brand-hover",
-  secondary:
-    "border-brand bg-transparent text-white hover:bg-brand hover:text-ink",
-  ghost: "bg-transparent text-white hover:bg-white/8",
+  primary: "bg-brand button-primary",
+  secondary: "button-secondary",
+  ghost: "button-ghost",
 };
 
-export function Button({
-  children,
+export function buttonClassName(
+  variant: ButtonVariant = "primary",
   className = "",
-  href,
-  variant = "primary",
-  type = "button",
-  ...props
-}: ButtonProps) {
-  const classes = [
-    "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-extrabold transition-[background-color,color,border-color,transform] duration-200 hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-50",
-    variantClasses[variant],
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  if (href) {
-    return (
-      <Link className={classes} href={href}>
-        {children}
-      </Link>
-    );
-  }
-
-  return (
-    <button className={classes} type={type} {...props}>
-      {children}
-    </button>
-  );
+) {
+  return ["button", variantClasses[variant], className].filter(Boolean).join(" ");
 }
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { className, type = "button", variant = "primary", ...props },
+  ref,
+) {
+  return (
+    <button
+      ref={ref}
+      type={type}
+      className={buttonClassName(variant, className)}
+      {...props}
+    />
+  );
+});

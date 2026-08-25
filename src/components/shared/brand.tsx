@@ -1,29 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type BrandProps = {
+interface BrandProps {
   compact?: boolean;
-};
+}
 
 export function Brand({ compact = false }: BrandProps) {
-  const size = compact ? 36 : 44;
-
   return (
-    <Link
-      aria-label="FLERNK - início"
-      className="inline-flex items-center gap-3"
-      href="/"
-    >
+    <Link className="brand" href="/" aria-label="FLERNK — página inicial">
       <Image
-        alt="Símbolo da FLERNK"
-        className="rounded-lg object-cover"
-        height={size}
-        priority={!compact}
+        className="brand-mark"
         src="/flernk-logo.jpg"
-        style={{ height: size, width: size }}
-        width={size}
+        alt=""
+        aria-hidden="true"
+        width={44}
+        height={44}
+        priority={!compact}
       />
-      <span className="text-xl font-black text-white">FLERNK</span>
+      <span>FLERNK</span>
     </Link>
   );
 }

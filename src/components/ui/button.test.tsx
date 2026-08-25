@@ -1,33 +1,29 @@
 import { render, screen } from "@testing-library/react";
-import { expect, it } from "vitest";
-import { Button } from "@/components/ui/button";
+import { Button } from "./button";
 
-it("uses the primary FLERNK style by default", () => {
-  render(<Button>Entrar</Button>);
+describe("Button", () => {
+  it("uses the primary brand style by default", () => {
+    render(<Button>Entrar</Button>);
 
-  expect(screen.getByRole("button", { name: "Entrar" })).toHaveClass(
-    "bg-brand",
-    "!text-ink",
-  );
-});
+    expect(screen.getByRole("button", { name: "Entrar" })).toHaveClass(
+      "bg-brand",
+    );
+  });
 
-it("renders a secondary action without losing button semantics", () => {
-  render(<Button variant="secondary">Conhecer recursos</Button>);
+  it.each([
+    ["secondary", "button-secondary"],
+    ["ghost", "button-ghost"],
+  ] as const)("uses the %s style", (variant, className) => {
+    render(<Button variant={variant}>Continuar</Button>);
 
-  expect(
-    screen.getByRole("button", { name: "Conhecer recursos" }),
-  ).toHaveClass("border-brand", "bg-transparent");
-});
+    expect(screen.getByRole("button", { name: "Continuar" })).toHaveClass(
+      className,
+    );
+  });
 
-it("can style a Next link as a button", () => {
-  render(
-    <Button href="/cadastro" variant="ghost">
-      Criar conta
-    </Button>,
-  );
+  it("forwards native button attributes", () => {
+    render(<Button disabled>Salvar</Button>);
 
-  expect(screen.getByRole("link", { name: "Criar conta" })).toHaveAttribute(
-    "href",
-    "/cadastro",
-  );
+    expect(screen.getByRole("button", { name: "Salvar" })).toBeDisabled();
+  });
 });

@@ -1,30 +1,57 @@
-import { BarChart3, CalendarDays, Cloud, MessageSquare, Trophy } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import {
+  CalendarDays,
+  ChartColumnIncreasing,
+  Cloud,
+  MessagesSquare,
+  Trophy,
+} from "lucide-react";
+import { Card } from "../ui/card";
 
 const features = [
-  [CalendarDays, "Treinos Personalizados", "Planos de treino feitos sob medida para o seu objetivo e evolução."],
-  [BarChart3, "Acompanhe sua Evolução", "Visualize seus resultados com gráficos e métricas avançadas."],
-  [MessageSquare, "Comunicação Direta", "Fale com seu treinador, tire dúvidas e receba orientações."],
-  [Trophy, "Provas e Resultados", "Guarde suas conquistas e acompanhe sua história."],
-  [Cloud, "Acesse de Qualquer Lugar", "Seus treinos sempre disponíveis, em qualquer dispositivo."],
-] as const;
+  {
+    icon: CalendarDays,
+    title: "Treinos personalizados",
+    text: "Planos de treino feitos sob medida para cada objetivo e evolução.",
+  },
+  {
+    icon: ChartColumnIncreasing,
+    title: "Acompanhe sua evolução",
+    text: "Resultados claros, métricas úteis e decisões orientadas por dados.",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Comunicação direta",
+    text: "Treinador e atleta alinhados antes, durante e depois de cada treino.",
+  },
+  {
+    icon: Trophy,
+    title: "Provas e resultados",
+    text: "Histórico organizado para transformar cada conquista em aprendizado.",
+  },
+  {
+    icon: Cloud,
+    title: "Acesse de qualquer lugar",
+    text: "A rotina da assessoria disponível com segurança onde você estiver.",
+  },
+];
 
 export function Features() {
   return (
-    <section className="section-block border-b border-white/5" aria-labelledby="features-title">
+    <section className="section" id="recursos" aria-labelledby="features-title">
       <div className="container">
-        <div className="section-heading">
-          <p className="eyebrow">Recursos que fazem a diferença</p>
+        <header className="section-heading">
+          <p>RECURSOS QUE FAZEM A DIFERENÇA</p>
           <h2 id="features-title">Tudo que você precisa em um só lugar</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {features.map(([Icon, title, description]) => (
-            <Card className="group p-5 transition-colors hover:border-brand/40 hover:bg-surface-elevated" key={title}>
-              <span className="mb-5 grid size-11 place-items-center rounded-lg border border-border bg-background text-brand transition-colors group-hover:bg-brand group-hover:text-ink">
-                <Icon aria-hidden size={20} />
+        </header>
+        <div className="feature-grid">
+          {features.map(({ icon: Icon, title, text }, index) => (
+            <Card key={title} elevated={index === 1}>
+              <Icon className="card-icon" aria-hidden="true" />
+              <span className="card-number" aria-hidden="true">
+                0{index + 1}
               </span>
-              <h3 className="font-bold text-white">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-subtle">{description}</p>
+              <h3>{title}</h3>
+              <p>{text}</p>
             </Card>
           ))}
         </div>

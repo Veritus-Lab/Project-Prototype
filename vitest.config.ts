@@ -1,19 +1,16 @@
-import path from "node:path";
 import { defineConfig } from "vitest/config";
+import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-    },
-  },
-  oxc: {
-    jsx: {
-      runtime: "automatic",
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   test: {
     environment: "jsdom",
+    pool: "threads",
+    fileParallelism: false,
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
   },
