@@ -51,6 +51,6 @@ A Etapa 1 entrega uma fatia vertical do FLERNK em Next.js App Router, TypeScript
 5. `acceptInvitation` cria usuario Auth com metadata `papel=atleta` e chama `aceitar_convite`.
 6. A RPC valida sessao, e-mail, prazo e estado antes de criar `profiles` e `atletas`.
 
-## Dados Demo
+## Dashboards
 
-Dashboards usam dados centralizados em `src/lib/demo/dashboard.ts`. Eles devem ser substituidos por repositories Supabase na Etapa 2.
+Dashboards usam `src/lib/services/dashboard.service.ts` para ler dados reais do Supabase dentro do tenant autenticado. O painel do treinador mostra contadores de atletas, treinos e convites pendentes, além de treinos recentes. O painel do atleta mostra contadores de treinos atribuídos, em andamento e concluídos, além de atribuições recentes.

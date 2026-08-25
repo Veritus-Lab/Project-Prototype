@@ -164,7 +164,7 @@ Implementação concluída e publicada em 24/08/2026 sobre os testes RED existen
 - `src/lib/validators/auth.ts`: `signInSchema` (e-mail + senha, sem campo de papel).
 - `src/app/(auth)/login/`: página, `signInAction` (decide o destino pelo profile após o login, redirect fora do catch) e formulário com preferência visual Atleta/Treinador em `radiogroup` sem `name` (nada é submetido; suporte a setas do teclado).
 - `src/app/(dashboard)/`: layout protegido com sidebar responsiva (itens sem funcionalidade ficam inertes por design), header com papel e logout via `signOutAction`; páginas `/treinador` e `/atleta` com `requireRole`.
-- `src/lib/demo/dashboard.ts`: dados demo centralizados dos dois dashboards, a substituir por repositórios Supabase na Etapa 2.
+- Dashboards iniciais protegidos por papel, com dados de demonstração isolados para substituição na Etapa 2.
 
 Evidência de 24/08/2026:
 
@@ -289,6 +289,7 @@ Esta seção é uma proposta e precisa de priorização comercial e aprovação 
 
 ### Etapa 2 — Operação da assessoria
 
+- Task 10 concluída em desenvolvimento: dashboards de treinador e atleta passaram a ler dados reais do Supabase via `src/lib/services/dashboard.service.ts`, removendo `src/lib/demo/dashboard.ts`.
 - CRUD de atletas e avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;
@@ -296,7 +297,7 @@ Esta seção é uma proposta e precisa de priorização comercial e aprovação 
 - evolução de distância, ritmo, frequência cardíaca e aderência;
 - comunicação, documentos e anexos;
 - configurações de assessoria, perfil e marca;
-- troca dos dados demo por repositories Supabase.
+- evolução dos repositories Supabase para cobrir a operação completa.
 
 ### Etapa 3 — Integrações e automação
 

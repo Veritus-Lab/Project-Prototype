@@ -498,6 +498,15 @@ input {
   font-size: 0.85rem;
 }
 
+.dashboard-empty-state {
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
 .dashboard-demo-note {
   margin: 3rem 0 0;
   color: #747c87;

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
-import { athleteDashboardDemo } from "@/lib/demo/dashboard";
+import { getAthleteDashboardData } from "@/lib/services/dashboard.service";
 
 export const metadata = {
   title: "Painel do atleta — FLERNK",
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default async function AtletaDashboard() {
   const user = await requireRole("atleta");
-  const { metrics, proximosTreinos } = athleteDashboardDemo;
+  const { metrics, trainings } = await getAthleteDashboardData(user);
 
   return (
     <div className="dashboard-page">
@@ -29,21 +29,23 @@ export default async function AtletaDashboard() {
       </div>
 
       <section className="dashboard-section">
-        <h2>Próximos treinos</h2>
-        <ul className="dashboard-list">
-          {proximosTreinos.map((treino) => (
-            <li key={treino.titulo}>
-              <span className="dashboard-list-title">{treino.titulo}</span>
-              <span className="dashboard-list-when">{treino.quando}</span>
-              <span className="dashboard-list-detail">{treino.detalhe}</span>
-            </li>
-          ))}
-        </ul>
+        <h2>Treinos atribuídos</h2>
+        {trainings.length > 0 ? (
+          <ul className="dashboard-list">
+            {trainings.map((treino) => (
+              <li key={treino.id}>
+                <span className="dashboard-list-title">{treino.titulo}</span>
+                <span className="dashboard-list-when">{treino.quando}</span>
+                <span className="dashboard-list-detail">{treino.detalhe}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="dashboard-empty-state">
+            Nenhum treino atribuído ainda.
+          </p>
+        )}
       </section>
-
-      <p className="dashboard-demo-note">
-        Dados de demonstração — a integração real chega na Etapa 2.
-      </p>
     </div>
   );
 }
