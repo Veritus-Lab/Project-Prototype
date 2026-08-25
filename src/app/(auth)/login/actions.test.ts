@@ -21,7 +21,8 @@ vi.mock("@/lib/auth/session", () => ({
   requireUser: mocks.requireUser,
 }));
 
-import { initialLoginActionState, signInAction } from "./actions";
+import { signInAction } from "./actions";
+import { initialLoginActionState } from "./state";
 
 function formData(fields: Record<string, string>) {
   const data = new FormData();

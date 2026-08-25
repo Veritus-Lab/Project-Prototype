@@ -5,13 +5,7 @@ import { redirect } from "next/navigation";
 import { destinationForPapel, requireUser } from "@/lib/auth/session";
 import { genericSignInError, signIn } from "@/lib/services/auth.service";
 import { signInSchema } from "@/lib/validators/auth";
-
-export type LoginActionState = {
-  error?: string;
-  fieldErrors?: Partial<Record<"email" | "senha", string[]>>;
-};
-
-export const initialLoginActionState: LoginActionState = {};
+import type { LoginActionState } from "./state";
 
 export async function signInAction(
   _previousState: LoginActionState,

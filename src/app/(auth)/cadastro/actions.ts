@@ -4,13 +4,7 @@ import { redirect } from "next/navigation";
 
 import { genericSignupError, signUpTrainer } from "@/lib/services/auth.service";
 import { trainerSignupSchema } from "@/lib/validators/auth";
-
-export type SignupActionState = {
-  error?: string;
-  fieldErrors?: Partial<Record<"nome" | "assessoria" | "email" | "senha", string[]>>;
-};
-
-export const initialSignupActionState: SignupActionState = {};
+import type { SignupActionState } from "./state";
 
 export async function signUpTrainerAction(
   _previousState: SignupActionState,

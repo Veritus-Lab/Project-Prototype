@@ -2,10 +2,8 @@
 
 import { useActionState, useState } from "react";
 
-import {
-  initialLoginActionState,
-  signInAction,
-} from "@/app/(auth)/login/actions";
+import { signInAction } from "@/app/(auth)/login/actions";
+import { initialLoginActionState } from "@/app/(auth)/login/state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

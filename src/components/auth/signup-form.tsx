@@ -2,10 +2,8 @@
 
 import { useActionState } from "react";
 
-import {
-  initialSignupActionState,
-  signUpTrainerAction,
-} from "@/app/(auth)/cadastro/actions";
+import { signUpTrainerAction } from "@/app/(auth)/cadastro/actions";
+import { initialSignupActionState } from "@/app/(auth)/cadastro/state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
