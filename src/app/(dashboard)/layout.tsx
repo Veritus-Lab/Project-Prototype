@@ -13,6 +13,7 @@ interface SidebarItem {
 const sidebarItems: Record<PapelUsuario, SidebarItem[]> = {
   treinador: [
     { label: "Painel", href: "/treinador" },
+    { label: "Convites", href: "/treinador/convites" },
     { label: "Atletas" },
     { label: "Treinos" },
     { label: "Calendário" },

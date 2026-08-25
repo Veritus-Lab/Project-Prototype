@@ -17,7 +17,8 @@ Estado atual:
 - branch `main` saneada no GitHub até `540cffb`, sem banco SQLite rastreado e com o legado restrito a `legacy/`;
 - branch de Etapa 1 publicada no GitHub até `26e67d2`;
 - Task 6 concluída e publicada em 24/08/2026 (38/38 testes, typecheck, lint sem warnings e build aprovados);
-- Tasks 7, 8 e 9 ainda não implementadas.
+- Task 7 concluída e publicada em 24/08/2026 (59/59 testes, typecheck, lint e build aprovados);
+- Tasks 8 e 9 ainda não implementadas.
 
 ## 2. Fontes de verdade
 
@@ -39,7 +40,7 @@ Os arquivos em `legacy/` são referência histórica e não fazem parte do runti
 
 - Repositório: `https://github.com/Veritus-Lab/Project-Prototype`
 - Branch publicada: `feat/nextjs-supabase-etapa-1`
-- Último commit de aplicação validado: `26e67d2`.
+- Último commit de aplicação validado: HEAD atual de `feat/nextjs-supabase-etapa-1`.
 - A branch ainda não foi mesclada em `main`.
 
 ### Worktree local
@@ -173,15 +174,25 @@ Observações restantes:
 - QA manual do fluxo real (cadastro → confirmação de e-mail → login → dashboard) no projeto hospedado;
 - considerar redirect de `/login` quando já autenticado (não implementado nesta etapa).
 
-### Task 7 — Convites do treinador — não iniciada
+### Task 7 — Convites do treinador — concluída
 
-- Token criptográfico URL-safe e hash SHA-256.
-- Validade de sete dias, revogação e uso único.
-- Service restrito a treinador autenticado.
-- Revogação de convite ativo duplicado para o mesmo e-mail.
-- Painel `/treinador/convites` com formulário, lista, status e cópia.
-- Link bruto exibido apenas logo após a criação.
-- Testes de token, estados e service.
+- Token criptográfico URL-safe com 32 bytes e hash SHA-256 hexadecimal.
+- Validade de sete dias calculada no domínio.
+- Estados de convite centralizados: ativo, expirado, aceito e revogado.
+- Service restrito a `requireRole("treinador")`.
+- Criação normaliza e-mail, revoga convite ativo duplicado na mesma assessoria e insere somente o hash.
+- Link bruto `/convite/<token>` é retornado apenas na resposta de criação.
+- Revogação atualiza somente convites da assessoria do treinador autenticado.
+- Listagem não seleciona nem renderiza `token_hash`.
+- Painel `/treinador/convites` com formulário, link recém-gerado copiável, lista compacta, status e ação de revogar.
+- Testes de token, service, actions, página e componentes.
+
+Evidência de 24/08/2026:
+
+- suíte completa: 59/59 em 18 arquivos;
+- `npm run typecheck` aprovado;
+- `npm run lint` aprovado sem warnings;
+- `npm run build` aprovado, incluindo a rota `/treinador/convites`.
 
 ### Task 8 — Cadastro exclusivo do atleta — não iniciada
 
@@ -230,10 +241,9 @@ Observações restantes:
 
 ## 8. Próximos passos imediatos
 
-1. Implementar Task 7 em TDD: convites do treinador.
-2. Implementar Task 8 em TDD: cadastro exclusivo do atleta por convite.
-3. Executar Task 9 e QA real.
-4. Abrir Pull Request para `main`.
+1. Implementar Task 8 em TDD: cadastro exclusivo do atleta por convite.
+2. Executar Task 9 e QA real.
+3. Abrir Pull Request para `main`.
 
 Comandos principais:
 
