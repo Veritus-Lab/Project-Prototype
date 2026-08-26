@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { listTrainerAthletes } from "@/lib/services/athlete.service";
@@ -34,7 +36,15 @@ export default async function TrainerAthletesPage() {
                       Entrada em {athlete.criadoEm}
                     </p>
                   </div>
-                  <span className="athlete-status">{athlete.vinculo}</span>
+                  <div className="athlete-row-actions">
+                    <span className="athlete-status">{athlete.vinculo}</span>
+                    <Link
+                      className="dashboard-link"
+                      href={`/treinador/atletas/${athlete.id}`}
+                    >
+                      Ver detalhes
+                    </Link>
+                  </div>
                 </article>
               ))}
             </div>

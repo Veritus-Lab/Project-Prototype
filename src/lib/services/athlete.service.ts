@@ -9,6 +9,18 @@ export interface TrainerAthleteSummary {
   criadoEm: string;
 }
 
+export interface TrainerAthleteTraining {
+  id: string;
+  titulo: string;
+  quando: string;
+  detalhe: string;
+  status: string;
+}
+
+export interface TrainerAthleteDetail extends TrainerAthleteSummary {
+  treinosRecentes: TrainerAthleteTraining[];
+}
+
 export type AthleteResult<T> =
   | { data: T; error?: never }
   | { data?: never; error: string };
@@ -23,6 +35,33 @@ type AthleteRow = Pick<
     | null;
 };
 
+type AthleteAssignmentRow = Pick<
+  Database["public"]["Tables"]["treinos_atletas"]["Row"],
+  "id" | "status" | "atribuido_em"
+> & {
+  treinos:
+    | Pick<
+        Database["public"]["Tables"]["treinos"]["Row"],
+        "titulo" | "descricao" | "origem"
+      >
+    | Pick<
+        Database["public"]["Tables"]["treinos"]["Row"],
+        "titulo" | "descricao" | "origem"
+      >[]
+    | null;
+};
+
+type AthleteDetailRow = AthleteRow & {
+  treinos_atletas: AthleteAssignmentRow[] | null;
+};
+
+const assignmentStatusLabels: Record<AthleteAssignmentRow["status"], string> = {
+  atribuido: "Atribuído",
+  cancelado: "Cancelado",
+  concluido: "Concluído",
+  em_andamento: "Em andamento",
+};
+
 function formatDate(value: string) {
   const date = new Date(value);
 
@@ -33,8 +72,35 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(date);
 }
 
+function formatDateLabel(prefix: string, value: string) {
+  const formattedDate = formatDate(value);
+
+  return formattedDate ? `${prefix} ${formattedDate}` : prefix;
+}
+
 function normalizeProfile(row: AthleteRow) {
   return Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+}
+
+function normalizeTraining(row: AthleteAssignmentRow) {
+  return Array.isArray(row.treinos) ? row.treinos[0] : row.treinos;
+}
+
+function summarizeAthlete(
+  row: AthleteRow,
+  user: SessionUser,
+): TrainerAthleteSummary {
+  const profile = normalizeProfile(row);
+
+  return {
+    id: row.id,
+    nome: profile?.nome ?? "Atleta sem nome",
+    vinculo:
+      row.treinador_id === user.id
+        ? "Vinculado a você"
+        : "Sem treinador definido",
+    criadoEm: formatDate(row.created_at || profile?.created_at || ""),
+  };
 }
 
 export async function listTrainerAthletes(
@@ -55,18 +121,52 @@ export async function listTrainerAthletes(
   }
 
   return {
-    data: (data as AthleteRow[]).map((row) => {
-      const profile = normalizeProfile(row);
+    data: (data as AthleteRow[]).map((row) => summarizeAthlete(row, user)),
+  };
+}
 
-      return {
-        id: row.id,
-        nome: profile?.nome ?? "Atleta sem nome",
-        vinculo:
-          row.treinador_id === user.id
-            ? "Vinculado a você"
-            : "Sem treinador definido",
-        criadoEm: formatDate(row.created_at || profile?.created_at || ""),
-      };
-    }),
+export async function getTrainerAthleteDetail(
+  user: SessionUser,
+  athleteId: string,
+): Promise<AthleteResult<TrainerAthleteDetail>> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("atletas")
+    .select(
+      "id, treinador_id, created_at, profiles!atletas_profile_fkey(nome, created_at), treinos_atletas(id, status, atribuido_em, treinos(titulo, descricao, origem))",
+    )
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("treinador_id", user.id)
+    .eq("id", athleteId)
+    .order("atribuido_em", {
+      ascending: false,
+      foreignTable: "treinos_atletas",
+    })
+    .limit(3, { foreignTable: "treinos_atletas" })
+    .maybeSingle();
+
+  if (error || !data) {
+    return { error: "Atleta não encontrado." };
+  }
+
+  const row = data as AthleteDetailRow;
+
+  return {
+    data: {
+      ...summarizeAthlete(row, user),
+      treinosRecentes: (row.treinos_atletas ?? []).map((assignment) => {
+        const training = normalizeTraining(assignment);
+
+        return {
+          id: assignment.id,
+          titulo: training?.titulo ?? "Treino sem título",
+          quando: formatDateLabel("Atribuído em", assignment.atribuido_em),
+          detalhe:
+            training?.descricao?.trim() ||
+            assignmentStatusLabels[assignment.status],
+          status: assignmentStatusLabels[assignment.status],
+        };
+      }),
+    },
   };
 }

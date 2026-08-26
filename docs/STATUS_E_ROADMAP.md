@@ -296,6 +296,7 @@ Roadmap detalhado: `docs/ROADMAP_ETAPA_2.md`. Plano executor task por task: `doc
 - Task 10 concluída em desenvolvimento: dashboards de treinador e atleta passaram a ler dados reais do Supabase via `src/lib/services/dashboard.service.ts`, removendo `src/lib/demo/dashboard.ts`.
 - Task 11 concluída em desenvolvimento: `/treinador/atletas` lista atletas reais do treinador autenticado via `src/lib/services/athlete.service.ts`.
 - Task 12 concluída em planejamento técnico: `docs/ETAPA_2_FUNDACAO_SEGURA.md` define ERD, RLS, dados sensíveis, sequência de migrations e plano pgTAP antes de novas tabelas.
+- Task 13 concluída em desenvolvimento: `/treinador/atletas/[id]` mostra detalhe tenant-safe do atleta e treinos recentes via `getTrainerAthleteDetail`.
 - CRUD de atletas e avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;

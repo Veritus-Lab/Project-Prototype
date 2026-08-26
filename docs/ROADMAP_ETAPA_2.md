@@ -128,6 +128,8 @@ Critérios:
 
 Objetivo: transformar a lista em uma visão útil do atleta.
 
+Status: concluída em desenvolvimento com rota `/treinador/atletas/[id]`, service `getTrainerAthleteDetail` e evidência TDD em `docs/testing/task-13-athlete-detail.tdd.md`.
+
 Entregas:
 
 - Rota `/treinador/atletas/[id]`.

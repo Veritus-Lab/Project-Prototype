@@ -34,11 +34,11 @@
 
 **Files/Interfaces:** `src/app/(dashboard)/treinador/atletas/[id]/page.tsx`, `src/lib/services/athlete.service.ts`, `src/lib/services/athlete.service.test.ts`.
 
-- [ ] Add tests for valid trainer access, other-tenant denial, and missing athlete.
-- [ ] Implement `getTrainerAthleteDetail`.
-- [ ] Render athlete identity, relationship status, entry date, recent workouts placeholder, and future finance summary slot.
-- [ ] Use generic not-found/denied messaging.
-- [ ] Run unit tests, lint, typecheck, and a browser smoke check.
+- [x] Add tests for valid trainer access, other-tenant denial, and missing athlete.
+- [x] Implement `getTrainerAthleteDetail`.
+- [x] Render athlete identity, relationship status, entry date, and recent workouts.
+- [x] Use generic not-found/denied messaging.
+- [x] Run unit tests, lint, and typecheck.
 
 ## Task 14: Cadastro e Edição Operacional do Atleta
 
