@@ -44,11 +44,11 @@
 
 **Files/Interfaces:** athlete operational profile migration, `src/lib/actions/athlete.actions.ts`, athlete detail/edit UI.
 
-- [ ] Add minimal operational fields: phone, internal notes, goal, level, optional birth date, optional emergency contact.
-- [ ] Keep operational data separate from Auth and base `profiles`.
-- [ ] Add Zod schemas with length, format, and optionality rules.
-- [ ] Restrict notes to trainer-side reads.
-- [ ] Test authorization, validation, and tenant isolation.
+- [x] Add minimal operational fields: phone, internal notes, goal, level, optional birth date, optional emergency contact.
+- [x] Keep operational data separate from Auth and base `profiles`.
+- [x] Add Zod schemas with length, format, and optionality rules.
+- [x] Restrict notes to trainer-side reads.
+- [x] Test authorization, validation, and tenant isolation.
 
 ## Task 15: Biblioteca de Exercícios
 

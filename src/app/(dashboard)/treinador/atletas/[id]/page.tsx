@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AthleteOperationalForm } from "@/components/dashboard/athlete-operational-form";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerAthleteDetail } from "@/lib/services/athlete.service";
@@ -53,6 +54,14 @@ export default async function TrainerAthleteDetailPage({
               <dd>{athlete.id}</dd>
             </div>
           </dl>
+        </Card>
+
+        <Card elevated>
+          <h2>Dados operacionais</h2>
+          <AthleteOperationalForm
+            athleteId={athlete.id}
+            profile={athlete.perfilOperacional}
+          />
         </Card>
 
         <Card elevated>

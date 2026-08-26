@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import type { AthleteOperationalProfileInput } from "@/lib/validators/athlete-operational";
 import type { Database } from "@/types/database";
 
 export interface TrainerAthleteSummary {
@@ -17,7 +18,19 @@ export interface TrainerAthleteTraining {
   status: string;
 }
 
+export interface TrainerAthleteOperationalProfile {
+  telefone: string | null;
+  observacoesInternas: string | null;
+  objetivo: string | null;
+  nivel: string | null;
+  dataNascimento: string | null;
+  contatoEmergenciaNome: string | null;
+  contatoEmergenciaTelefone: string | null;
+  atualizadoEm: string;
+}
+
 export interface TrainerAthleteDetail extends TrainerAthleteSummary {
+  perfilOperacional: TrainerAthleteOperationalProfile | null;
   treinosRecentes: TrainerAthleteTraining[];
 }
 
@@ -54,6 +67,18 @@ type AthleteAssignmentRow = Pick<
 type AthleteDetailRow = AthleteRow & {
   treinos_atletas: AthleteAssignmentRow[] | null;
 };
+
+type AthleteOperationalRow = Pick<
+  Database["public"]["Tables"]["atletas_operacionais"]["Row"],
+  | "telefone"
+  | "observacoes_internas"
+  | "objetivo"
+  | "nivel"
+  | "data_nascimento"
+  | "contato_emergencia_nome"
+  | "contato_emergencia_telefone"
+  | "updated_at"
+>;
 
 const assignmentStatusLabels: Record<AthleteAssignmentRow["status"], string> = {
   atribuido: "Atribuído",
@@ -101,6 +126,42 @@ function summarizeAthlete(
         : "Sem treinador definido",
     criadoEm: formatDate(row.created_at || profile?.created_at || ""),
   };
+}
+
+function mapOperationalProfile(
+  row: AthleteOperationalRow,
+): TrainerAthleteOperationalProfile {
+  return {
+    telefone: row.telefone,
+    observacoesInternas: row.observacoes_internas,
+    objetivo: row.objetivo,
+    nivel: row.nivel,
+    dataNascimento: row.data_nascimento,
+    contatoEmergenciaNome: row.contato_emergencia_nome,
+    contatoEmergenciaTelefone: row.contato_emergencia_telefone,
+    atualizadoEm: formatDate(row.updated_at),
+  };
+}
+
+async function getTrainerOperationalProfile(
+  user: SessionUser,
+  athleteId: string,
+) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("atletas_operacionais")
+    .select(
+      "telefone, observacoes_internas, objetivo, nivel, data_nascimento, contato_emergencia_nome, contato_emergencia_telefone, updated_at",
+    )
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("atleta_id", athleteId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapOperationalProfile(data as AthleteOperationalRow);
 }
 
 export async function listTrainerAthletes(
@@ -154,6 +215,7 @@ export async function getTrainerAthleteDetail(
   return {
     data: {
       ...summarizeAthlete(row, user),
+      perfilOperacional: await getTrainerOperationalProfile(user, athleteId),
       treinosRecentes: (row.treinos_atletas ?? []).map((assignment) => {
         const training = normalizeTraining(assignment);
 
@@ -169,4 +231,50 @@ export async function getTrainerAthleteDetail(
       }),
     },
   };
+}
+
+export async function updateTrainerAthleteOperationalProfile(
+  user: SessionUser,
+  athleteId: string,
+  input: AthleteOperationalProfileInput,
+): Promise<AthleteResult<TrainerAthleteOperationalProfile>> {
+  const supabase = await createServerClient();
+  const { data: athlete, error: athleteError } = await supabase
+    .from("atletas")
+    .select("id")
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("treinador_id", user.id)
+    .eq("id", athleteId)
+    .maybeSingle();
+
+  if (athleteError || !athlete) {
+    return { error: "Atleta não encontrado." };
+  }
+
+  const { data, error } = await supabase
+    .from("atletas_operacionais")
+    .upsert(
+      {
+        assessoria_id: user.assessoriaId,
+        atleta_id: athleteId,
+        telefone: input.telefone,
+        observacoes_internas: input.observacoesInternas,
+        objetivo: input.objetivo,
+        nivel: input.nivel,
+        data_nascimento: input.dataNascimento,
+        contato_emergencia_nome: input.contatoEmergenciaNome,
+        contato_emergencia_telefone: input.contatoEmergenciaTelefone,
+      },
+      { onConflict: "atleta_id" },
+    )
+    .select(
+      "telefone, observacoes_internas, objetivo, nivel, data_nascimento, contato_emergencia_nome, contato_emergencia_telefone, updated_at",
+    )
+    .single();
+
+  if (error || !data) {
+    return { error: "Não foi possível atualizar os dados operacionais agora." };
+  }
+
+  return { data: mapOperationalProfile(data as AthleteOperationalRow) };
 }

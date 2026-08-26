@@ -685,6 +685,32 @@ input {
   overflow-wrap: anywhere;
 }
 
+.athlete-operational-form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.athlete-operational-form .button,
+.athlete-operational-form .form-error,
+.athlete-operational-form .form-success,
+.athlete-operational-notes {
+  grid-column: 1 / -1;
+}
+
+.athlete-operational-form textarea.input {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.form-success {
+  color: var(--color-brand);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
   .dashboard {
     grid-template-columns: 1fr;
@@ -728,6 +754,10 @@ input {
   }
 
   .athlete-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .athlete-operational-form {
     grid-template-columns: 1fr;
   }
 }

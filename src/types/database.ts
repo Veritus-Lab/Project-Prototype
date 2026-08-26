@@ -152,6 +152,56 @@ export type Database = {
           },
         ]
       }
+      atletas_operacionais: {
+        Row: {
+          atleta_id: string
+          assessoria_id: string
+          telefone: string | null
+          observacoes_internas: string | null
+          objetivo: string | null
+          nivel: 'iniciante' | 'intermediario' | 'avancado' | null
+          data_nascimento: string | null
+          contato_emergencia_nome: string | null
+          contato_emergencia_telefone: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          atleta_id: string
+          assessoria_id: string
+          telefone?: string | null
+          observacoes_internas?: string | null
+          objetivo?: string | null
+          nivel?: 'iniciante' | 'intermediario' | 'avancado' | null
+          data_nascimento?: string | null
+          contato_emergencia_nome?: string | null
+          contato_emergencia_telefone?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          atleta_id?: string
+          assessoria_id?: string
+          telefone?: string | null
+          observacoes_internas?: string | null
+          objetivo?: string | null
+          nivel?: 'iniciante' | 'intermediario' | 'avancado' | null
+          data_nascimento?: string | null
+          contato_emergencia_nome?: string | null
+          contato_emergencia_telefone?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'atletas_operacionais_atleta_fkey'
+            columns: ['assessoria_id', 'atleta_id']
+            isOneToOne: true
+            referencedRelation: 'atletas'
+            referencedColumns: ['assessoria_id', 'id']
+          },
+        ]
+      }
       convites_atletas: {
         Row: {
           id: string

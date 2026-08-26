@@ -1,6 +1,6 @@
 # FLERNK — Status, continuidade e roadmap
 
-> Atualizado em 25 de agosto de 2026. Este documento é a fonte canônica para o estado atual do projeto, o trabalho concluído, as pendências e os próximos passos. Valide informações operacionais com Git, testes e Supabase antes de alterar ambientes compartilhados.
+> Atualizado em 26 de agosto de 2026. Este documento é a fonte canônica para o estado atual do projeto, o trabalho concluído, as pendências e os próximos passos. Valide informações operacionais com Git, testes e Supabase antes de alterar ambientes compartilhados.
 
 ## 1. Resumo executivo
 
@@ -297,7 +297,8 @@ Roadmap detalhado: `docs/ROADMAP_ETAPA_2.md`. Plano executor task por task: `doc
 - Task 11 concluída em desenvolvimento: `/treinador/atletas` lista atletas reais do treinador autenticado via `src/lib/services/athlete.service.ts`.
 - Task 12 concluída em planejamento técnico: `docs/ETAPA_2_FUNDACAO_SEGURA.md` define ERD, RLS, dados sensíveis, sequência de migrations e plano pgTAP antes de novas tabelas.
 - Task 13 concluída em desenvolvimento: `/treinador/atletas/[id]` mostra detalhe tenant-safe do atleta e treinos recentes via `getTrainerAthleteDetail`.
-- CRUD de atletas e avaliações;
+- Task 14 concluída em desenvolvimento: `/treinador/atletas/[id]` ganhou edição operacional de telefone, objetivo, nível, nascimento opcional, contato de emergência e observações internas em tabela separada `atletas_operacionais`, com Server Action validada e upsert tenant-safe.
+- CRUD de avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;
 - registro de execução e percepção de esforço;

@@ -147,6 +147,8 @@ Segurança:
 
 Objetivo: permitir que o treinador complemente dados operacionais do atleta sem mexer no Auth indevidamente.
 
+Status: concluída em desenvolvimento com tabela `atletas_operacionais`, formulário no detalhe do atleta, Server Action validada e evidência TDD em `docs/testing/task-14-athlete-operational-profile.tdd.md`.
+
 Entregas:
 
 - Campos operacionais: telefone, observações internas, objetivo, nível, data de nascimento opcional, contato de emergência opcional.
@@ -158,6 +160,7 @@ Segurança/LGPD:
 - Campos opcionais e mínimos.
 - Observações internas visíveis só ao treinador.
 - Sem dados médicos detalhados nesta fase.
+- Mutation confirma `assessoria_id`, `treinador_id` e atleta antes do upsert.
 
 ### Task 15 — Biblioteca de exercícios
 
