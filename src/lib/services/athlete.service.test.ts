@@ -8,7 +8,10 @@ vi.mock("@/lib/supabase/server", () => ({
   createServerClient: mocks.createServerClient,
 }));
 
-import { listTrainerAthletes } from "./athlete.service";
+import {
+  getTrainerAthleteDetail,
+  listTrainerAthletes,
+} from "./athlete.service";
 import type { SessionUser } from "@/lib/auth/session";
 
 const trainerUser = {
@@ -117,6 +120,100 @@ describe("athlete service", () => {
 
     await expect(listTrainerAthletes(trainerUser)).resolves.toEqual({
       error: "Não foi possível carregar os atletas agora.",
+    });
+  });
+
+  it("loads a trainer athlete detail scoped by assessment, trainer and athlete id", async () => {
+    const maybeSingle = vi.fn().mockResolvedValue({
+      data: {
+        id: "athlete-1",
+        treinador_id: "trainer-1",
+        created_at: "2026-08-25T10:00:00.000Z",
+        profiles: {
+          nome: "Bia Corredora",
+          created_at: "2026-08-24T10:00:00.000Z",
+        },
+        treinos_atletas: [
+          {
+            id: "assignment-1",
+            status: "atribuido",
+            atribuido_em: "2026-08-26T10:00:00.000Z",
+            treinos: {
+              titulo: "Longão leve",
+              descricao: "Zona 2 com final confortável",
+              origem: "manual",
+            },
+          },
+        ],
+      },
+      error: null,
+    });
+    const limit = vi.fn().mockReturnValue({ maybeSingle });
+    const order = vi.fn().mockReturnValue({ limit });
+    const athleteEq = vi.fn().mockReturnValue({ order });
+    const trainerEq = vi.fn().mockReturnValue({ eq: athleteEq });
+    const assessoriaEq = vi.fn().mockReturnValue({ eq: trainerEq });
+    const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+    mocks.createServerClient.mockResolvedValue({
+      from: vi.fn(() => ({ select })),
+    });
+
+    await expect(
+      getTrainerAthleteDetail(trainerUser, "athlete-1"),
+    ).resolves.toEqual({
+      data: {
+        id: "athlete-1",
+        nome: "Bia Corredora",
+        vinculo: "Vinculado a você",
+        criadoEm: "25/08/2026",
+        treinosRecentes: [
+          {
+            id: "assignment-1",
+            titulo: "Longão leve",
+            quando: "Atribuído em 26/08/2026",
+            detalhe: "Zona 2 com final confortável",
+            status: "Atribuído",
+          },
+        ],
+      },
+    });
+
+    expect(select).toHaveBeenCalledWith(
+      "id, treinador_id, created_at, profiles!atletas_profile_fkey(nome, created_at), treinos_atletas(id, status, atribuido_em, treinos(titulo, descricao, origem))",
+    );
+    expect(assessoriaEq).toHaveBeenCalledWith("assessoria_id", "assessoria-1");
+    expect(trainerEq).toHaveBeenCalledWith("treinador_id", "trainer-1");
+    expect(athleteEq).toHaveBeenCalledWith("id", "athlete-1");
+    expect(order).toHaveBeenCalledWith("atribuido_em", {
+      ascending: false,
+      foreignTable: "treinos_atletas",
+    });
+    expect(limit).toHaveBeenCalledWith(3, {
+      foreignTable: "treinos_atletas",
+    });
+  });
+
+  it("returns the same generic error when athlete detail is missing or denied", async () => {
+    const maybeSingle = vi.fn().mockResolvedValue({
+      data: null,
+      error: null,
+    });
+    const limit = vi.fn().mockReturnValue({ maybeSingle });
+    const order = vi.fn().mockReturnValue({ limit });
+    const athleteEq = vi.fn().mockReturnValue({ order });
+    const trainerEq = vi.fn().mockReturnValue({ eq: athleteEq });
+    const assessoriaEq = vi.fn().mockReturnValue({ eq: trainerEq });
+    const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+    mocks.createServerClient.mockResolvedValue({
+      from: vi.fn(() => ({ select })),
+    });
+
+    await expect(
+      getTrainerAthleteDetail(trainerUser, "athlete-from-another-tenant"),
+    ).resolves.toEqual({
+      error: "Atleta não encontrado.",
     });
   });
 });
