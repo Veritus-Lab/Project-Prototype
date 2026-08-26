@@ -298,6 +298,7 @@ Roadmap detalhado: `docs/ROADMAP_ETAPA_2.md`. Plano executor task por task: `doc
 - Task 12 concluída em planejamento técnico: `docs/ETAPA_2_FUNDACAO_SEGURA.md` define ERD, RLS, dados sensíveis, sequência de migrations e plano pgTAP antes de novas tabelas.
 - Task 13 concluída em desenvolvimento: `/treinador/atletas/[id]` mostra detalhe tenant-safe do atleta e treinos recentes via `getTrainerAthleteDetail`.
 - Task 14 concluída em desenvolvimento: `/treinador/atletas/[id]` ganhou edição operacional de telefone, objetivo, nível, nascimento opcional, contato de emergência e observações internas em tabela separada `atletas_operacionais`, com Server Action validada e upsert tenant-safe.
+- Task 15 concluída em desenvolvimento: catálogo global `exercicios_catalogo` com 15 exercícios de apoio à corrida, RLS somente leitura para usuários autenticados, sem grants de escrita para clientes e service `listExerciseCatalog`.
 - CRUD de avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;

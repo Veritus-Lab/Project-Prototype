@@ -54,11 +54,11 @@
 
 **Files/Interfaces:** exercise migration/seed, `src/lib/services/exercise.service.ts`, trainer workout UI selectors.
 
-- [ ] Create read-only global catalog for running support exercises.
-- [ ] Seed initial categories: força, mobilidade, core, pliometria, técnica.
-- [ ] Include descriptions, safe generic instructions, warning text, and level.
-- [ ] Prevent user edits to global catalog.
-- [ ] Test read access and blocked writes for normal users.
+- [x] Create read-only global catalog for running support exercises.
+- [x] Seed initial categories: força, mobilidade, core, pliometria, técnica.
+- [x] Include descriptions, safe generic instructions, warning text, and level.
+- [x] Prevent user edits to global catalog.
+- [x] Test read access and blocked writes for normal users.
 
 ## Task 16: Biblioteca de Tipos e Modelos de Treino
 

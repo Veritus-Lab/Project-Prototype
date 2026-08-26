@@ -202,6 +202,48 @@ export type Database = {
           },
         ]
       }
+      exercicios_catalogo: {
+        Row: {
+          id: string
+          nome: string
+          categoria: 'forca' | 'mobilidade' | 'core' | 'pliometria' | 'tecnica'
+          nivel: 'iniciante' | 'intermediario' | 'avancado'
+          descricao_curta: string
+          instrucoes: string
+          alerta: string
+          ativo: boolean
+          ordem: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          nome: string
+          categoria: 'forca' | 'mobilidade' | 'core' | 'pliometria' | 'tecnica'
+          nivel: 'iniciante' | 'intermediario' | 'avancado'
+          descricao_curta: string
+          instrucoes: string
+          alerta: string
+          ativo?: boolean
+          ordem: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          nome?: string
+          categoria?: 'forca' | 'mobilidade' | 'core' | 'pliometria' | 'tecnica'
+          nivel?: 'iniciante' | 'intermediario' | 'avancado'
+          descricao_curta?: string
+          instrucoes?: string
+          alerta?: string
+          ativo?: boolean
+          ordem?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       convites_atletas: {
         Row: {
           id: string

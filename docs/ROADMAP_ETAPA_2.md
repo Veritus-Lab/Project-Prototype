@@ -166,9 +166,11 @@ Segurança/LGPD:
 
 Objetivo: criar catálogo inicial de exercícios de força, mobilidade e técnica para corrida.
 
+Status: concluída em desenvolvimento com tabela global `exercicios_catalogo`, service `listExerciseCatalog`, seed inicial e evidência TDD em `docs/testing/task-15-exercise-catalog.tdd.md`.
+
 Entregas:
 
-- Tabela `exercicios`.
+- Tabela `exercicios_catalogo` conforme fundação segura da Etapa 2.
 - Categorias: força, mobilidade, core, pliometria, técnica.
 - Campos: nome, categoria, descrição curta, instruções, contraindicação/alerta genérico, nível.
 - Seed inicial com a biblioteca deste roadmap.
