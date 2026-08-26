@@ -52,4 +52,19 @@ Tests       5 passed (5)
 
 ## Known Gaps
 
-No browser E2E or live pgTAP run was executed in this checkpoint. The migration is designed for the remote Supabase project, but local Supabase/Docker availability should be confirmed before adding database-executed pgTAP coverage.
+No browser E2E or live pgTAP run was executed in this checkpoint. Local Supabase/Docker availability should be confirmed before adding database-executed pgTAP coverage.
+
+## Remote Supabase Verification
+
+Applied to project `hrmyqrekasuqhiqmqske` on 26/08/2026 after the Supabase CLI pooler connection timed out, using the Supabase MCP connection and preserving migration history version `20260826154742`.
+
+Remote checks:
+
+```text
+supabase_migrations.schema_migrations includes 20260826154742 / exercise_catalog
+public.exercicios_catalogo contains 15 rows, all active
+RLS enabled: true
+RLS forced: true
+authenticated grants: SELECT only
+policies: exercicios_catalogo_select_authenticated, SELECT, roles {authenticated}, using ativo
+```
