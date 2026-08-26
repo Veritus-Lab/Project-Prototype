@@ -32,6 +32,16 @@ describe("TrainerAthleteDetailPage", () => {
         nome: "Bia Corredora",
         vinculo: "Vinculado a você",
         criadoEm: "25/08/2026",
+        perfilOperacional: {
+          telefone: "+55 11 99999-0000",
+          observacoesInternas: "Prefere treinos pela manhã.",
+          objetivo: "Completar 10 km",
+          nivel: "iniciante",
+          dataNascimento: "1990-02-03",
+          contatoEmergenciaNome: "Maria",
+          contatoEmergenciaTelefone: "+55 11 98888-0000",
+          atualizadoEm: "26/08/2026",
+        },
         treinosRecentes: [
           {
             id: "assignment-1",
@@ -59,6 +69,13 @@ describe("TrainerAthleteDetailPage", () => {
     expect(screen.getByText("Entrada em 25/08/2026")).toBeInTheDocument();
     expect(screen.getByText("Longão leve")).toBeInTheDocument();
     expect(screen.getByText("Zona 2 com final confortável")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Dados operacionais" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Telefone")).toHaveValue("+55 11 99999-0000");
+    expect(screen.getByLabelText("Objetivo")).toHaveValue("Completar 10 km");
+    expect(screen.getByLabelText("Nível")).toHaveValue("iniciante");
+    expect(screen.getByLabelText("Observações internas")).toHaveValue(
+      "Prefere treinos pela manhã.",
+    );
   });
 
   it("renders a generic not found state for missing or denied athlete", async () => {

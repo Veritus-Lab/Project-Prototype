@@ -11,6 +11,7 @@ vi.mock("@/lib/supabase/server", () => ({
 import {
   getTrainerAthleteDetail,
   listTrainerAthletes,
+  updateTrainerAthleteOperationalProfile,
 } from "./athlete.service";
 import type { SessionUser } from "@/lib/auth/session";
 
@@ -155,8 +156,42 @@ describe("athlete service", () => {
     const assessoriaEq = vi.fn().mockReturnValue({ eq: trainerEq });
     const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
 
+    const operationalMaybeSingle = vi.fn().mockResolvedValue({
+      data: {
+        telefone: "+55 11 99999-0000",
+        observacoes_internas: "Prefere treinos pela manhã.",
+        objetivo: "Completar 10 km",
+        nivel: "iniciante",
+        data_nascimento: "1990-02-03",
+        contato_emergencia_nome: "Maria",
+        contato_emergencia_telefone: "+55 11 98888-0000",
+        updated_at: "2026-08-26T09:00:00.000Z",
+      },
+      error: null,
+    });
+    const operationalAthleteEq = vi.fn().mockReturnValue({
+      maybeSingle: operationalMaybeSingle,
+    });
+    const operationalAssessoriaEq = vi.fn().mockReturnValue({
+      eq: operationalAthleteEq,
+    });
+    const operationalSelect = vi.fn().mockReturnValue({
+      eq: operationalAssessoriaEq,
+    });
+    const from = vi.fn((table: string) => {
+      if (table === "atletas") {
+        return { select };
+      }
+
+      if (table === "atletas_operacionais") {
+        return { select: operationalSelect };
+      }
+
+      throw new Error(`unexpected table ${table}`);
+    });
+
     mocks.createServerClient.mockResolvedValue({
-      from: vi.fn(() => ({ select })),
+      from,
     });
 
     await expect(
@@ -167,6 +202,16 @@ describe("athlete service", () => {
         nome: "Bia Corredora",
         vinculo: "Vinculado a você",
         criadoEm: "25/08/2026",
+        perfilOperacional: {
+          telefone: "+55 11 99999-0000",
+          observacoesInternas: "Prefere treinos pela manhã.",
+          objetivo: "Completar 10 km",
+          nivel: "iniciante",
+          dataNascimento: "1990-02-03",
+          contatoEmergenciaNome: "Maria",
+          contatoEmergenciaTelefone: "+55 11 98888-0000",
+          atualizadoEm: "26/08/2026",
+        },
         treinosRecentes: [
           {
             id: "assignment-1",
@@ -192,6 +237,11 @@ describe("athlete service", () => {
     expect(limit).toHaveBeenCalledWith(3, {
       foreignTable: "treinos_atletas",
     });
+    expect(operationalAssessoriaEq).toHaveBeenCalledWith(
+      "assessoria_id",
+      "assessoria-1",
+    );
+    expect(operationalAthleteEq).toHaveBeenCalledWith("atleta_id", "athlete-1");
   });
 
   it("returns the same generic error when athlete detail is missing or denied", async () => {
@@ -215,5 +265,89 @@ describe("athlete service", () => {
     ).resolves.toEqual({
       error: "Atleta não encontrado.",
     });
+  });
+
+  it("upserts operational data only after confirming trainer access to the athlete", async () => {
+    const verifyMaybeSingle = vi.fn().mockResolvedValue({
+      data: { id: "athlete-1" },
+      error: null,
+    });
+    const verifyAthleteEq = vi.fn().mockReturnValue({ maybeSingle: verifyMaybeSingle });
+    const verifyTrainerEq = vi.fn().mockReturnValue({ eq: verifyAthleteEq });
+    const verifyAssessoriaEq = vi.fn().mockReturnValue({ eq: verifyTrainerEq });
+    const verifySelect = vi.fn().mockReturnValue({ eq: verifyAssessoriaEq });
+
+    const upsertSingle = vi.fn().mockResolvedValue({
+      data: {
+        telefone: "+55 11 99999-0000",
+        observacoes_internas: null,
+        objetivo: "Completar 10 km",
+        nivel: "iniciante",
+        data_nascimento: null,
+        contato_emergencia_nome: null,
+        contato_emergencia_telefone: null,
+        updated_at: "2026-08-26T09:00:00.000Z",
+      },
+      error: null,
+    });
+    const upsertSelectChain = vi.fn().mockReturnValue({ single: upsertSingle });
+    const upsert = vi.fn().mockReturnValue({ select: upsertSelectChain });
+    const from = vi.fn((table: string) => {
+      if (table === "atletas") {
+        return { select: verifySelect };
+      }
+
+      if (table === "atletas_operacionais") {
+        return { upsert };
+      }
+
+      throw new Error(`unexpected table ${table}`);
+    });
+
+    mocks.createServerClient.mockResolvedValue({ from });
+
+    await expect(
+      updateTrainerAthleteOperationalProfile(trainerUser, "athlete-1", {
+        telefone: "+55 11 99999-0000",
+        observacoesInternas: null,
+        objetivo: "Completar 10 km",
+        nivel: "iniciante",
+        dataNascimento: null,
+        contatoEmergenciaNome: null,
+        contatoEmergenciaTelefone: null,
+      }),
+    ).resolves.toEqual({
+      data: {
+        telefone: "+55 11 99999-0000",
+        observacoesInternas: null,
+        objetivo: "Completar 10 km",
+        nivel: "iniciante",
+        dataNascimento: null,
+        contatoEmergenciaNome: null,
+        contatoEmergenciaTelefone: null,
+        atualizadoEm: "26/08/2026",
+      },
+    });
+
+    expect(verifyAssessoriaEq).toHaveBeenCalledWith(
+      "assessoria_id",
+      "assessoria-1",
+    );
+    expect(verifyTrainerEq).toHaveBeenCalledWith("treinador_id", "trainer-1");
+    expect(verifyAthleteEq).toHaveBeenCalledWith("id", "athlete-1");
+    expect(upsert).toHaveBeenCalledWith(
+      {
+        assessoria_id: "assessoria-1",
+        atleta_id: "athlete-1",
+        telefone: "+55 11 99999-0000",
+        observacoes_internas: null,
+        objetivo: "Completar 10 km",
+        nivel: "iniciante",
+        data_nascimento: null,
+        contato_emergencia_nome: null,
+        contato_emergencia_telefone: null,
+      },
+      { onConflict: "atleta_id" },
+    );
   });
 });
