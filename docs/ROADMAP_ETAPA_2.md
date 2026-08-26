@@ -109,6 +109,8 @@ Observação: a plataforma deve tratar essa biblioteca como ferramenta do treina
 
 Objetivo: criar base documental e técnica para as próximas migrations sem quebrar o schema atual.
 
+Status: concluída em planejamento técnico em `docs/ETAPA_2_FUNDACAO_SEGURA.md`.
+
 Entregas:
 
 - Definir entidades novas: `exercicios`, `modelos_treino`, `blocos_treino`, `assinaturas_atletas`, `cobrancas`, `eventos_financeiros`, `preferencias_comunicacao`.

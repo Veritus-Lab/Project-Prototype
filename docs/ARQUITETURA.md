@@ -1,6 +1,6 @@
-# Arquitetura da Etapa 1
+# Arquitetura
 
-## Visão Geral
+## Visão Geral da Etapa 1
 
 A Etapa 1 entrega uma fatia vertical do FLERNK em Next.js App Router, TypeScript e Supabase. O runtime principal fica em `src/`; o prototipo anterior permanece em `legacy/` apenas como referencia historica.
 
@@ -58,3 +58,9 @@ Dashboards usam `src/lib/services/dashboard.service.ts` para ler dados reais do 
 ## Atletas
 
 `/treinador/atletas` usa `src/lib/services/athlete.service.ts` para listar atletas vinculados ao treinador autenticado. A consulta filtra por `assessoria_id` e `treinador_id`; RLS permanece como barreira de segurança principal.
+
+## Fundação da Etapa 2
+
+A Etapa 2 expande a operação da assessoria sem alterar a autoridade central de papel/tenant. O desenho alvo de entidades, RLS, classificação de dados, sequência de migrations e plano pgTAP está em `docs/ETAPA_2_FUNDACAO_SEGURA.md`.
+
+Antes de implementar detalhes de atleta, biblioteca de exercícios, modelos de treino, calendário, financeiro ou WhatsApp, a migration correspondente deve seguir esse documento e preservar o padrão atual: FK tenant-first, RLS forçada, grants mínimos e validação por services/server actions.

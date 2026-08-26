@@ -24,11 +24,11 @@
 
 **Files/Interfaces:** `docs/ARQUITETURA.md`, `docs/SEGURANCA.md`, `docs/ROADMAP_ETAPA_2.md`, future `supabase/migrations/*`.
 
-- [ ] Define final ERD for exercises, workout models, workout blocks, athlete subscriptions, charges, finance events, and communication preferences.
-- [ ] Define RLS policy matrix for trainer, athlete, and unauthenticated access.
-- [ ] Define data classification for finance, phone, notes, and messaging fields.
-- [ ] Draft migration sequence before applying it.
-- [ ] Add pgTAP coverage plan for cross-tenant denial, same-tenant success, and athlete self-access.
+- [x] Define final ERD for exercises, workout models, workout blocks, athlete subscriptions, charges, finance events, and communication preferences.
+- [x] Define RLS policy matrix for trainer, athlete, and unauthenticated access.
+- [x] Define data classification for finance, phone, notes, and messaging fields.
+- [x] Draft migration sequence before applying it.
+- [x] Add pgTAP coverage plan for cross-tenant denial, same-tenant success, and athlete self-access.
 
 ## Task 13: Detalhe do Atleta
 

@@ -33,6 +33,7 @@ Estado atual:
 | Segurança | `docs/SEGURANCA.md` | RLS, papéis, convites, segredos e operação segura. |
 | Operação | `docs/OPERACAO.md` | Comandos, diagnóstico e publicação. |
 | Roadmap Etapa 2 | `docs/ROADMAP_ETAPA_2.md` e `docs/superpowers/plans/2026-08-25-etapa-2-operacao-assessoria.md` | Tasks 10-24, segurança, treinos, financeiro e WhatsApp. |
+| Fundação Etapa 2 | `docs/ETAPA_2_FUNDACAO_SEGURA.md` | ERD, RLS, classificação de dados, sequência de migrations e pgTAP. |
 | Checklist | `docs/checklists/etapa-1-acceptance.md` | Evidência de aceite funcional, visual e técnica. |
 | Operação básica | `README.md` | Requisitos, instalação e comandos. |
 | Contrato do banco | `supabase/migrations/202608180001_initial_schema.sql` | Schema, funções, grants e policies. |
@@ -294,6 +295,7 @@ Roadmap detalhado: `docs/ROADMAP_ETAPA_2.md`. Plano executor task por task: `doc
 
 - Task 10 concluída em desenvolvimento: dashboards de treinador e atleta passaram a ler dados reais do Supabase via `src/lib/services/dashboard.service.ts`, removendo `src/lib/demo/dashboard.ts`.
 - Task 11 concluída em desenvolvimento: `/treinador/atletas` lista atletas reais do treinador autenticado via `src/lib/services/athlete.service.ts`.
+- Task 12 concluída em planejamento técnico: `docs/ETAPA_2_FUNDACAO_SEGURA.md` define ERD, RLS, dados sensíveis, sequência de migrations e plano pgTAP antes de novas tabelas.
 - CRUD de atletas e avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;

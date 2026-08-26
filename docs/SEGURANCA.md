@@ -1,4 +1,4 @@
-# Segurança da Etapa 1
+# Segurança
 
 ## Autoridade de Papel e Tenant
 
@@ -38,3 +38,16 @@ Arquivos `NEXT_PUBLIC_*` podem conter apenas URL publica do projeto e chave publ
 - Migration remota e forward-only; correcoes exigem nova migration.
 - Forms chamam Server Actions, que validam entrada e delegam a services.
 - Componentes React nao escrevem diretamente no Supabase.
+
+## Segurança da Etapa 2
+
+A fundação de segurança da Etapa 2 está em `docs/ETAPA_2_FUNDACAO_SEGURA.md`.
+
+Regras adicionais para as próximas tasks:
+
+- Dados financeiros, telefone, observações internas, RPE e histórico de mensagens são sensíveis.
+- Eventos financeiros devem ser append-only.
+- Atleta não deve acessar financeiro até decisão explícita de produto.
+- Observações internas do treinador nunca devem ser selecionáveis por atleta.
+- WhatsApp exige opt-in, opt-out respeitado, templates controlados, rate limit e credenciais somente em variáveis de ambiente.
+- Toda tabela nova deve ter RLS habilitada e forçada antes de receber grants.
