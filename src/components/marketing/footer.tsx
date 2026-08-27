@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <Brand compact />
+          <Brand />
           <p>
             Tecnologia e metodologia para atletas que buscam evolução
             constante e resultados reais.

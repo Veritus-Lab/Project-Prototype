@@ -93,7 +93,14 @@ input {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: var(--radius-sm);
-  object-fit: cover;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  background: var(--color-brand);
+  color: var(--color-ink);
+  font-size: 1.5rem;
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 .primary-nav {
