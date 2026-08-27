@@ -67,3 +67,20 @@ npm run build      PASS
 ## Known Gaps
 
 There is no UI or mutation in this task. The training creation flow, tenant-owned models, authorization and cross-tenant creation tests are intentionally scheduled for Task 17. No coverage script is configured in `package.json`; targeted tests cover the new validator, service, and migration contract.
+
+The targeted ESLint command did not return a diagnostic in this Windows workspace and was stopped after waiting; typecheck and production build passed. This runtime issue should be investigated before the delivery gate for Task 17.
+
+## Remote Supabase Verification
+
+Applied to project `hrmyqrekasuqhiqmqske` on 26/08/2026. The remote migration registry assigned version `20260827014240`, and the local migration filename was aligned to that version.
+
+Remote checks:
+
+```text
+supabase_migrations.schema_migrations includes 20260827014240 / training_type_catalog
+public.tipos_treino_catalogo contains 10 rows, all active
+RLS enabled: true
+RLS forced: true
+authenticated grants: SELECT only
+policy: tipos_treino_catalogo_select_authenticated, SELECT, roles {authenticated}, using ativo
+```
