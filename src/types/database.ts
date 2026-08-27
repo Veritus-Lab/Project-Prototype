@@ -244,6 +244,48 @@ export type Database = {
         }
         Relationships: []
       }
+      tipos_treino_catalogo: {
+        Row: {
+          id: string
+          codigo: string
+          nome: string
+          objetivo: string
+          descricao: string
+          estrutura_schema: Json
+          alerta: string
+          ativo: boolean
+          ordem: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          codigo: string
+          nome: string
+          objetivo: string
+          descricao: string
+          estrutura_schema: Json
+          alerta: string
+          ativo?: boolean
+          ordem: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          codigo?: string
+          nome?: string
+          objetivo?: string
+          descricao?: string
+          estrutura_schema?: Json
+          alerta?: string
+          ativo?: boolean
+          ordem?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       convites_atletas: {
         Row: {
           id: string

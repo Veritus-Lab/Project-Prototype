@@ -184,17 +184,20 @@ Segurança:
 
 Objetivo: permitir que o treinador crie treino a partir de tipos estruturados.
 
+Status: concluída em desenvolvimento com catálogo global `tipos_treino_catalogo`, schema Zod de blocos e service `listTrainingTypeCatalog`. A criação de modelos próprios e a UI ficam na Task 17 para manter autoria e isolamento por assessoria no mesmo fluxo.
+
 Entregas:
 
 - Tipos: fácil, regenerativo, longão, tempo/limiar, intervalado, subidas, fartlek, progressivo, ritmo de prova, técnica/strides.
-- Estrutura JSON validada por schema.
-- UI inicial de criação com blocos.
+- Estrutura JSON validada por schema server-side, com máximo de oito blocos e limites de texto e medidas.
+- Catálogo global somente leitura para usuários autenticados.
 
 Segurança:
 
 - Validação server-side da estrutura.
 - Limites de tamanho em textos/blocos.
 - Sem geração automática sem revisão humana.
+- Sem escrita de catálogo pelo cliente; modelos por treinador entram na Task 17.
 
 ### Task 17 — Criação manual de treinos
 

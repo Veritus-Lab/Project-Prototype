@@ -64,11 +64,11 @@
 
 **Files/Interfaces:** workout model migration, JSON schema, `src/lib/services/training-template.service.ts`.
 
-- [ ] Model the 10 initial running workout types from the roadmap.
-- [ ] Validate structured blocks server-side.
-- [ ] Add size limits for names, descriptions, instructions, and block arrays.
-- [ ] Keep model creation trainer-owned and tenant-scoped.
-- [ ] Test invalid structures, cross-tenant access, and successful creation.
+- [x] Model the 10 initial running workout types from the roadmap.
+- [x] Validate structured blocks server-side.
+- [x] Add size limits for names, descriptions, instructions, and block arrays.
+- [ ] Keep model creation trainer-owned and tenant-scoped (moved to Task 17, with real training creation).
+- [ ] Test invalid structures, cross-tenant access, and successful creation (Task 17; this task tests catalog isolation through read-only grants).
 
 ## Task 17: Criação Manual de Treinos
 

@@ -299,6 +299,7 @@ Roadmap detalhado: `docs/ROADMAP_ETAPA_2.md`. Plano executor task por task: `doc
 - Task 13 concluída em desenvolvimento: `/treinador/atletas/[id]` mostra detalhe tenant-safe do atleta e treinos recentes via `getTrainerAthleteDetail`.
 - Task 14 concluída em desenvolvimento: `/treinador/atletas/[id]` ganhou edição operacional de telefone, objetivo, nível, nascimento opcional, contato de emergência e observações internas em tabela separada `atletas_operacionais`, com Server Action validada e upsert tenant-safe.
 - Task 15 concluída em desenvolvimento: catálogo global `exercicios_catalogo` com 15 exercícios de apoio à corrida, RLS somente leitura para usuários autenticados, sem grants de escrita para clientes e service `listExerciseCatalog`.
+- Task 16 concluída em desenvolvimento: catálogo global `tipos_treino_catalogo` com 10 tipos de treino de corrida, RLS somente leitura, schema Zod com limites para blocos estruturados e service `listTrainingTypeCatalog`. Criação de modelos próprios e treinos reais permanece na Task 17.
 - CRUD de avaliações;
 - criação, biblioteca e atribuição de treinos;
 - calendário real de treinador e atleta;
