@@ -203,6 +203,8 @@ Segurança:
 
 Objetivo: treinador criar treinos reais.
 
+Status: concluída em desenvolvimento com criação manual por blocos, listagem em `/treinador/treinos`, validação server-side e migration que vincula opcionalmente o catálogo de tipos.
+
 Entregas:
 
 - Rota `/treinador/treinos/novo`.
