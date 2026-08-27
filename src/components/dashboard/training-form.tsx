@@ -1,0 +1,148 @@
+"use client";
+
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { createTrainingAction } from "@/lib/actions/training.actions";
+import {
+  initialTrainingActionState,
+  type TrainingActionState,
+} from "@/lib/actions/training.state";
+import type { TrainingTypeCatalogItem } from "@/lib/services/training-template.service";
+import type { TrainingBlockInput } from "@/lib/validators/training-template";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+const blockTypes: Array<{ value: TrainingBlockInput["tipo"]; label: string }> = [
+  { value: "aquecimento", label: "Aquecimento" },
+  { value: "principal", label: "Principal" },
+  { value: "recuperacao", label: "Recuperação" },
+  { value: "desaquecimento", label: "Desaquecimento" },
+  { value: "tecnica", label: "Técnica" },
+  { value: "forca", label: "Força" },
+];
+
+function newBlock(position: number): TrainingBlockInput {
+  return {
+    tipo: "principal",
+    titulo: `Bloco ${position}`,
+    duracaoMinutos: 10,
+  };
+}
+
+function FieldError({ errors }: { errors?: string[] }) {
+  return errors?.[0] ? <p className="field-error" role="alert">{errors[0]}</p> : null;
+}
+
+export function TrainingForm({
+  trainingTypes,
+  initialState = initialTrainingActionState,
+}: {
+  trainingTypes: TrainingTypeCatalogItem[];
+  initialState?: TrainingActionState;
+}) {
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(
+    createTrainingAction,
+    initialState,
+  );
+  const [blocks, setBlocks] = useState<TrainingBlockInput[]>([newBlock(1)]);
+  const [selectedTypeId, setSelectedTypeId] = useState("");
+  const selectedType = useMemo(
+    () => trainingTypes.find((type) => type.id === selectedTypeId) ?? null,
+    [selectedTypeId, trainingTypes],
+  );
+
+  useEffect(() => {
+    if (state.success) {
+      router.push("/treinador/treinos");
+    }
+  }, [router, state.success]);
+
+  function updateBlock(index: number, changes: Partial<TrainingBlockInput>) {
+    setBlocks((current) =>
+      current.map((block, blockIndex) =>
+        blockIndex === index ? { ...block, ...changes } : block,
+      ),
+    );
+  }
+
+  function updateOptionalNumber(
+    index: number,
+    field: "duracaoMinutos" | "distanciaMetros" | "repeticoes" | "recuperacaoSegundos" | "rpe",
+    value: string,
+  ) {
+    const numericValue = value === "" ? undefined : Number(value);
+    updateBlock(index, { [field]: numericValue });
+  }
+
+  return (
+    <form className="training-form" action={formAction} noValidate>
+      <div className="training-form-grid">
+        <div className="form-field">
+          <label htmlFor="titulo">Título</label>
+          <Input
+            id="titulo"
+            name="titulo"
+            maxLength={160}
+            required
+            aria-invalid={Boolean(state.fieldErrors?.titulo) || undefined}
+            aria-describedby={state.fieldErrors?.titulo ? "titulo-error" : undefined}
+          />
+          <div id="titulo-error"><FieldError errors={state.fieldErrors?.titulo} /></div>
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="tipoTreinoId">Tipo de treino</label>
+          <select
+            id="tipoTreinoId"
+            name="tipoTreinoId"
+            className="input"
+            value={selectedTypeId}
+            onChange={(event) => setSelectedTypeId(event.target.value)}
+            aria-describedby={selectedType ? "tipo-treino-hint" : undefined}
+          >
+            <option value="">Sem tipo definido</option>
+            {trainingTypes.map((type) => <option key={type.id} value={type.id}>{type.nome}</option>)}
+          </select>
+          {selectedType ? <p className="field-hint" id="tipo-treino-hint">{selectedType.objetivo}</p> : null}
+          <FieldError errors={state.fieldErrors?.tipoTreinoId} />
+        </div>
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="descricao">Descrição</label>
+        <textarea id="descricao" name="descricao" className="input" rows={3} maxLength={500} />
+        <FieldError errors={state.fieldErrors?.descricao} />
+      </div>
+
+      <input type="hidden" name="blocos" value={JSON.stringify(blocks)} />
+      <fieldset className="training-blocks" aria-describedby="blocks-hint">
+        <legend>Blocos do treino</legend>
+        <p className="field-hint" id="blocks-hint">Cada bloco precisa de duração, distância ou repetições.</p>
+        {blocks.map((block, index) => (
+          <section className="training-block" key={index} aria-label={`Bloco ${index + 1}`}>
+            <div className="training-block-heading">
+              <h3>Bloco {index + 1}</h3>
+              {blocks.length > 1 ? <Button type="button" variant="ghost" onClick={() => setBlocks((current) => current.filter((_, itemIndex) => itemIndex !== index))}>Remover</Button> : null}
+            </div>
+            <div className="training-block-grid">
+              <div className="form-field"><label htmlFor={`tipo-${index}`}>Fase</label><select id={`tipo-${index}`} className="input" value={block.tipo} onChange={(event) => updateBlock(index, { tipo: event.target.value as TrainingBlockInput["tipo"] })}>{blockTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+              <div className="form-field"><label htmlFor={`titulo-${index}`}>Título do bloco</label><Input id={`titulo-${index}`} value={block.titulo} maxLength={120} onChange={(event) => updateBlock(index, { titulo: event.target.value })} /></div>
+              <div className="form-field"><label htmlFor={`duracao-${index}`}>Duração (min)</label><Input id={`duracao-${index}`} type="number" min="1" max="600" value={block.duracaoMinutos ?? ""} onChange={(event) => updateOptionalNumber(index, "duracaoMinutos", event.target.value)} /></div>
+              <div className="form-field"><label htmlFor={`distancia-${index}`}>Distância (m)</label><Input id={`distancia-${index}`} type="number" min="1" max="100000" value={block.distanciaMetros ?? ""} onChange={(event) => updateOptionalNumber(index, "distanciaMetros", event.target.value)} /></div>
+              <div className="form-field"><label htmlFor={`repeticoes-${index}`}>Repetições</label><Input id={`repeticoes-${index}`} type="number" min="1" max="100" value={block.repeticoes ?? ""} onChange={(event) => updateOptionalNumber(index, "repeticoes", event.target.value)} /></div>
+              <div className="form-field"><label htmlFor={`recuperacao-${index}`}>Recuperação (s)</label><Input id={`recuperacao-${index}`} type="number" min="0" max="3600" value={block.recuperacaoSegundos ?? ""} onChange={(event) => updateOptionalNumber(index, "recuperacaoSegundos", event.target.value)} /></div>
+              <div className="form-field"><label htmlFor={`rpe-${index}`}>RPE</label><Input id={`rpe-${index}`} type="number" min="1" max="10" value={block.rpe ?? ""} onChange={(event) => updateOptionalNumber(index, "rpe", event.target.value)} /></div>
+              <div className="form-field training-block-notes"><label htmlFor={`instrucoes-${index}`}>Instruções</label><Input id={`instrucoes-${index}`} maxLength={1200} value={block.instrucoes ?? ""} onChange={(event) => updateBlock(index, { instrucoes: event.target.value || undefined })} /></div>
+            </div>
+          </section>
+        ))}
+        {blocks.length < 8 ? <Button type="button" variant="secondary" onClick={() => setBlocks((current) => [...current, newBlock(current.length + 1)])}>Adicionar bloco</Button> : null}
+      </fieldset>
+      <FieldError errors={state.fieldErrors?.blocos} />
+      {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}
+      <Button type="submit" disabled={isPending}>{isPending ? "Criando..." : "Criar treino"}</Button>
+    </form>
+  );
+}

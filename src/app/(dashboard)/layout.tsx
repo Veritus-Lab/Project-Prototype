@@ -15,7 +15,7 @@ const sidebarItems: Record<PapelUsuario, SidebarItem[]> = {
     { label: "Painel", href: "/treinador" },
     { label: "Convites", href: "/treinador/convites" },
     { label: "Atletas", href: "/treinador/atletas" },
-    { label: "Treinos" },
+    { label: "Treinos", href: "/treinador/treinos" },
     { label: "Calendário" },
     { label: "Mensagens" },
   ],

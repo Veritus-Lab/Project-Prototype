@@ -37,6 +37,14 @@ const input = {
   ],
 };
 
+function activeTrainingTypeQuery(data: unknown = { id: input.tipoTreinoId }) {
+  const maybeSingle = vi.fn().mockResolvedValue({ data, error: null });
+  const eq = vi.fn().mockReturnValue({ maybeSingle });
+  const select = vi.fn().mockReturnValue({ eq });
+
+  return { select };
+}
+
 describe("training service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -56,7 +64,12 @@ describe("training service", () => {
     });
     const select = vi.fn().mockReturnValue({ single });
     const insert = vi.fn().mockReturnValue({ select });
+    const trainingType = activeTrainingTypeQuery();
     const from = vi.fn((table: string) => {
+      if (table === "tipos_treino_catalogo") {
+        return trainingType;
+      }
+
       if (table === "treinos") {
         return { insert };
       }
@@ -94,8 +107,11 @@ describe("training service", () => {
     });
     const select = vi.fn().mockReturnValue({ single });
     const insert = vi.fn().mockReturnValue({ select });
+    const trainingType = activeTrainingTypeQuery(null);
     mocks.createServerClient.mockResolvedValue({
-      from: vi.fn(() => ({ insert })),
+      from: vi.fn((table: string) =>
+        table === "tipos_treino_catalogo" ? trainingType : { insert },
+      ),
     });
 
     await expect(createTraining(trainerUser, input)).resolves.toEqual({

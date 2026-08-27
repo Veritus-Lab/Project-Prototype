@@ -498,6 +498,61 @@ input {
   font-size: 0.85rem;
 }
 
+.page-heading-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.training-form,
+.training-blocks {
+  display: grid;
+  gap: 1rem;
+}
+
+.training-form {
+  max-width: 68rem;
+  margin: 1.5rem 0;
+}
+
+.training-form-grid,
+.training-block-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.training-blocks {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.training-blocks legend {
+  padding: 0 0.35rem;
+  font-weight: 800;
+}
+
+.training-block {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.training-block-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.training-block-heading h3 { margin: 0; font-size: 1rem; }
+.training-block-notes { grid-column: span 2; }
+
 .dashboard-empty-state {
   margin: 0;
   border: 1px solid var(--color-border);
@@ -756,6 +811,15 @@ input {
   .athlete-detail-grid {
     grid-template-columns: 1fr;
   }
+
+  .page-heading-actions,
+  .training-form-grid,
+  .training-block-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-heading-actions { align-items: flex-start; flex-direction: column; }
+  .training-block-notes { grid-column: auto; }
 
   .athlete-operational-form {
     grid-template-columns: 1fr;

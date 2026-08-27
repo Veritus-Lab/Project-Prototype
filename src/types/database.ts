@@ -350,6 +350,7 @@ export type Database = {
           treinador_id: string
           titulo: string
           descricao: string | null
+          tipo_treino_id: string | null
           origem: Database['public']['Enums']['origem_treino']
           estrutura: Json
           created_at: string
@@ -361,6 +362,7 @@ export type Database = {
           treinador_id: string
           titulo: string
           descricao?: string | null
+          tipo_treino_id?: string | null
           origem?: Database['public']['Enums']['origem_treino']
           estrutura?: Json
           created_at?: string
@@ -372,6 +374,7 @@ export type Database = {
           treinador_id?: string
           titulo?: string
           descricao?: string | null
+          tipo_treino_id?: string | null
           origem?: Database['public']['Enums']['origem_treino']
           estrutura?: Json
           created_at?: string
@@ -391,6 +394,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'treinadores'
             referencedColumns: ['assessoria_id', 'id']
+          },
+          {
+            foreignKeyName: 'treinos_tipo_treino_id_fkey'
+            columns: ['tipo_treino_id']
+            isOneToOne: false
+            referencedRelation: 'tipos_treino_catalogo'
+            referencedColumns: ['id']
           },
         ]
       }
