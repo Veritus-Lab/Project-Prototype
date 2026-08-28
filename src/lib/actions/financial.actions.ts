@@ -1,0 +1,8 @@
+"use server";
+import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/auth/session";
+import { createSubscription, markChargePaid } from "@/lib/services/financial.service";
+import { createSubscriptionSchema, markChargePaidSchema } from "@/lib/validators/financial";
+import type { TrainingActionState } from "./training.state";
+export async function createSubscriptionAction(_: TrainingActionState, formData: FormData): Promise<TrainingActionState> { const parsed = createSubscriptionSchema.safeParse({ athleteId: formData.get("athleteId"), amountCents: formData.get("amountCents"), periodicity: formData.get("periodicity"), dueDay: formData.get("dueDay"), paymentMethod: formData.get("paymentMethod") || undefined, status: formData.get("status"), startDate: formData.get("startDate") }); if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors }; const result = await createSubscription(await requireRole("treinador"), parsed.data); if ("error" in result) return { error: result.error }; revalidatePath("/treinador/financeiro"); revalidatePath("/treinador"); return { success: "Assinatura e primeira cobrança criadas." }; }
+export async function markChargePaidAction(_: TrainingActionState, formData: FormData): Promise<TrainingActionState> { const parsed = markChargePaidSchema.safeParse({ chargeId: formData.get("chargeId") }); if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors }; const result = await markChargePaid(await requireRole("treinador"), parsed.data.chargeId); if ("error" in result) return { error: result.error }; revalidatePath("/treinador/financeiro"); revalidatePath("/treinador"); return { success: "Pagamento registrado." }; }

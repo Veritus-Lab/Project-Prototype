@@ -533,6 +533,24 @@ export type Database = {
           },
         ]
       }
+      assinaturas_atletas: {
+        Row: { id: string; assessoria_id: string; atleta_id: string; valor_centavos: number; moeda: string; periodicidade: 'mensal' | 'trimestral' | 'semestral' | 'anual'; dia_vencimento: number; metodo_previsto: string | null; status: 'ativa' | 'suspensa' | 'isenta' | 'cancelada'; inicio_em: string; fim_em: string | null; created_at: string; updated_at: string }
+        Insert: { id?: string; assessoria_id: string; atleta_id: string; valor_centavos: number; moeda?: string; periodicidade: 'mensal' | 'trimestral' | 'semestral' | 'anual'; dia_vencimento: number; metodo_previsto?: string | null; status?: 'ativa' | 'suspensa' | 'isenta' | 'cancelada'; inicio_em: string; fim_em?: string | null; created_at?: string; updated_at?: string }
+        Update: { id?: string; assessoria_id?: string; atleta_id?: string; valor_centavos?: number; moeda?: string; periodicidade?: 'mensal' | 'trimestral' | 'semestral' | 'anual'; dia_vencimento?: number; metodo_previsto?: string | null; status?: 'ativa' | 'suspensa' | 'isenta' | 'cancelada'; inicio_em?: string; fim_em?: string | null; created_at?: string; updated_at?: string }
+        Relationships: []
+      }
+      cobrancas: {
+        Row: { id: string; assessoria_id: string; assinatura_id: string; atleta_id: string; valor_centavos: number; moeda: string; vencimento_em: string; status: 'aberta' | 'paga' | 'vencida' | 'cancelada' | 'isenta'; paga_em: string | null; created_at: string; updated_at: string }
+        Insert: { id?: string; assessoria_id: string; assinatura_id: string; atleta_id: string; valor_centavos: number; moeda?: string; vencimento_em: string; status?: 'aberta' | 'paga' | 'vencida' | 'cancelada' | 'isenta'; paga_em?: string | null; created_at?: string; updated_at?: string }
+        Update: { id?: string; assessoria_id?: string; assinatura_id?: string; atleta_id?: string; valor_centavos?: number; moeda?: string; vencimento_em?: string; status?: 'aberta' | 'paga' | 'vencida' | 'cancelada' | 'isenta'; paga_em?: string | null; created_at?: string; updated_at?: string }
+        Relationships: []
+      }
+      eventos_financeiros: {
+        Row: { id: string; assessoria_id: string; cobranca_id: string | null; assinatura_id: string | null; atleta_id: string; ator_id: string; tipo: string; detalhes: Json; created_at: string }
+        Insert: { id?: string; assessoria_id: string; cobranca_id?: string | null; assinatura_id?: string | null; atleta_id: string; ator_id: string; tipo: string; detalhes?: Json; created_at?: string }
+        Update: { id?: string; assessoria_id?: string; cobranca_id?: string | null; assinatura_id?: string | null; atleta_id?: string; ator_id?: string; tipo?: string; detalhes?: Json; created_at?: string }
+        Relationships: []
+      }
     }
     Views: { [_ in never]: never }
     Functions: {
