@@ -27,7 +27,7 @@ type TrainingRow = Pick<
 
 type AssignmentRow = Pick<
   Database["public"]["Tables"]["treinos_atletas"]["Row"],
-  "id" | "status" | "atribuido_em"
+  "id" | "status" | "atribuido_em" | "agendado_para" | "timezone" | "observacao_treinador"
 > & {
   treinos:
     | Pick<
@@ -179,11 +179,11 @@ export async function getAthleteDashboardData(
       supabase
         .from("treinos_atletas")
         .select(
-          "id, status, atribuido_em, treinos(titulo, descricao, origem)",
+          "id, status, atribuido_em, agendado_para, timezone, observacao_treinador, treinos(titulo, descricao, origem)",
         )
         .eq("assessoria_id", user.assessoriaId)
         .eq("atleta_id", user.id)
-        .order("atribuido_em", { ascending: false })
+        .order("agendado_para", { ascending: true, nullsFirst: false })
         .limit(3),
     ]);
 
@@ -216,8 +216,15 @@ export async function getAthleteDashboardData(
       return {
         id: assignment.id,
         titulo: training?.titulo ?? "Treino sem título",
-        quando: formatDateLabel("Atribuído em", assignment.atribuido_em),
+        quando: assignment.agendado_para
+          ? new Intl.DateTimeFormat("pt-BR", {
+              dateStyle: "short",
+              timeStyle: "short",
+              timeZone: assignment.timezone ?? "UTC",
+            }).format(new Date(assignment.agendado_para))
+          : formatDateLabel("Atribuído em", assignment.atribuido_em),
         detalhe:
+          assignment.observacao_treinador?.trim() ??
           training?.descricao?.trim() ??
           assignmentStatusLabels[assignment.status],
       };

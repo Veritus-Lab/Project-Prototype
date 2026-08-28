@@ -16,13 +16,13 @@ const sidebarItems: Record<PapelUsuario, SidebarItem[]> = {
     { label: "Convites", href: "/treinador/convites" },
     { label: "Atletas", href: "/treinador/atletas" },
     { label: "Treinos", href: "/treinador/treinos" },
-    { label: "Calendário" },
+    { label: "Calendário", href: "/treinador/calendario" },
     { label: "Mensagens" },
   ],
   atleta: [
     { label: "Painel", href: "/atleta" },
     { label: "Meus treinos" },
-    { label: "Calendário" },
+    { label: "Calendário", href: "/atleta/calendario" },
     { label: "Mensagens" },
   ],
 };

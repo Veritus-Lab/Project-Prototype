@@ -12,6 +12,7 @@ export type Database = {
       assessorias: {
         Row: {
           id: string
+          timezone: string
           nome: string
           slug: string
           logo_url: string | null
@@ -22,6 +23,7 @@ export type Database = {
         }
         Insert: {
           id?: string
+          timezone?: string
           nome: string
           slug: string
           logo_url?: string | null
@@ -32,6 +34,7 @@ export type Database = {
         }
         Update: {
           id?: string
+          timezone?: string
           nome?: string
           slug?: string
           logo_url?: string | null
@@ -412,6 +415,9 @@ export type Database = {
           atleta_id: string
           status: 'atribuido' | 'em_andamento' | 'concluido' | 'cancelado'
           atribuido_em: string
+          agendado_para: string | null
+          timezone: string | null
+          observacao_treinador: string | null
           iniciado_em: string | null
           concluido_em: string | null
           created_at: string
@@ -424,6 +430,9 @@ export type Database = {
           atleta_id: string
           status?: 'atribuido' | 'em_andamento' | 'concluido' | 'cancelado'
           atribuido_em?: string
+          agendado_para?: string | null
+          timezone?: string | null
+          observacao_treinador?: string | null
           iniciado_em?: string | null
           concluido_em?: string | null
           created_at?: string
@@ -436,6 +445,9 @@ export type Database = {
           atleta_id?: string
           status?: 'atribuido' | 'em_andamento' | 'concluido' | 'cancelado'
           atribuido_em?: string
+          agendado_para?: string | null
+          timezone?: string | null
+          observacao_treinador?: string | null
           iniciado_em?: string | null
           concluido_em?: string | null
           created_at?: string
