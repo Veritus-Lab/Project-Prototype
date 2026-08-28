@@ -557,6 +557,126 @@ input {
   margin: 1.5rem 0;
 }
 
+.dashboard-v2 .dashboard-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dashboard-operational-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.75fr);
+  gap: 1.25rem;
+}
+
+.dashboard-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard-section-heading a,
+.dashboard-quick-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.dashboard-section-heading svg,
+.dashboard-quick-actions svg,
+.button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dashboard-quick-actions {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+.dashboard-quick-actions h2 { margin-bottom: 0.5rem; }
+
+.dashboard-quick-actions a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.dashboard-quick-actions a > svg:first-child { color: var(--color-accent); }
+.dashboard-quick-actions a > svg:last-child { color: var(--color-text-muted); }
+
+.training-workflow-page { max-width: 78rem; }
+
+.training-workflow-window {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.22);
+}
+
+.training-wizard { max-width: none; }
+
+.training-wizard-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0 0 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  list-style: none;
+}
+
+.training-wizard-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.training-wizard-steps span {
+  width: 1.65rem;
+  height: 1.65rem;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+
+.training-wizard-steps svg { width: 0.9rem; height: 0.9rem; }
+.training-wizard-steps .is-current, .training-wizard-steps .is-complete { color: var(--color-text); }
+.training-wizard-steps .is-current span { border-color: var(--color-accent); background: var(--color-accent); color: #14181b; }
+.training-wizard-steps .is-complete span { border-color: var(--color-accent); color: var(--color-accent); }
+
+.training-wizard-panel { display: grid; gap: 1.25rem; min-height: 24rem; padding: 1.5rem 0; }
+.training-wizard-panel h2 { margin: 0.2rem 0 0; font-size: 1.3rem; }
+.training-wizard-panel .eyebrow { margin: 0; }
+.training-wizard-panel .field-hint { margin: 0.4rem 0 0; }
+
+.training-review { display: grid; gap: 0.75rem; margin: 0; }
+.training-review div { padding: 0.9rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); }
+.training-review dt { color: var(--color-text-muted); font-size: 0.76rem; font-weight: 750; text-transform: uppercase; }
+.training-review dd { margin: 0.3rem 0 0; font-weight: 700; }
+
+.training-wizard-actions { display: flex; justify-content: space-between; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--color-border); }
+.training-wizard-actions .button { display: inline-flex; align-items: center; gap: 0.45rem; }
+.training-wizard-actions .is-hidden { visibility: hidden; }
+.training-add-block { width: fit-content; display: inline-flex; align-items: center; gap: 0.45rem; }
+
 .training-form-grid,
 .training-block-grid {
   display: grid;
@@ -860,6 +980,11 @@ input {
   }
 
   .page-heading-actions { align-items: flex-start; flex-direction: column; }
+  .dashboard-operational-grid { grid-template-columns: 1fr; }
+  .training-workflow-window { padding: 1.25rem; }
+  .training-wizard-steps { gap: 0.35rem; }
+  .training-wizard-steps li { font-size: 0.72rem; }
+  .training-wizard-panel { min-height: 0; }
   .training-block-notes { grid-column: auto; }
 
   .athlete-operational-form {
