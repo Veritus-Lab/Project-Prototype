@@ -1,6 +1,7 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
 import type { CreateTrainingInput } from "@/lib/validators/training";
+import type { AssignTrainingInput } from "@/lib/validators/training-assignment";
 import type { TrainingBlockInput } from "@/lib/validators/training-template";
 import type { Database, Json } from "@/types/database";
 
@@ -20,6 +21,11 @@ export interface TrainerTrainingListItem {
   tipoTreinoId: string | null;
   quantidadeBlocos: number;
   criadoEm: string;
+}
+
+export interface TrainingAssignmentSummary {
+  createdCount: number;
+  alreadyAssignedCount: number;
 }
 
 export type TrainingResult<T> =
@@ -140,4 +146,80 @@ export async function listTrainerTrainings(
   }
 
   return { data: trainings as TrainerTrainingListItem[] };
+}
+
+export async function assignTrainingToAthletes(
+  user: SessionUser,
+  input: AssignTrainingInput,
+): Promise<TrainingResult<TrainingAssignmentSummary>> {
+  const supabase = await createServerClient();
+  const { data: training, error: trainingError } = await supabase
+    .from("treinos")
+    .select("id")
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("treinador_id", user.id)
+    .eq("id", input.trainingId)
+    .maybeSingle();
+
+  if (trainingError || !training) {
+    return { error: "Treino não encontrado." };
+  }
+
+  const { data: athletes, error: athletesError } = await supabase
+    .from("atletas")
+    .select("id")
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("treinador_id", user.id)
+    .in("id", input.athleteIds);
+
+  if (athletesError || !athletes || athletes.length !== input.athleteIds.length) {
+    return { error: "Um ou mais atletas não estão disponíveis para atribuição." };
+  }
+
+  const { data: existingAssignments, error: existingAssignmentsError } =
+    await supabase
+      .from("treinos_atletas")
+      .select("atleta_id")
+      .eq("assessoria_id", user.assessoriaId)
+      .eq("treino_id", input.trainingId)
+      .in("atleta_id", input.athleteIds);
+
+  if (existingAssignmentsError) {
+    return { error: "Não foi possível atribuir o treino agora." };
+  }
+
+  const existingAthleteIds = new Set(
+    (existingAssignments ?? []).map((assignment) => assignment.atleta_id),
+  );
+  const athleteIdsToAssign = input.athleteIds.filter(
+    (athleteId) => !existingAthleteIds.has(athleteId),
+  );
+
+  if (athleteIdsToAssign.length === 0) {
+    return {
+      data: {
+        createdCount: 0,
+        alreadyAssignedCount: input.athleteIds.length,
+      },
+    };
+  }
+
+  const { error: insertError } = await supabase.from("treinos_atletas").insert(
+    athleteIdsToAssign.map((athleteId) => ({
+      assessoria_id: user.assessoriaId,
+      treino_id: input.trainingId,
+      atleta_id: athleteId,
+    })),
+  );
+
+  if (insertError) {
+    return { error: "Não foi possível atribuir o treino agora." };
+  }
+
+  return {
+    data: {
+      createdCount: athleteIdsToAssign.length,
+      alreadyAssignedCount: existingAthleteIds.size,
+    },
+  };
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
+  assignTrainingToAthletes: vi.fn(),
   createTraining: vi.fn(),
   revalidatePath: vi.fn(),
   requireRole: vi.fn(),
@@ -15,10 +16,11 @@ vi.mock("@/lib/auth/session", () => ({
 }));
 
 vi.mock("@/lib/services/training.service", () => ({
+  assignTrainingToAthletes: mocks.assignTrainingToAthletes,
   createTraining: mocks.createTraining,
 }));
 
-import { createTrainingAction } from "./training.actions";
+import { assignTrainingAction, createTrainingAction } from "./training.actions";
 import { initialTrainingActionState } from "./training.state";
 
 function formData(fields: Record<string, string>) {
@@ -95,5 +97,32 @@ describe("training actions", () => {
       ],
     });
     expect(mocks.revalidatePath).toHaveBeenCalledWith("/treinador/treinos");
+  });
+
+  it("assigns selected athletes using the authenticated trainer session", async () => {
+    const trainer = {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      assessoriaId: "550e8400-e29b-41d4-a716-446655440002",
+    };
+    const trainingId = "550e8400-e29b-41d4-a716-446655440003";
+    const athleteId = "550e8400-e29b-41d4-a716-446655440004";
+    mocks.requireRole.mockResolvedValue(trainer);
+    mocks.assignTrainingToAthletes.mockResolvedValue({
+      data: { createdCount: 1, alreadyAssignedCount: 0 },
+    });
+
+    const data = new FormData();
+    data.set("trainingId", trainingId);
+    data.append("athleteIds", athleteId);
+
+    await expect(assignTrainingAction(initialTrainingActionState, data)).resolves.toEqual({
+      success: "1 atleta recebeu o treino.",
+    });
+
+    expect(mocks.assignTrainingToAthletes).toHaveBeenCalledWith(trainer, {
+      trainingId,
+      athleteIds: [athleteId],
+    });
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/atleta");
   });
 });
