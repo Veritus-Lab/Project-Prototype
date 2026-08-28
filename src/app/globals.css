@@ -574,6 +574,242 @@ input {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.trainer-dashboard {
+  max-width: 96rem;
+}
+
+.trainer-dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.trainer-dashboard-header .eyebrow,
+.trainer-panel-heading .eyebrow {
+  margin: 0;
+}
+
+.trainer-dashboard-header .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.trainer-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.trainer-metric-card {
+  position: relative;
+  min-height: 9.75rem;
+  overflow: hidden;
+}
+
+.trainer-metric-card::after {
+  content: "";
+  position: absolute;
+  right: -1.8rem;
+  bottom: -2.4rem;
+  width: 7.5rem;
+  height: 7.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 24%, transparent);
+  border-radius: 50%;
+}
+
+.trainer-metric-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.trainer-metric-heading h2 {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.trainer-metric-heading svg {
+  width: 1.45rem;
+  height: 1.45rem;
+  color: var(--color-accent);
+}
+
+.trainer-metric-card .dashboard-card-value {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  color: var(--color-text);
+  font-size: 2.3rem;
+}
+
+.trainer-metric-card .dashboard-card-hint {
+  position: relative;
+  z-index: 1;
+  max-width: 24ch;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.trainer-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.8fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.trainer-dashboard-panel {
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  background: var(--color-surface);
+}
+
+.trainer-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trainer-panel-heading h2 {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+}
+
+.trainer-panel-heading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.trainer-panel-heading > a svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.trainer-training-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trainer-training-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trainer-training-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.trainer-training-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+}
+
+.trainer-training-icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.trainer-training-list h3,
+.trainer-training-list p {
+  margin: 0;
+}
+
+.trainer-training-list h3 {
+  font-size: 0.94rem;
+}
+
+.trainer-training-list p {
+  margin-top: 0.22rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.trainer-training-list time {
+  max-width: 11rem;
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-align: right;
+}
+
+.trainer-actions-panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.trainer-quick-actions {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.trainer-quick-actions a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.trainer-quick-actions a + a {
+  border-top: 1px solid var(--color-border);
+}
+
+.trainer-quick-actions a > svg:first-child {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--color-accent);
+}
+
+.trainer-quick-actions a > svg:last-child {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.trainer-quick-actions span {
+  display: grid;
+  gap: 0.14rem;
+}
+
+.trainer-quick-actions strong {
+  font-size: 0.87rem;
+}
+
+.trainer-quick-actions small {
+  color: var(--color-text-muted);
+  font-size: 0.74rem;
+}
+
 .dashboard-operational-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.75fr);
@@ -1042,6 +1278,20 @@ input {
     grid-template-columns: 1fr;
   }
 
+  .trainer-dashboard-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .trainer-metrics,
+  .trainer-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trainer-metric-card {
+    min-height: 0;
+  }
+
   .invitation-grid {
     grid-template-columns: 1fr;
   }
@@ -1073,6 +1323,16 @@ input {
   .training-wizard-steps li { font-size: 0.72rem; }
   .training-wizard-panel { min-height: 0; }
   .training-block-notes { grid-column: auto; }
+
+  .trainer-training-list li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .trainer-training-list time {
+    grid-column: 2;
+    max-width: none;
+    text-align: left;
+  }
 
   .athlete-operational-form {
     grid-template-columns: 1fr;
