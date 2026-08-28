@@ -25,6 +25,12 @@
 - `dashboard-pages.test.tsx`: 2 testes aprovados.
 - A suite completa ainda possui as duas falhas pre-existentes documentadas no handoff da Task 24.1.
 
+## Entrega
+
+- Commit: `ac667e1 feat: compose trainer dashboard operational view`.
+- Git: publicado em `codex/task-10-real-dashboards` e em `main`.
+- Vercel: producao `READY` no deploy `dpl_877osYr7jFkh3zxWNpKEV91uMvvx`.
+
 ## Proxima task
 
 Task 24.3: criterios reais de atencao a atletas e lista operacional de treinos programados.
