@@ -1,0 +1,92 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState, type ComponentType } from "react";
+import {
+  CalendarDays,
+  Dumbbell,
+  LayoutDashboard,
+  Menu,
+  MessageSquare,
+  UserPlus,
+  UsersRound,
+  WalletCards,
+  X,
+} from "lucide-react";
+
+export interface DashboardNavigationItem {
+  label: string;
+  href?: string;
+}
+
+const itemIcons: Record<string, ComponentType<{ "aria-hidden"?: boolean }>> = {
+  Painel: LayoutDashboard,
+  Convites: UserPlus,
+  Atletas: UsersRound,
+  Treinos: Dumbbell,
+  "Meus treinos": Dumbbell,
+  "Calendário": CalendarDays,
+  Financeiro: WalletCards,
+  Mensagens: MessageSquare,
+};
+
+function isCurrentPath(pathname: string, href: string) {
+  return pathname === href || (href !== "/treinador" && href !== "/atleta" && pathname.startsWith(`${href}/`));
+}
+
+function NavigationLinks({
+  items,
+  onNavigate,
+}: {
+  items: DashboardNavigationItem[];
+  onNavigate?: () => void;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <nav className="dashboard-nav" aria-label="Navegação do painel">
+      {items.map((item) => {
+        const Icon = itemIcons[item.label] ?? LayoutDashboard;
+
+        if (!item.href) {
+          return <span key={item.label} className="dashboard-nav-item" aria-disabled="true"><Icon aria-hidden={true} /><span>{item.label}</span></span>;
+        }
+
+        const current = isCurrentPath(pathname, item.href);
+        return <Link key={item.label} href={item.href} className="dashboard-nav-link" aria-current={current ? "page" : undefined} onClick={onNavigate}><Icon aria-hidden={true} /><span>{item.label}</span></Link>;
+      })}
+    </nav>
+  );
+}
+
+export function DashboardNavigation({ items }: { items: DashboardNavigationItem[] }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isOpen]);
+
+  return <>
+    <aside className="dashboard-sidebar">
+      <span className="dashboard-brand">FLERNK</span>
+      <NavigationLinks items={items} />
+    </aside>
+    <button type="button" className="dashboard-menu-trigger" aria-label="Abrir navegação" aria-expanded={isOpen} aria-controls="dashboard-mobile-navigation" onClick={() => setIsOpen(true)}><Menu aria-hidden="true" /></button>
+    <span className="dashboard-mobile-brand" aria-hidden="true">FLERNK</span>
+    {isOpen ? <div className="dashboard-mobile-navigation" id="dashboard-mobile-navigation"><button type="button" className="dashboard-navigation-backdrop" aria-label="Fechar navegação" onClick={() => setIsOpen(false)} /><aside className="dashboard-navigation-drawer" aria-label="Menu do painel"><div className="dashboard-drawer-heading"><span className="dashboard-brand">FLERNK</span><button type="button" className="dashboard-drawer-close" aria-label="Fechar navegação" onClick={() => setIsOpen(false)}><X aria-hidden="true" /></button></div><NavigationLinks items={items} onNavigate={() => setIsOpen(false)} /></aside></div> : null}
+  </>;
+}

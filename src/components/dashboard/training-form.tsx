@@ -34,15 +34,8 @@ export function TrainingForm({ trainingTypes, initialState = initialTrainingActi
   useEffect(() => {
     if (state.success) {
       router.push("/treinador/treinos");
-      return;
     }
-
-    if (state.fieldErrors?.blocos) {
-      setStep(1);
-    } else if (state.fieldErrors?.titulo || state.fieldErrors?.tipoTreinoId || state.fieldErrors?.descricao) {
-      setStep(0);
-    }
-  }, [router, state.fieldErrors, state.success]);
+  }, [router, state.success]);
   function updateBlock(index: number, changes: Partial<TrainingBlockInput>) { setBlocks((current) => current.map((block, itemIndex) => itemIndex === index ? { ...block, ...changes } : block)); }
   function updateOptionalNumber(index: number, field: "duracaoMinutos" | "distanciaMetros" | "repeticoes" | "recuperacaoSegundos" | "rpe", value: string) { updateBlock(index, { [field]: value === "" ? undefined : Number(value) }); }
 
