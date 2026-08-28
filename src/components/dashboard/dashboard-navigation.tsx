@@ -86,7 +86,6 @@ export function DashboardNavigation({ items }: { items: DashboardNavigationItem[
       <NavigationLinks items={items} />
     </aside>
     <button type="button" className="dashboard-menu-trigger" aria-label="Abrir navegação" aria-expanded={isOpen} aria-controls="dashboard-mobile-navigation" onClick={() => setIsOpen(true)}><Menu aria-hidden="true" /></button>
-    <span className="dashboard-mobile-brand" aria-hidden="true">FLERNK</span>
     {isOpen ? <div className="dashboard-mobile-navigation" id="dashboard-mobile-navigation"><button type="button" className="dashboard-navigation-backdrop" aria-label="Fechar navegação" onClick={() => setIsOpen(false)} /><aside className="dashboard-navigation-drawer" aria-label="Menu do painel"><div className="dashboard-drawer-heading"><span className="dashboard-brand">FLERNK</span><button type="button" className="dashboard-drawer-close" aria-label="Fechar navegação" onClick={() => setIsOpen(false)}><X aria-hidden="true" /></button></div><NavigationLinks items={items} onNavigate={() => setIsOpen(false)} /></aside></div> : null}
   </>;
 }

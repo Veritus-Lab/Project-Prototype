@@ -32,6 +32,10 @@
 - Git: publicado em `codex/task-10-real-dashboards` e em `main`.
 - Vercel: producao `READY` no deploy `dpl_9JYop9C38zA1PGzUectzY3TC5JPF`.
 
+## Ajuste posterior
+
+- A marca FLERNK foi removida do cabecalho mobile e permanece apenas dentro do drawer, evitando proximidade visual com o papel do usuario.
+
 ## Proxima task
 
 Task 24.2: compor visualmente o painel do treinador a partir da referencia, usando indicadores e estados vazios reais.
