@@ -29,7 +29,7 @@ export default async function TreinadorDashboard() {
       </div>
 
       <section className="dashboard-section">
-        <h2>Treinos recentes</h2>
+        <h2>Próximos treinos</h2>
         {trainings.length > 0 ? (
           <ul className="dashboard-list">
             {trainings.map((treino) => (
@@ -42,7 +42,7 @@ export default async function TreinadorDashboard() {
           </ul>
         ) : (
           <p className="dashboard-empty-state">
-            Nenhum treino cadastrado ainda.
+            Nenhum treino agendado ainda.
           </p>
         )}
       </section>

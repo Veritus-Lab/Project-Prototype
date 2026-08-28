@@ -41,6 +41,16 @@ type AssignmentRow = Pick<
     | null;
 };
 
+type TrainerScheduledAssignmentRow = Pick<
+  Database["public"]["Tables"]["treinos_atletas"]["Row"],
+  "id" | "agendado_para" | "timezone" | "observacao_treinador"
+> & {
+  treinos:
+    | Pick<Database["public"]["Tables"]["treinos"]["Row"], "titulo" | "descricao" | "origem">
+    | Pick<Database["public"]["Tables"]["treinos"]["Row"], "titulo" | "descricao" | "origem">[]
+    | null;
+};
+
 const originLabels = {
   ia: "IA",
   importado: "importado",
@@ -92,6 +102,7 @@ export async function getTrainerDashboardData(
     trainingsResult,
     invitationsResult,
     recentTrainingsResult,
+    nextAssignmentsResult,
   ] = await Promise.all([
     supabase
       .from("atletas")
@@ -118,12 +129,24 @@ export async function getTrainerDashboardData(
       .eq("treinador_id", user.id)
       .order("created_at", { ascending: false })
       .limit(3),
+    supabase
+      .from("treinos_atletas")
+      .select("id, agendado_para, timezone, observacao_treinador, treinos(titulo, descricao, origem)")
+      .eq("assessoria_id", user.assessoriaId)
+      .eq("status", "atribuido")
+      .gte("agendado_para", now.toISOString())
+      .order("agendado_para", { ascending: true })
+      .limit(3),
   ]);
 
   const recentTrainings =
     recentTrainingsResult.error || !recentTrainingsResult.data
       ? []
       : (recentTrainingsResult.data as TrainingRow[]);
+  const nextAssignments =
+    nextAssignmentsResult.error || !nextAssignmentsResult.data
+      ? []
+      : (nextAssignmentsResult.data as TrainerScheduledAssignmentRow[]);
 
   return {
     metrics: [
@@ -143,12 +166,32 @@ export async function getTrainerDashboardData(
         hint: "Convites ativos aguardando aceite.",
       },
     ],
-    trainings: recentTrainings.map((training) => ({
-      id: training.id,
-      titulo: training.titulo,
-      quando: formatDateLabel("Criado em", training.created_at),
-      detalhe: trainingDetail(training.descricao, training.origem),
-    })),
+    trainings: nextAssignments.length
+      ? nextAssignments.map((assignment) => {
+          const training = normalizeTrainingJoin(assignment as AssignmentRow);
+
+          return {
+            id: assignment.id,
+            titulo: training?.titulo ?? "Treino sem título",
+            quando: assignment.agendado_para
+              ? new Intl.DateTimeFormat("pt-BR", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                  timeZone: assignment.timezone ?? "UTC",
+                }).format(new Date(assignment.agendado_para))
+              : "Sem horário",
+            detalhe:
+              assignment.observacao_treinador?.trim() ??
+              training?.descricao?.trim() ??
+              "Treino agendado",
+          };
+        })
+      : recentTrainings.map((training) => ({
+          id: training.id,
+          titulo: training.titulo,
+          quando: formatDateLabel("Criado em", training.created_at),
+          detalhe: trainingDetail(training.descricao, training.origem),
+        })),
   };
 }
 
