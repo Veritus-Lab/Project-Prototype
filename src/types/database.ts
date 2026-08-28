@@ -551,6 +551,18 @@ export type Database = {
         Update: { id?: string; assessoria_id?: string; cobranca_id?: string | null; assinatura_id?: string | null; atleta_id?: string; ator_id?: string; tipo?: string; detalhes?: Json; created_at?: string }
         Relationships: []
       }
+      preferencias_comunicacao: {
+        Row: { id: string; assessoria_id: string; atleta_id: string; whatsapp_telefone: string | null; whatsapp_opt_in: boolean; whatsapp_opt_in_em: string | null; whatsapp_opt_out_em: string | null; cobranca_whatsapp: boolean; created_at: string; updated_at: string }
+        Insert: { id?: string; assessoria_id: string; atleta_id: string; whatsapp_telefone?: string | null; whatsapp_opt_in?: boolean; whatsapp_opt_in_em?: string | null; whatsapp_opt_out_em?: string | null; cobranca_whatsapp?: boolean; created_at?: string; updated_at?: string }
+        Update: { id?: string; assessoria_id?: string; atleta_id?: string; whatsapp_telefone?: string | null; whatsapp_opt_in?: boolean; whatsapp_opt_in_em?: string | null; whatsapp_opt_out_em?: string | null; cobranca_whatsapp?: boolean; created_at?: string; updated_at?: string }
+        Relationships: []
+      }
+      lembretes_cobranca: {
+        Row: { id: string; assessoria_id: string; cobranca_id: string; atleta_id: string; canal: string; status: 'pendente' | 'bloqueado' | 'enviado' | 'falhou' | 'cancelado'; programado_para: string; template_codigo: string; tentativas: number; ultimo_erro: string | null; provider_message_id: string | null; created_at: string; updated_at: string }
+        Insert: { id?: string; assessoria_id: string; cobranca_id: string; atleta_id: string; canal: string; status: 'pendente' | 'bloqueado' | 'enviado' | 'falhou' | 'cancelado'; programado_para: string; template_codigo: string; tentativas?: number; ultimo_erro?: string | null; provider_message_id?: string | null; created_at?: string; updated_at?: string }
+        Update: { id?: string; assessoria_id?: string; cobranca_id?: string; atleta_id?: string; canal?: string; status?: 'pendente' | 'bloqueado' | 'enviado' | 'falhou' | 'cancelado'; programado_para?: string; template_codigo?: string; tentativas?: number; ultimo_erro?: string | null; provider_message_id?: string | null; created_at?: string; updated_at?: string }
+        Relationships: []
+      }
     }
     Views: { [_ in never]: never }
     Functions: {
