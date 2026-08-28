@@ -29,3 +29,9 @@
 ## Proxima task
 
 Task 24.4: calendario semanal operacional baseado nos agendamentos reais.
+
+## Entrega
+
+- Commit: `41f49e0 feat: add trainer attention and schedule panels`.
+- Git: publicado em `codex/task-10-real-dashboards` e em `main`.
+- Vercel: producao `READY` no deploy `dpl_ENe3AEuue72DWZp2TQgUT3Ua9Hfx`.
