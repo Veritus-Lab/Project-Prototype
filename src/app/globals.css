@@ -664,6 +664,13 @@ input {
   margin-top: 1rem;
 }
 
+.trainer-operations-grid {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 .trainer-dashboard-panel {
   min-width: 0;
   border: 1px solid var(--color-border);
@@ -808,6 +815,88 @@ input {
 .trainer-quick-actions small {
   color: var(--color-text-muted);
   font-size: 0.74rem;
+}
+
+.trainer-attention-list,
+.trainer-schedule-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trainer-attention-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: start;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trainer-attention-list li:last-child,
+.trainer-schedule-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.trainer-attention-list > li > svg {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.16rem;
+  color: #f4b860;
+}
+
+.trainer-attention-list a {
+  color: var(--color-text);
+  font-size: 0.88rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.trainer-attention-list p {
+  margin: 0.22rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.trainer-schedule-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trainer-schedule-list div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.trainer-schedule-list strong {
+  font-size: 0.86rem;
+}
+
+.trainer-schedule-list span {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.trainer-schedule-list time {
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  text-align: right;
+}
+
+.trainer-schedule-list small {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+  border-radius: 999px;
+  padding: 0.22rem 0.45rem;
+  color: var(--color-accent);
+  font-size: 0.67rem;
+  font-weight: 750;
+  white-space: nowrap;
 }
 
 .dashboard-operational-grid {
@@ -1284,7 +1373,8 @@ input {
   }
 
   .trainer-metrics,
-  .trainer-dashboard-grid {
+  .trainer-dashboard-grid,
+  .trainer-operations-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1332,6 +1422,15 @@ input {
     grid-column: 2;
     max-width: none;
     text-align: left;
+  }
+
+  .trainer-schedule-list li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .trainer-schedule-list small {
+    grid-column: 2;
+    justify-self: end;
   }
 
   .athlete-operational-form {

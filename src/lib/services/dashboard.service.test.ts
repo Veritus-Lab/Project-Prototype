@@ -120,6 +120,44 @@ function recentTrainingsQuery() {
   };
 }
 
+function scheduledAssignmentsQuery() {
+  const limit = vi.fn().mockResolvedValue({ data: [], error: null });
+  const order = vi.fn().mockReturnValue({ limit });
+  const gte = vi.fn().mockReturnValue({ order });
+  const statusEq = vi.fn().mockReturnValue({ gte });
+  const assessoriaEq = vi.fn().mockReturnValue({ eq: statusEq });
+  const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+  return { assessoriaEq, gte, limit, order, select, statusEq };
+}
+
+function athleteNamesQuery() {
+  const trainerEq = vi.fn().mockResolvedValue({ data: [], error: null });
+  const assessoriaEq = vi.fn().mockReturnValue({ eq: trainerEq });
+  const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+  return { assessoriaEq, select, trainerEq };
+}
+
+function overdueChargesQuery() {
+  const lt = vi.fn().mockResolvedValue({ data: [], error: null });
+  const inStatus = vi.fn().mockReturnValue({ lt });
+  const assessoriaEq = vi.fn().mockReturnValue({ in: inStatus });
+  const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+  return { assessoriaEq, inStatus, lt, select };
+}
+
+function pastAssignmentsQuery() {
+  const lt = vi.fn().mockResolvedValue({ data: [], error: null });
+  const not = vi.fn().mockReturnValue({ lt });
+  const inStatus = vi.fn().mockReturnValue({ not });
+  const assessoriaEq = vi.fn().mockReturnValue({ in: inStatus });
+  const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+  return { assessoriaEq, inStatus, lt, not, select };
+}
+
 function athleteAssignmentsQuery() {
   const limit = vi.fn().mockResolvedValue({
     data: [
@@ -172,11 +210,19 @@ describe("dashboard service", () => {
     const trainings = chainedCountQuery(9);
     const invitations = pendingInvitationCountQuery(2);
     const recentTrainings = recentTrainingsQuery();
+    const nextAssignments = scheduledAssignmentsQuery();
+    const athleteNames = athleteNamesQuery();
+    const overdueCharges = overdueChargesQuery();
+    const pastAssignments = pastAssignmentsQuery();
+    const athleteQueries = [athletes, athleteNames];
     const treinosQueries = [trainings, recentTrainings];
+    const assignmentQueries = [nextAssignments, pastAssignments];
     const from = vi.fn((table: string) => {
-      if (table === "atletas") return athletes;
+      if (table === "atletas") return athleteQueries.shift();
       if (table === "treinos") return treinosQueries.shift();
+      if (table === "treinos_atletas") return assignmentQueries.shift();
       if (table === "convites_atletas") return invitations;
+      if (table === "cobrancas") return overdueCharges;
       throw new Error(`unexpected table ${table}`);
     });
 
@@ -214,6 +260,8 @@ describe("dashboard service", () => {
           detalhe: "Origem: IA",
         },
       ],
+      attention: [],
+      scheduledTrainings: [],
     });
 
     expect(athletes.select).toHaveBeenCalledWith("*", {
@@ -299,6 +347,8 @@ describe("dashboard service", () => {
           detalhe: "Em andamento",
         },
       ],
+      attention: [],
+      scheduledTrainings: [],
     });
 
     expect(assigned.firstEq).toHaveBeenCalledWith("assessoria_id", "assessoria-1");

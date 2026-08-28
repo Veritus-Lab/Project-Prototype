@@ -15,9 +15,25 @@ export interface DashboardTraining {
   detalhe: string;
 }
 
+export interface TrainerAttentionItem {
+  athleteId: string;
+  athleteName: string;
+  reasons: string[];
+}
+
+export interface TrainerScheduledTraining {
+  id: string;
+  athleteName: string;
+  title: string;
+  when: string;
+  status: string;
+}
+
 export interface DashboardData {
   metrics: DashboardMetric[];
   trainings: DashboardTraining[];
+  attention: TrainerAttentionItem[];
+  scheduledTrainings: TrainerScheduledTraining[];
 }
 
 type TrainingRow = Pick<
@@ -43,13 +59,33 @@ type AssignmentRow = Pick<
 
 type TrainerScheduledAssignmentRow = Pick<
   Database["public"]["Tables"]["treinos_atletas"]["Row"],
-  "id" | "agendado_para" | "timezone" | "observacao_treinador"
+  "id" | "atleta_id" | "status" | "agendado_para" | "timezone" | "observacao_treinador"
 > & {
   treinos:
     | Pick<Database["public"]["Tables"]["treinos"]["Row"], "titulo" | "descricao" | "origem">
     | Pick<Database["public"]["Tables"]["treinos"]["Row"], "titulo" | "descricao" | "origem">[]
     | null;
 };
+
+type TrainerAthleteNameRow = Pick<
+  Database["public"]["Tables"]["atletas"]["Row"],
+  "id"
+> & {
+  profiles:
+    | Pick<Database["public"]["Tables"]["profiles"]["Row"], "nome">
+    | Pick<Database["public"]["Tables"]["profiles"]["Row"], "nome">[]
+    | null;
+};
+
+type PastAssignmentRow = Pick<
+  Database["public"]["Tables"]["treinos_atletas"]["Row"],
+  "atleta_id" | "agendado_para"
+>;
+
+type OverdueChargeRow = Pick<
+  Database["public"]["Tables"]["cobrancas"]["Row"],
+  "atleta_id"
+>;
 
 const originLabels = {
   ia: "IA",
@@ -87,8 +123,12 @@ function trainingDetail(
   return descricao?.trim() ? descricao : `Origem: ${originLabels[origem]}`;
 }
 
-function normalizeTrainingJoin(row: AssignmentRow) {
+function normalizeTrainingJoin(row: Pick<AssignmentRow, "treinos">) {
   return Array.isArray(row.treinos) ? row.treinos[0] : row.treinos;
+}
+
+function normalizeAthleteProfile(row: TrainerAthleteNameRow) {
+  return Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
 }
 
 export async function getTrainerDashboardData(
@@ -103,6 +143,9 @@ export async function getTrainerDashboardData(
     invitationsResult,
     recentTrainingsResult,
     nextAssignmentsResult,
+    athleteNamesResult,
+    overdueChargesResult,
+    pastAssignmentsResult,
   ] = await Promise.all([
     supabase
       .from("atletas")
@@ -131,12 +174,30 @@ export async function getTrainerDashboardData(
       .limit(3),
     supabase
       .from("treinos_atletas")
-      .select("id, agendado_para, timezone, observacao_treinador, treinos(titulo, descricao, origem)")
+      .select("id, atleta_id, status, agendado_para, timezone, observacao_treinador, treinos(titulo, descricao, origem)")
       .eq("assessoria_id", user.assessoriaId)
       .eq("status", "atribuido")
       .gte("agendado_para", now.toISOString())
       .order("agendado_para", { ascending: true })
       .limit(3),
+    supabase
+      .from("atletas")
+      .select("id, profiles!atletas_profile_fkey(nome)")
+      .eq("assessoria_id", user.assessoriaId)
+      .eq("treinador_id", user.id),
+    supabase
+      .from("cobrancas")
+      .select("atleta_id")
+      .eq("assessoria_id", user.assessoriaId)
+      .in("status", ["aberta", "vencida"])
+      .lt("vencimento_em", now.toISOString().slice(0, 10)),
+    supabase
+      .from("treinos_atletas")
+      .select("atleta_id, agendado_para")
+      .eq("assessoria_id", user.assessoriaId)
+      .in("status", ["atribuido", "em_andamento"])
+      .not("agendado_para", "is", null)
+      .lt("agendado_para", now.toISOString()),
   ]);
 
   const recentTrainings =
@@ -147,6 +208,33 @@ export async function getTrainerDashboardData(
     nextAssignmentsResult.error || !nextAssignmentsResult.data
       ? []
       : (nextAssignmentsResult.data as TrainerScheduledAssignmentRow[]);
+  const athleteNames = new Map(
+    athleteNamesResult.error || !athleteNamesResult.data
+      ? []
+      : (athleteNamesResult.data as TrainerAthleteNameRow[]).map((athlete) => [
+          athlete.id,
+          normalizeAthleteProfile(athlete)?.nome ?? "Atleta sem nome",
+        ]),
+  );
+  const attentionReasons = new Map<string, Set<string>>();
+
+  if (!overdueChargesResult.error && overdueChargesResult.data) {
+    for (const charge of overdueChargesResult.data as OverdueChargeRow[]) {
+      attentionReasons.set(
+        charge.atleta_id,
+        new Set([...(attentionReasons.get(charge.atleta_id) ?? []), "Cobrança vencida"]),
+      );
+    }
+  }
+
+  if (!pastAssignmentsResult.error && pastAssignmentsResult.data) {
+    for (const assignment of pastAssignmentsResult.data as PastAssignmentRow[]) {
+      attentionReasons.set(
+        assignment.atleta_id,
+        new Set([...(attentionReasons.get(assignment.atleta_id) ?? []), "Treino agendado não concluído"]),
+      );
+    }
+  }
 
   return {
     metrics: [
@@ -168,7 +256,7 @@ export async function getTrainerDashboardData(
     ],
     trainings: nextAssignments.length
       ? nextAssignments.map((assignment) => {
-          const training = normalizeTrainingJoin(assignment as AssignmentRow);
+          const training = normalizeTrainingJoin(assignment);
 
           return {
             id: assignment.id,
@@ -192,6 +280,32 @@ export async function getTrainerDashboardData(
           quando: formatDateLabel("Criado em", training.created_at),
           detalhe: trainingDetail(training.descricao, training.origem),
         })),
+    attention: [...attentionReasons.entries()]
+      .filter(([athleteId]) => athleteNames.has(athleteId))
+      .map(([athleteId, reasons]) => ({
+        athleteId,
+        athleteName: athleteNames.get(athleteId) ?? "Atleta",
+        reasons: [...reasons],
+      })),
+    scheduledTrainings: nextAssignments
+      .filter((assignment) => athleteNames.has(assignment.atleta_id))
+      .map((assignment) => {
+      const training = normalizeTrainingJoin(assignment);
+
+      return {
+        id: assignment.id,
+        athleteName: athleteNames.get(assignment.atleta_id) ?? "Atleta",
+        title: training?.titulo ?? "Treino sem título",
+        when: assignment.agendado_para
+          ? new Intl.DateTimeFormat("pt-BR", {
+              dateStyle: "short",
+              timeStyle: "short",
+              timeZone: assignment.timezone ?? "UTC",
+            }).format(new Date(assignment.agendado_para))
+          : "Sem horário",
+        status: assignmentStatusLabels[assignment.status as AssignmentRow["status"]],
+      };
+      }),
   };
 }
 
@@ -272,5 +386,7 @@ export async function getAthleteDashboardData(
           assignmentStatusLabels[assignment.status],
       };
     }),
+    attention: [],
+    scheduledTrainings: [],
   };
 }

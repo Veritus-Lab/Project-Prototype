@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  AlertTriangle,
   ArrowRight,
   CalendarDays,
   CreditCard,
@@ -19,7 +20,8 @@ const metricIcons = [UsersRound, Dumbbell, MailCheck];
 
 export default async function TreinadorDashboard() {
   const user = await requireRole("treinador");
-  const { metrics, trainings } = await getTrainerDashboardData(user);
+  const { metrics, trainings, attention = [], scheduledTrainings = [] } =
+    await getTrainerDashboardData(user);
 
   return (
     <div className="dashboard-page trainer-dashboard">
@@ -113,6 +115,68 @@ export default async function TreinadorDashboard() {
               <ArrowRight aria-hidden="true" />
             </Link>
           </div>
+        </section>
+      </div>
+
+      <div className="trainer-operations-grid">
+        <section className="trainer-dashboard-panel trainer-attention-panel">
+          <div className="trainer-panel-heading">
+            <div>
+              <p className="eyebrow">Acompanhamento</p>
+              <h2>Atletas que precisam de atenção</h2>
+            </div>
+            <Link href="/treinador/atletas">
+              Ver atletas
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          {attention.length ? (
+            <ul className="trainer-attention-list">
+              {attention.map((athlete) => (
+                <li key={athlete.athleteId}>
+                  <AlertTriangle aria-hidden="true" />
+                  <div>
+                    <Link href={`/treinador/atletas/${athlete.athleteId}`}>
+                      {athlete.athleteName}
+                    </Link>
+                    <p>{athlete.reasons.join(" · ")}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="dashboard-empty-state">
+              Nenhuma pendência operacional identificada agora.
+            </p>
+          )}
+        </section>
+
+        <section className="trainer-dashboard-panel trainer-schedule-panel">
+          <div className="trainer-panel-heading">
+            <div>
+              <p className="eyebrow">Agenda</p>
+              <h2>Próximos treinos programados</h2>
+            </div>
+            <Link href="/treinador/calendario">
+              Programar
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          {scheduledTrainings.length ? (
+            <ul className="trainer-schedule-list">
+              {scheduledTrainings.map((training) => (
+                <li key={training.id}>
+                  <div><strong>{training.athleteName}</strong><span>{training.title}</span></div>
+                  <time>{training.when}</time>
+                  <small>{training.status}</small>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="dashboard-empty-state">
+              Nenhum treino futuro foi programado.
+            </p>
+          )}
         </section>
       </div>
     </div>
