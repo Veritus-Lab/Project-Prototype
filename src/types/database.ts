@@ -470,6 +470,69 @@ export type Database = {
           },
         ]
       }
+      execucoes_treino: {
+        Row: {
+          id: string
+          assessoria_id: string
+          treino_atleta_id: string
+          atleta_id: string
+          status: 'em_andamento' | 'concluido' | 'cancelado'
+          rpe: number | null
+          duracao_real_minutos: number | null
+          distancia_real_metros: number | null
+          observacao_atleta: string | null
+          desconforto_regiao: 'pe' | 'tornozelo' | 'panturrilha' | 'joelho' | 'coxa' | 'quadril' | 'lombar' | 'outro' | null
+          desconforto_intensidade: number | null
+          registrado_em: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          assessoria_id: string
+          treino_atleta_id: string
+          atleta_id: string
+          status: 'em_andamento' | 'concluido' | 'cancelado'
+          rpe?: number | null
+          duracao_real_minutos?: number | null
+          distancia_real_metros?: number | null
+          observacao_atleta?: string | null
+          desconforto_regiao?: 'pe' | 'tornozelo' | 'panturrilha' | 'joelho' | 'coxa' | 'quadril' | 'lombar' | 'outro' | null
+          desconforto_intensidade?: number | null
+          registrado_em?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          assessoria_id?: string
+          treino_atleta_id?: string
+          atleta_id?: string
+          status?: 'em_andamento' | 'concluido' | 'cancelado'
+          rpe?: number | null
+          duracao_real_minutos?: number | null
+          distancia_real_metros?: number | null
+          observacao_atleta?: string | null
+          desconforto_regiao?: 'pe' | 'tornozelo' | 'panturrilha' | 'joelho' | 'coxa' | 'quadril' | 'lombar' | 'outro' | null
+          desconforto_intensidade?: number | null
+          registrado_em?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'execucoes_treino_assignment_fkey'
+            columns: ['assessoria_id', 'treino_atleta_id']
+            isOneToOne: true
+            referencedRelation: 'treinos_atletas'
+            referencedColumns: ['assessoria_id', 'id']
+          },
+          {
+            foreignKeyName: 'execucoes_treino_atleta_fkey'
+            columns: ['assessoria_id', 'atleta_id']
+            isOneToOne: false
+            referencedRelation: 'atletas'
+            referencedColumns: ['assessoria_id', 'id']
+          },
+        ]
+      }
     }
     Views: { [_ in never]: never }
     Functions: {

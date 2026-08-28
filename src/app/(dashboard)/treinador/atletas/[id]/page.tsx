@@ -4,6 +4,7 @@ import { AthleteOperationalForm } from "@/components/dashboard/athlete-operation
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerAthleteDetail } from "@/lib/services/athlete.service";
+import { createServerClient } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Detalhe do atleta — FLERNK",
@@ -34,6 +35,14 @@ export default async function TrainerAthleteDetailPage({
   }
 
   const athlete = result.data;
+  const supabase = await createServerClient();
+  const { data: executions } = await supabase
+    .from("execucoes_treino")
+    .select("id, rpe, duracao_real_minutos, distancia_real_metros, desconforto_regiao, desconforto_intensidade, registrado_em")
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("atleta_id", athlete.id)
+    .order("registrado_em", { ascending: false })
+    .limit(5);
 
   return (
     <div className="dashboard-page">
@@ -82,6 +91,11 @@ export default async function TrainerAthleteDetailPage({
               Nenhum treino atribuído recentemente.
             </p>
           )}
+        </Card>
+
+        <Card elevated>
+          <h2>Histórico de execução</h2>
+          {executions?.length ? <ul className="dashboard-list">{executions.map((execution) => <li key={execution.id}><span className="dashboard-list-title">RPE {execution.rpe ?? "não informado"}</span><span className="dashboard-list-when">{new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(execution.registrado_em))}</span><span className="dashboard-list-detail">{execution.duracao_real_minutos ? `${execution.duracao_real_minutos} min` : "Duração não informada"}{execution.distancia_real_metros ? ` · ${execution.distancia_real_metros} m` : ""}</span>{execution.desconforto_regiao ? <span className="dashboard-list-detail">Desconforto: {execution.desconforto_regiao} ({execution.desconforto_intensidade}/10)</span> : null}</li>)}</ul> : <p className="dashboard-empty-state">Nenhuma execução registrada.</p>}
         </Card>
       </section>
     </div>
