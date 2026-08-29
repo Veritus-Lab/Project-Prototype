@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { TrainerWeeklyCalendar } from "@/components/dashboard/trainer-weekly-calendar";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerDashboardData } from "@/lib/services/dashboard.service";
+import { getTrainerWeeklySchedule } from "@/lib/services/trainer-calendar.service";
 
 export const metadata = { title: "Painel do treinador — FLERNK" };
 
@@ -20,8 +22,11 @@ const metricIcons = [UsersRound, Dumbbell, MailCheck];
 
 export default async function TreinadorDashboard() {
   const user = await requireRole("treinador");
-  const { metrics, trainings, attention = [], scheduledTrainings = [] } =
-    await getTrainerDashboardData(user);
+  const [dashboardData, weeklyScheduleResult] = await Promise.all([
+    getTrainerDashboardData(user),
+    getTrainerWeeklySchedule(user),
+  ]);
+  const { metrics, trainings, attention = [], scheduledTrainings = [] } = dashboardData;
 
   return (
     <div className="dashboard-page trainer-dashboard">
@@ -179,6 +184,24 @@ export default async function TreinadorDashboard() {
           )}
         </section>
       </div>
+
+      <section className="trainer-dashboard-panel trainer-week-panel">
+        <div className="trainer-panel-heading">
+          <div>
+            <p className="eyebrow">Agenda</p>
+            <h2>Calendário da semana</h2>
+          </div>
+          <Link href="/treinador/calendario">
+            Ver calendário
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        </div>
+        {"data" in weeklyScheduleResult ? (
+          <TrainerWeeklyCalendar schedule={weeklyScheduleResult.data} />
+        ) : (
+          <p className="form-error" role="alert">{weeklyScheduleResult.error}</p>
+        )}
+      </section>
     </div>
   );
 }
