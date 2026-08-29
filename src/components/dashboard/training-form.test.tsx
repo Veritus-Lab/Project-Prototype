@@ -38,4 +38,26 @@ describe("TrainingForm", () => {
       await screen.findByText("Informe um título com ao menos 2 caracteres."),
     ).toBeVisible();
   });
+
+  it("submits the serialized blocks from the review step", async () => {
+    const user = userEvent.setup();
+
+    render(<TrainingForm trainingTypes={[]} />);
+
+    await user.type(screen.getByLabelText("Título"), "Intervalado 6x400");
+    await user.click(screen.getByRole("button", { name: /continuar/i }));
+    await user.click(screen.getByRole("button", { name: /continuar/i }));
+
+    expect(
+      screen.getByDisplayValue(
+        JSON.stringify([
+          {
+            tipo: "principal",
+            titulo: "Bloco 1",
+            duracaoMinutos: 10,
+          },
+        ]),
+      ),
+    ).toHaveAttribute("name", "blocos");
+  });
 });
