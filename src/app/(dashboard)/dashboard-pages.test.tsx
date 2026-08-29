@@ -147,6 +147,10 @@ describe("dashboard pages", () => {
     expect(screen.getByRole("heading", { name: "Olá, Bia" })).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("Regenerativo")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Regenerativo" })).toHaveAttribute(
+      "href",
+      "/atleta/treinos",
+    );
     expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
   });
 

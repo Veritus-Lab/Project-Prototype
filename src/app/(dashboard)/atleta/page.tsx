@@ -2,6 +2,7 @@ import { AthleteDailyFeed } from "@/components/dashboard/athlete-daily-feed";
 import { AthleteEquipmentPanel } from "@/components/dashboard/athlete-equipment-panel";
 import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
 import { requireRole } from "@/lib/auth/session";
 import { getAthleteDashboardData } from "@/lib/services/dashboard.service";
 import { getAthleteDailyFeed } from "@/lib/services/athlete-feed.service";
@@ -61,7 +62,9 @@ export default async function AtletaDashboard() {
           <ul className="dashboard-list">
             {trainings.map((treino) => (
               <li key={treino.id}>
-                <span className="dashboard-list-title">{treino.titulo}</span>
+                <Link className="dashboard-list-title" href="/atleta/treinos">
+                  {treino.titulo}
+                </Link>
                 <span className="dashboard-list-when">{treino.quando}</span>
                 <span className="dashboard-list-detail">{treino.detalhe}</span>
               </li>

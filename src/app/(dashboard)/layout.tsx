@@ -18,7 +18,7 @@ const sidebarItems: Record<PapelUsuario, DashboardNavigationItem[]> = {
   ],
   atleta: [
     { label: "Painel", href: "/atleta" },
-    { label: "Meus treinos" },
+    { label: "Meus treinos", href: "/atleta/treinos" },
     { label: "Calendário", href: "/atleta/calendario" },
     { label: "Mensagens" },
   ],
