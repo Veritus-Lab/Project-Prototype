@@ -718,6 +718,34 @@ input {
   width: 100%;
 }
 
+.athlete-training-detail {
+  display: grid;
+  gap: 1rem;
+}
+
+.athlete-training-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.athlete-training-detail-grid .card {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.athlete-training-detail-grid h2,
+.athlete-training-detail-grid p {
+  margin: 0;
+}
+
+.athlete-training-status {
+  color: var(--color-accent);
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
 .athlete-equipment {
   display: grid;
   gap: 1rem;
@@ -2053,7 +2081,8 @@ input {
   }
 
   .athlete-metric-strip,
-  .athlete-dashboard-layout {
+  .athlete-dashboard-layout,
+  .athlete-training-detail-grid {
     grid-template-columns: 1fr;
   }
 
