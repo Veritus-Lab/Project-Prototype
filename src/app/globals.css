@@ -645,6 +645,44 @@ input {
 
 .athlete-equipment-form .button { align-self: end; }
 
+.training-adherence-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.training-adherence-card {
+  display: grid;
+  gap: 0.9rem;
+  min-height: 0;
+}
+
+.training-adherence-heading,
+.training-adherence-metrics {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.training-adherence-heading h3,
+.training-adherence-feedback p { margin: 0; }
+.training-adherence-heading span,
+.training-adherence-feedback { color: var(--color-text-muted); font-size: 0.85rem; }
+
+.training-adherence-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.training-adherence-metric { display: grid; gap: 0.28rem; min-width: 0; }
+.training-adherence-metric > span { color: var(--color-text-muted); font-size: 0.78rem; }
+.training-adherence-metric strong { overflow-wrap: anywhere; }
+.training-adherence-status { font-size: 0.75rem; font-weight: 800; }
+.training-adherence-status-proximo { color: var(--color-brand); }
+.training-adherence-status-abaixo { color: #e8c548; }
+.training-adherence-status-acima { color: #f0a070; }
+.training-adherence-status-nao_informado { color: var(--color-text-muted); }
+.training-adherence-feedback { display: grid; gap: 0.4rem; }
+
 .dashboard-section {
   margin-top: 2.5rem;
 }
@@ -1765,7 +1803,8 @@ input {
   }
 
   .athlete-equipment-list,
-  .athlete-equipment-form {
+  .athlete-equipment-form,
+  .training-adherence-metrics {
     grid-template-columns: 1fr;
   }
 

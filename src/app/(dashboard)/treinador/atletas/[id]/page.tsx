@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 import { AthleteOperationalForm } from "@/components/dashboard/athlete-operational-form";
+import { TrainingAdherenceList } from "@/components/dashboard/training-adherence-list";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerAthleteDetail } from "@/lib/services/athlete.service";
-import { createServerClient } from "@/lib/supabase/server";
+import { getTrainerAthleteTrainingAdherence } from "@/lib/services/training-adherence.service";
 
 export const metadata = {
   title: "Detalhe do atleta — FLERNK",
@@ -35,14 +36,7 @@ export default async function TrainerAthleteDetailPage({
   }
 
   const athlete = result.data;
-  const supabase = await createServerClient();
-  const { data: executions } = await supabase
-    .from("execucoes_treino")
-    .select("id, rpe, duracao_real_minutos, distancia_real_metros, desconforto_regiao, desconforto_intensidade, registrado_em")
-    .eq("assessoria_id", user.assessoriaId)
-    .eq("atleta_id", athlete.id)
-    .order("registrado_em", { ascending: false })
-    .limit(5);
+  const adherenceResult = await getTrainerAthleteTrainingAdherence(user, athlete.id);
 
   return (
     <div className="dashboard-page">
@@ -94,8 +88,8 @@ export default async function TrainerAthleteDetailPage({
         </Card>
 
         <Card elevated>
-          <h2>Histórico de execução</h2>
-          {executions?.length ? <ul className="dashboard-list">{executions.map((execution) => <li key={execution.id}><span className="dashboard-list-title">RPE {execution.rpe ?? "não informado"}</span><span className="dashboard-list-when">{new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(execution.registrado_em))}</span><span className="dashboard-list-detail">{execution.duracao_real_minutos ? `${execution.duracao_real_minutos} min` : "Duração não informada"}{execution.distancia_real_metros ? ` · ${execution.distancia_real_metros} m` : ""}</span>{execution.desconforto_regiao ? <span className="dashboard-list-detail">Desconforto: {execution.desconforto_regiao} ({execution.desconforto_intensidade}/10)</span> : null}</li>)}</ul> : <p className="dashboard-empty-state">Nenhuma execução registrada.</p>}
+          <h2>Prescrito x executado</h2>
+          {"error" in adherenceResult ? <p className="form-error" role="alert">{adherenceResult.error}</p> : <TrainingAdherenceList items={adherenceResult.data} />}
         </Card>
       </section>
     </div>
