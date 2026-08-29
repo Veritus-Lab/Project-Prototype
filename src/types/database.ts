@@ -642,6 +642,45 @@ export type Database = {
           },
         ]
       }
+      referencias_ritmo_atribuicoes: {
+        Row: {
+          assessoria_id: string
+          created_at: string
+          teste_desempenho_id: string
+          treino_atleta_id: string
+          zonas: Json
+        }
+        Insert: {
+          assessoria_id: string
+          created_at?: string
+          teste_desempenho_id: string
+          treino_atleta_id: string
+          zonas: Json
+        }
+        Update: {
+          assessoria_id?: string
+          created_at?: string
+          teste_desempenho_id?: string
+          treino_atleta_id?: string
+          zonas?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referencias_ritmo_atribuicoes_assignment_fkey"
+            columns: ["assessoria_id", "treino_atleta_id"]
+            isOneToOne: false
+            referencedRelation: "treinos_atletas"
+            referencedColumns: ["assessoria_id", "id"]
+          },
+          {
+            foreignKeyName: "referencias_ritmo_atribuicoes_teste_fkey"
+            columns: ["assessoria_id", "teste_desempenho_id"]
+            isOneToOne: false
+            referencedRelation: "testes_desempenho"
+            referencedColumns: ["assessoria_id", "id"]
+          },
+        ]
+      }
       tenis_atletas: {
         Row: {
           assessoria_id: string
@@ -721,6 +760,60 @@ export type Database = {
             columns: ["assessoria_id", "tenis_id"]
             isOneToOne: false
             referencedRelation: "tenis_atletas"
+            referencedColumns: ["assessoria_id", "id"]
+          },
+        ]
+      }
+      testes_desempenho: {
+        Row: {
+          assessoria_id: string
+          atleta_id: string
+          avaliado_em: string
+          created_at: string
+          id: string
+          observacao: string | null
+          protocolo: string
+          ritmo_limiar_segundos_por_km: number | null
+          treinador_id: string
+          vam_metros_por_min: number | null
+        }
+        Insert: {
+          assessoria_id: string
+          atleta_id: string
+          avaliado_em: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          protocolo: string
+          ritmo_limiar_segundos_por_km?: number | null
+          treinador_id: string
+          vam_metros_por_min?: number | null
+        }
+        Update: {
+          assessoria_id?: string
+          atleta_id?: string
+          avaliado_em?: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          protocolo?: string
+          ritmo_limiar_segundos_por_km?: number | null
+          treinador_id?: string
+          vam_metros_por_min?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "testes_desempenho_atleta_fkey"
+            columns: ["assessoria_id", "atleta_id"]
+            isOneToOne: false
+            referencedRelation: "atletas"
+            referencedColumns: ["assessoria_id", "id"]
+          },
+          {
+            foreignKeyName: "testes_desempenho_treinador_fkey"
+            columns: ["assessoria_id", "treinador_id"]
+            isOneToOne: false
+            referencedRelation: "treinadores"
             referencedColumns: ["assessoria_id", "id"]
           },
         ]

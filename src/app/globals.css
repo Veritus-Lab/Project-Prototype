@@ -683,6 +683,26 @@ input {
 .training-adherence-status-nao_informado { color: var(--color-text-muted); }
 .training-adherence-feedback { display: grid; gap: 0.4rem; }
 
+.performance-assessments,
+.performance-zones,
+.performance-assessment-history {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.performance-assessments h2,
+.performance-assessments h3 { margin: 0; }
+.performance-assessment-form,
+.performance-assessment-history { border-top: 1px solid var(--color-border); padding-top: 0.9rem; }
+.performance-assessment-form summary,
+.performance-assessment-history summary { cursor: pointer; font-weight: 800; }
+.performance-zones ul,
+.performance-assessment-history ul { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.performance-zones li,
+.performance-assessment-history li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0.65rem 0.75rem; color: var(--color-text-muted); font-size: 0.85rem; }
+.performance-zones strong,
+.performance-assessment-history strong { color: var(--color-text); }
+
 .dashboard-section {
   margin-top: 2.5rem;
 }

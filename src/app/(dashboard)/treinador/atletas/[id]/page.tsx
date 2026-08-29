@@ -1,11 +1,13 @@
 import Link from "next/link";
 
 import { AthleteOperationalForm } from "@/components/dashboard/athlete-operational-form";
+import { PerformanceAssessmentPanel } from "@/components/dashboard/performance-assessment-panel";
 import { TrainingAdherenceList } from "@/components/dashboard/training-adherence-list";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerAthleteDetail } from "@/lib/services/athlete.service";
 import { getTrainerAthleteTrainingAdherence } from "@/lib/services/training-adherence.service";
+import { getTrainerAthletePerformanceAssessments } from "@/lib/services/performance-assessment.service";
 
 export const metadata = {
   title: "Detalhe do atleta — FLERNK",
@@ -36,7 +38,10 @@ export default async function TrainerAthleteDetailPage({
   }
 
   const athlete = result.data;
-  const adherenceResult = await getTrainerAthleteTrainingAdherence(user, athlete.id);
+  const [adherenceResult, performanceResult] = await Promise.all([
+    getTrainerAthleteTrainingAdherence(user, athlete.id),
+    getTrainerAthletePerformanceAssessments(user, athlete.id),
+  ]);
 
   return (
     <div className="dashboard-page">
@@ -90,6 +95,10 @@ export default async function TrainerAthleteDetailPage({
         <Card elevated>
           <h2>Prescrito x executado</h2>
           {"error" in adherenceResult ? <p className="form-error" role="alert">{adherenceResult.error}</p> : <TrainingAdherenceList items={adherenceResult.data} />}
+        </Card>
+
+        <Card elevated>
+          {"error" in performanceResult ? <p className="form-error" role="alert">{performanceResult.error}</p> : <PerformanceAssessmentPanel athleteId={athlete.id} assessments={performanceResult.data} />}
         </Card>
       </section>
     </div>

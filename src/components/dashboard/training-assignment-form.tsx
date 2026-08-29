@@ -31,6 +31,7 @@ export function TrainingAssignmentForm({
       <input name="trainingId" type="hidden" value={trainingId} />
       <fieldset>
         <legend>Atribuir a atletas</legend>
+        <p className="field-hint">Quando houver avaliação, a referência de ritmo vigente será registrada com esta atribuição.</p>
         <div className="training-assignment-options">
           {athletes.map((athlete) => (
             <label key={athlete.id} className="training-assignment-option">
