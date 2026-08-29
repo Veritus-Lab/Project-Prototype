@@ -27,5 +27,9 @@ export async function acceptInvitationAction(
     return { error: result.error };
   }
 
+  if (result.data.confirmationRequired) {
+    return { confirmationRequired: true };
+  }
+
   redirect("/atleta");
 }

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   acceptInvitation: vi.fn(),
@@ -17,6 +17,10 @@ import {
   acceptInvitationAction,
 } from "./actions";
 import { initialAcceptInvitationActionState } from "./state";
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 function formData(fields: Record<string, string>) {
   const data = new FormData();
@@ -42,7 +46,9 @@ describe("acceptInvitationAction", () => {
   });
 
   it("redirects to athlete dashboard after accepting the invitation", async () => {
-    mocks.acceptInvitation.mockResolvedValueOnce({ data: undefined });
+    mocks.acceptInvitation.mockResolvedValueOnce({
+      data: { confirmationRequired: false },
+    });
     mocks.redirect.mockImplementationOnce((destination: string) => {
       throw new Error(`NEXT_REDIRECT:${destination}`);
     });
@@ -64,5 +70,24 @@ describe("acceptInvitationAction", () => {
       email: "ana@example.com",
       senha: "Segura123",
     });
+  });
+
+  it("asks the athlete to confirm email before completing a pending invitation", async () => {
+    mocks.acceptInvitation.mockResolvedValueOnce({
+      data: { confirmationRequired: true },
+    });
+
+    await expect(
+      acceptInvitationAction(
+        initialAcceptInvitationActionState,
+        formData({
+          token: "raw_token",
+          nome: "Ana Atleta",
+          email: "ana@example.com",
+          senha: "Segura123",
+        }),
+      ),
+    ).resolves.toEqual({ confirmationRequired: true });
+    expect(mocks.redirect).not.toHaveBeenCalled();
   });
 });

@@ -14,6 +14,8 @@ import {
 } from "@/lib/validators/invitation";
 import type { Database } from "@/types/database";
 
+type ServerSupabaseClient = Awaited<ReturnType<typeof createServerClient>>;
+
 type InvitationRow = Pick<
   Database["public"]["Tables"]["convites_atletas"]["Row"],
   | "id"
@@ -44,6 +46,10 @@ export interface PublicInvitation {
   maskedEmail: string | null;
   assessoriaNome: string | null;
   state: PublicInvitationState;
+}
+
+export interface InvitationAcceptance {
+  confirmationRequired: boolean;
 }
 
 export type InvitationResult<T> =
@@ -77,6 +83,13 @@ function configuredAppOrigin() {
   } catch {
     return undefined;
   }
+}
+
+function invitationConfirmationUrl(origin: string, token: string, nome: string) {
+  const url = new URL("/auth/callback", origin);
+  url.searchParams.set("convite", token);
+  url.searchParams.set("nome", nome);
+  return url.toString();
 }
 
 function mapInvitation(row: InvitationRow, now = new Date()): InvitationSummary {
@@ -282,9 +295,50 @@ function translateAcceptanceError(message: string) {
   return genericAcceptanceError;
 }
 
+async function completeInvitationAcceptanceWithClient(
+  supabase: ServerSupabaseClient,
+  token: string,
+  nome: string,
+): Promise<InvitationResult<void>> {
+  const { error } = await supabase.rpc("aceitar_convite", {
+    hash: hashInvitationToken(token),
+    user_id: (await supabase.auth.getUser()).data.user?.id ?? "",
+    nome,
+  });
+
+  if (error) {
+    return { error: translateAcceptanceError(error.message) };
+  }
+
+  return { data: undefined };
+}
+
+export async function completeInvitationAcceptance(
+  input: Pick<AcceptInvitationInput, "token" | "nome">,
+): Promise<InvitationResult<void>> {
+  const parsedInput = acceptInvitationSchema
+    .pick({ token: true, nome: true })
+    .safeParse(input);
+
+  if (!parsedInput.success) {
+    return { error: genericAcceptanceError };
+  }
+
+  try {
+    const supabase = await createServerClient();
+    return completeInvitationAcceptanceWithClient(
+      supabase,
+      parsedInput.data.token,
+      parsedInput.data.nome,
+    );
+  } catch {
+    return { error: genericAcceptanceError };
+  }
+}
+
 export async function acceptInvitation(
   input: AcceptInvitationInput,
-): Promise<InvitationResult<void>> {
+): Promise<InvitationResult<InvitationAcceptance>> {
   const parsedInput = acceptInvitationSchema.safeParse(input);
 
   if (!parsedInput.success) {
@@ -304,7 +358,7 @@ export async function acceptInvitation(
       email,
       password: senha,
       options: {
-        emailRedirectTo: new URL("/auth/callback", origin).toString(),
+        emailRedirectTo: invitationConfirmationUrl(origin, token, nome),
         data: {
           nome,
           papel: "atleta",
@@ -316,17 +370,21 @@ export async function acceptInvitation(
       return { error: genericAcceptanceError };
     }
 
-    const { error } = await supabase.rpc("aceitar_convite", {
-      hash: hashInvitationToken(token),
-      user_id: signUpData.user.id,
-      nome,
-    });
-
-    if (error) {
-      return { error: translateAcceptanceError(error.message) };
+    if (!signUpData.session) {
+      return { data: { confirmationRequired: true } };
     }
 
-    return { data: undefined };
+    const completion = await completeInvitationAcceptanceWithClient(
+      supabase,
+      token,
+      nome,
+    );
+
+    if ("error" in completion && typeof completion.error === "string") {
+      return { error: completion.error };
+    }
+
+    return { data: { confirmationRequired: false } };
   } catch {
     return { error: genericAcceptanceError };
   }

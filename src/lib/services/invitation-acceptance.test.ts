@@ -16,13 +16,16 @@ import {
 function createSupabaseMock() {
   const rpc = vi.fn();
   const signUp = vi.fn();
+  const getUser = vi.fn().mockResolvedValue({
+    data: { user: { id: "athlete-1" } },
+  });
 
   mocks.createServerClient.mockResolvedValue({
     rpc,
-    auth: { signUp },
+    auth: { signUp, getUser },
   });
 
-  return { rpc, signUp };
+  return { rpc, signUp, getUser };
 }
 
 describe("invitation acceptance service", () => {
@@ -80,7 +83,7 @@ describe("invitation acceptance service", () => {
   it("signs up an athlete and accepts the invitation atomically by RPC", async () => {
     const supabase = createSupabaseMock();
     supabase.signUp.mockResolvedValueOnce({
-      data: { user: { id: "athlete-1" } },
+      data: { user: { id: "athlete-1" }, session: { access_token: "token" } },
       error: null,
     });
     supabase.rpc.mockResolvedValueOnce({ data: undefined, error: null });
@@ -92,13 +95,14 @@ describe("invitation acceptance service", () => {
         email: "ANA@Example.COM",
         senha: "Segura123",
       }),
-    ).resolves.toEqual({ data: undefined });
+    ).resolves.toEqual({ data: { confirmationRequired: false } });
 
     expect(supabase.signUp).toHaveBeenCalledWith({
       email: "ana@example.com",
       password: "Segura123",
       options: {
-        emailRedirectTo: "https://app.flernk.test/auth/callback",
+        emailRedirectTo:
+          "https://app.flernk.test/auth/callback?convite=raw_token&nome=Ana+Atleta",
         data: {
           nome: "Ana Atleta",
           papel: "atleta",
@@ -112,10 +116,29 @@ describe("invitation acceptance service", () => {
     });
   });
 
+  it("waits for email confirmation before accepting when Supabase creates no session", async () => {
+    const supabase = createSupabaseMock();
+    supabase.signUp.mockResolvedValueOnce({
+      data: { user: { id: "athlete-1" }, session: null },
+      error: null,
+    });
+
+    await expect(
+      acceptInvitation({
+        token: "raw_token",
+        nome: "Ana Atleta",
+        email: "ana@example.com",
+        senha: "Segura123",
+      }),
+    ).resolves.toEqual({ data: { confirmationRequired: true } });
+
+    expect(supabase.rpc).not.toHaveBeenCalled();
+  });
+
   it("returns a public error when the authenticated email diverges from the invitation", async () => {
     const supabase = createSupabaseMock();
     supabase.signUp.mockResolvedValueOnce({
-      data: { user: { id: "athlete-1" } },
+      data: { user: { id: "athlete-1" }, session: { access_token: "token" } },
       error: null,
     });
     supabase.rpc.mockResolvedValueOnce({

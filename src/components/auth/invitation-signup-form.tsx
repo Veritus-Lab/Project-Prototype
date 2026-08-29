@@ -85,6 +85,13 @@ export function InvitationSignupForm({
 
       {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}
 
+      {state.confirmationRequired ? (
+        <p className="field-hint" role="status">
+          Enviamos um link de confirmação para seu e-mail. Abra-o para concluir
+          seu acesso de atleta.
+        </p>
+      ) : null}
+
       <Button type="submit" disabled={isPending}>
         {isPending ? "Criando acesso…" : "Criar acesso"}
       </Button>
