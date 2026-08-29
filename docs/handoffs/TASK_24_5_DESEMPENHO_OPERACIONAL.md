@@ -33,3 +33,9 @@
 ## Próxima task
 
 Task 24.6: mensagens e provas, condicionada a modelo de dados e fluxo operacional reais. Não serão adicionadas conversas ou eventos fictícios ao painel.
+
+## Entrega
+
+- Commit: `a5d63de feat: add trainer performance overview`.
+- Git: publicado em `codex/task-10-real-dashboards` e em `main`.
+- Vercel: produção `READY` no deploy `dpl_2YpdyYYQHWLjxfxwLyLxrgbySyxr`.
