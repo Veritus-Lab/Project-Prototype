@@ -1122,6 +1122,73 @@ input {
   text-transform: capitalize;
 }
 
+.trainer-communication-panel {
+  margin-top: 1rem;
+}
+
+.trainer-messages-card .field-hint {
+  margin: 0.9rem 0 0;
+}
+
+.trainer-reminder-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trainer-reminder-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trainer-reminder-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.trainer-reminder-list div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.trainer-reminder-list a {
+  color: var(--color-text);
+  font-size: 0.86rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.trainer-reminder-list span,
+.trainer-reminder-list time {
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+}
+
+.trainer-reminder-list time {
+  text-align: right;
+}
+
+.trainer-reminder-list small {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+  border-radius: 999px;
+  padding: 0.22rem 0.45rem;
+  color: var(--color-accent);
+  font-size: 0.67rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.trainer-reminder-list small[data-status="bloqueado"],
+.trainer-reminder-list small[data-status="falhou"] {
+  border-color: color-mix(in srgb, #e45d67 45%, var(--color-border));
+  color: #e45d67;
+}
+
 .dashboard-operational-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.75fr);
@@ -1662,6 +1729,15 @@ input {
   }
 
   .trainer-schedule-list small {
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .trainer-reminder-list li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .trainer-reminder-list small {
     grid-column: 2;
     justify-self: end;
   }

@@ -11,12 +11,14 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { BillingReminderList } from "@/components/dashboard/billing-reminder-list";
 import { TrainerPerformanceOverview } from "@/components/dashboard/trainer-performance-overview";
 import { TrainerWeeklyCalendar } from "@/components/dashboard/trainer-weekly-calendar";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerDashboardData } from "@/lib/services/dashboard.service";
 import { getTrainerWeeklySchedule } from "@/lib/services/trainer-calendar.service";
 import { getTrainerPerformanceData } from "@/lib/services/trainer-performance.service";
+import { listTrainerBillingReminders } from "@/lib/services/reminder-dashboard.service";
 
 export const metadata = { title: "Painel do treinador — FLERNK" };
 
@@ -24,10 +26,11 @@ const metricIcons = [UsersRound, Dumbbell, MailCheck];
 
 export default async function TreinadorDashboard() {
   const user = await requireRole("treinador");
-  const [dashboardData, weeklyScheduleResult, performanceResult] = await Promise.all([
+  const [dashboardData, weeklyScheduleResult, performanceResult, remindersResult] = await Promise.all([
     getTrainerDashboardData(user),
     getTrainerWeeklySchedule(user),
     getTrainerPerformanceData(user),
+    listTrainerBillingReminders(user),
   ]);
   const { metrics, trainings, attention = [], scheduledTrainings = [] } = dashboardData;
 
@@ -187,6 +190,24 @@ export default async function TreinadorDashboard() {
           )}
         </section>
       </div>
+
+      <section className="trainer-dashboard-panel trainer-communication-panel">
+        <div className="trainer-panel-heading">
+          <div>
+            <p className="eyebrow">Comunicação</p>
+            <h2>Lembretes preparados</h2>
+          </div>
+          <Link href="/treinador/mensagens">
+            Ver mensagens
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        </div>
+        {"data" in remindersResult ? (
+          <BillingReminderList reminders={remindersResult.data} />
+        ) : (
+          <p className="form-error" role="alert">{remindersResult.error}</p>
+        )}
+      </section>
 
       <section className="trainer-dashboard-panel trainer-week-panel">
         <div className="trainer-panel-heading">

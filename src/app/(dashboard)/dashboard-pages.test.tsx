@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   getTrainerDashboardData: vi.fn(),
   getTrainerPerformanceData: vi.fn(),
   getTrainerWeeklySchedule: vi.fn(),
+  listTrainerBillingReminders: vi.fn(),
   requireRole: vi.fn(),
 }));
 
@@ -24,6 +25,10 @@ vi.mock("@/lib/services/trainer-calendar.service", () => ({
 
 vi.mock("@/lib/services/trainer-performance.service", () => ({
   getTrainerPerformanceData: mocks.getTrainerPerformanceData,
+}));
+
+vi.mock("@/lib/services/reminder-dashboard.service", () => ({
+  listTrainerBillingReminders: mocks.listTrainerBillingReminders,
 }));
 
 import AtletaDashboard from "./atleta/page";
@@ -72,6 +77,7 @@ describe("dashboard pages", () => {
         rpeAverage: null,
       },
     });
+    mocks.listTrainerBillingReminders.mockResolvedValueOnce({ data: [] });
 
     render(await TreinadorDashboard());
 
@@ -82,6 +88,7 @@ describe("dashboard pages", () => {
     expect(screen.getByText("Tiro de 400m")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Calendário da semana" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ritmo da equipe nesta semana" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Lembretes preparados" })).toBeInTheDocument();
     expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
   });
 
