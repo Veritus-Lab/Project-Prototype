@@ -11,10 +11,12 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { TrainerPerformanceOverview } from "@/components/dashboard/trainer-performance-overview";
 import { TrainerWeeklyCalendar } from "@/components/dashboard/trainer-weekly-calendar";
 import { requireRole } from "@/lib/auth/session";
 import { getTrainerDashboardData } from "@/lib/services/dashboard.service";
 import { getTrainerWeeklySchedule } from "@/lib/services/trainer-calendar.service";
+import { getTrainerPerformanceData } from "@/lib/services/trainer-performance.service";
 
 export const metadata = { title: "Painel do treinador — FLERNK" };
 
@@ -22,9 +24,10 @@ const metricIcons = [UsersRound, Dumbbell, MailCheck];
 
 export default async function TreinadorDashboard() {
   const user = await requireRole("treinador");
-  const [dashboardData, weeklyScheduleResult] = await Promise.all([
+  const [dashboardData, weeklyScheduleResult, performanceResult] = await Promise.all([
     getTrainerDashboardData(user),
     getTrainerWeeklySchedule(user),
+    getTrainerPerformanceData(user),
   ]);
   const { metrics, trainings, attention = [], scheduledTrainings = [] } = dashboardData;
 
@@ -200,6 +203,20 @@ export default async function TreinadorDashboard() {
           <TrainerWeeklyCalendar schedule={weeklyScheduleResult.data} />
         ) : (
           <p className="form-error" role="alert">{weeklyScheduleResult.error}</p>
+        )}
+      </section>
+
+      <section className="trainer-dashboard-panel trainer-performance-panel">
+        <div className="trainer-panel-heading">
+          <div>
+            <p className="eyebrow">Desempenho</p>
+            <h2>Ritmo da equipe nesta semana</h2>
+          </div>
+        </div>
+        {"data" in performanceResult ? (
+          <TrainerPerformanceOverview performance={performanceResult.data} />
+        ) : (
+          <p className="form-error" role="alert">{performanceResult.error}</p>
         )}
       </section>
     </div>

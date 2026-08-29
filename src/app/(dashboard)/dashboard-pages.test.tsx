@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   getAthleteDashboardData: vi.fn(),
   getTrainerDashboardData: vi.fn(),
+  getTrainerPerformanceData: vi.fn(),
   getTrainerWeeklySchedule: vi.fn(),
   requireRole: vi.fn(),
 }));
@@ -19,6 +20,10 @@ vi.mock("@/lib/services/dashboard.service", () => ({
 
 vi.mock("@/lib/services/trainer-calendar.service", () => ({
   getTrainerWeeklySchedule: mocks.getTrainerWeeklySchedule,
+}));
+
+vi.mock("@/lib/services/trainer-performance.service", () => ({
+  getTrainerPerformanceData: mocks.getTrainerPerformanceData,
 }));
 
 import AtletaDashboard from "./atleta/page";
@@ -54,6 +59,19 @@ describe("dashboard pages", () => {
     mocks.getTrainerWeeklySchedule.mockResolvedValueOnce({
       data: { days: [], timezone: "America/Sao_Paulo" },
     });
+    mocks.getTrainerPerformanceData.mockResolvedValueOnce({
+      data: {
+        days: [],
+        metrics: [
+          {
+            label: "Execuções concluídas",
+            value: "2",
+            hint: "Registros concluídos nesta semana.",
+          },
+        ],
+        rpeAverage: null,
+      },
+    });
 
     render(await TreinadorDashboard());
 
@@ -63,6 +81,7 @@ describe("dashboard pages", () => {
     expect(screen.getByText("4")).toBeInTheDocument();
     expect(screen.getByText("Tiro de 400m")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Calendário da semana" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Ritmo da equipe nesta semana" })).toBeInTheDocument();
     expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
   });
 

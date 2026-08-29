@@ -117,6 +117,10 @@ function localDateTimeToIso(date: Date, timeZone: string) {
   return new Date(estimatedUtc - offsetMinutes * 60_000).toISOString();
 }
 
+export function getTimeZoneDateKey(value: Date, timeZone: string) {
+  return dateKey(zonedCalendarDate(value, timeZone));
+}
+
 function buildWeekDays(
   referenceDate: Date,
   timeZone: string,
@@ -148,6 +152,22 @@ function buildWeekDays(
   });
 }
 
+export function getTrainerWeekRange(referenceDate: Date, timeZone: string) {
+  const days = buildWeekDays(referenceDate, timeZone);
+  const weekStart = localDateTimeToIso(
+    new Date(`${days[0].dateKey}T00:00:00.000Z`),
+    timeZone,
+  );
+  const nextWeekDate = new Date(`${days[6].dateKey}T00:00:00.000Z`);
+  nextWeekDate.setUTCDate(nextWeekDate.getUTCDate() + 1);
+
+  return {
+    days,
+    nextWeekStart: localDateTimeToIso(nextWeekDate, timeZone),
+    weekStart,
+  };
+}
+
 export async function getTrainerWeeklySchedule(
   user: SessionUser,
   referenceDate = new Date(),
@@ -164,11 +184,7 @@ export async function getTrainerWeeklySchedule(
   }
 
   const timezone = assessoria.timezone;
-  const days = buildWeekDays(referenceDate, timezone);
-  const weekStart = localDateTimeToIso(new Date(`${days[0].dateKey}T00:00:00.000Z`), timezone);
-  const nextWeekDate = new Date(`${days[6].dateKey}T00:00:00.000Z`);
-  nextWeekDate.setUTCDate(nextWeekDate.getUTCDate() + 1);
-  const nextWeekStart = localDateTimeToIso(nextWeekDate, timezone);
+  const { days, nextWeekStart, weekStart } = getTrainerWeekRange(referenceDate, timezone);
 
   if (!weekStart || !nextWeekStart) {
     return { error: "Não foi possível calcular a semana da agenda." };
@@ -213,7 +229,7 @@ export async function getTrainerWeeklySchedule(
     }
 
     const scheduledAt = new Date(assignment.agendado_para);
-    const scheduledDay = daysByKey.get(dateKey(zonedCalendarDate(scheduledAt, timezone)));
+    const scheduledDay = daysByKey.get(getTimeZoneDateKey(scheduledAt, timezone));
 
     if (!scheduledDay) {
       continue;

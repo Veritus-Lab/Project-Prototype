@@ -1009,6 +1009,119 @@ input {
   font-size: 0.64rem;
 }
 
+.trainer-performance-panel {
+  margin-top: 1rem;
+}
+
+.trainer-performance-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 0.75fr);
+  gap: 1.25rem;
+  padding-top: 1rem;
+}
+
+.trainer-performance-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.trainer-performance-metrics > div {
+  display: grid;
+  gap: 0.18rem;
+  min-height: 6.8rem;
+  padding: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+}
+
+.trainer-performance-metrics span,
+.trainer-performance-metrics small {
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+}
+
+.trainer-performance-metrics strong {
+  color: var(--color-text);
+  font-size: 1.25rem;
+}
+
+.trainer-performance-chart {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.trainer-performance-chart-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.trainer-performance-chart-heading > span {
+  color: var(--color-text);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.trainer-performance-chart-heading small {
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  text-align: right;
+}
+
+.trainer-performance-chart ol {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(1.7rem, 1fr));
+  gap: 0.35rem;
+  height: 10rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trainer-performance-chart li {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 0.18rem;
+  align-items: end;
+  min-width: 0;
+  text-align: center;
+}
+
+.trainer-performance-bar-track {
+  display: flex;
+  align-items: end;
+  height: 100%;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trainer-performance-bar {
+  display: block;
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-accent);
+}
+
+.trainer-performance-chart li.is-today .trainer-performance-bar {
+  background: #75b9f0;
+}
+
+.trainer-performance-chart strong {
+  color: var(--color-text);
+  font-size: 0.72rem;
+}
+
+.trainer-performance-chart li > small {
+  color: var(--color-text-muted);
+  font-size: 0.66rem;
+  text-transform: capitalize;
+}
+
 .dashboard-operational-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.75fr);
@@ -1484,8 +1597,18 @@ input {
 
   .trainer-metrics,
   .trainer-dashboard-grid,
-  .trainer-operations-grid {
+  .trainer-operations-grid,
+  .trainer-performance-overview {
     grid-template-columns: 1fr;
+  }
+
+  .trainer-performance-chart ol {
+    min-width: 19rem;
+  }
+
+  .trainer-performance-chart {
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
   }
 
   .trainer-metric-card {
