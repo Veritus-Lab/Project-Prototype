@@ -1,4 +1,5 @@
 import { AthleteDailyFeed } from "@/components/dashboard/athlete-daily-feed";
+import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getAthleteDashboardData } from "@/lib/services/dashboard.service";
@@ -23,6 +24,7 @@ export default async function AtletaDashboard() {
       <p className="dashboard-subtitle">
         Acompanhe seus treinos e a sua evolução da semana.
       </p>
+      <InstallAppButton />
 
       <div className="dashboard-cards">
         {metrics.map((metric) => (
