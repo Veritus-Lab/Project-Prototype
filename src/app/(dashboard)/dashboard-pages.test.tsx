@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   getAthleteDashboardData: vi.fn(),
+  getAthleteDailyFeed: vi.fn(),
   getTrainerDashboardData: vi.fn(),
   getTrainerPerformanceData: vi.fn(),
   getTrainerWeeklySchedule: vi.fn(),
@@ -17,6 +18,10 @@ vi.mock("@/lib/auth/session", () => ({
 vi.mock("@/lib/services/dashboard.service", () => ({
   getAthleteDashboardData: mocks.getAthleteDashboardData,
   getTrainerDashboardData: mocks.getTrainerDashboardData,
+}));
+
+vi.mock("@/lib/services/athlete-feed.service", () => ({
+  getAthleteDailyFeed: mocks.getAthleteDailyFeed,
 }));
 
 vi.mock("@/lib/services/trainer-calendar.service", () => ({
@@ -118,14 +123,52 @@ describe("dashboard pages", () => {
         },
       ],
     });
+    mocks.getAthleteDailyFeed.mockResolvedValueOnce({
+      data: {
+        priority: null,
+        recent: [],
+      },
+    });
 
     render(await AtletaDashboard());
 
     expect(mocks.requireRole).toHaveBeenCalledWith("atleta");
     expect(mocks.getAthleteDashboardData).toHaveBeenCalledWith(user);
+    expect(mocks.getAthleteDailyFeed).toHaveBeenCalledWith(user);
     expect(screen.getByRole("heading", { name: "Olá, Bia" })).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("Regenerativo")).toBeInTheDocument();
     expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
+  });
+
+  it("preserves athlete dashboard metrics when the daily feed fails", async () => {
+    const user = {
+      id: "athlete-2",
+      email: "atleta2@example.com",
+      nome: "Caio",
+      papel: "atleta",
+      assessoriaId: "assessoria-1",
+    };
+    mocks.requireRole.mockResolvedValueOnce(user);
+    mocks.getAthleteDashboardData.mockResolvedValueOnce({
+      metrics: [
+        {
+          label: "Treinos atribuídos",
+          value: "3",
+          hint: "Treinos vinculados ao seu perfil.",
+        },
+      ],
+      trainings: [],
+    });
+    mocks.getAthleteDailyFeed.mockResolvedValueOnce({
+      error: "Não foi possível carregar seu treino de hoje.",
+    });
+
+    render(await AtletaDashboard());
+
+    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Não foi possível carregar seu treino de hoje.",
+    );
   });
 });

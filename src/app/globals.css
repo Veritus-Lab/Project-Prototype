@@ -466,6 +466,111 @@ input {
   margin: 0.5rem 0 0;
 }
 
+.athlete-daily-feed {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.athlete-daily-feed > h2,
+.athlete-daily-feed-history > h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.athlete-daily-feed-priority {
+  min-height: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.athlete-daily-feed-priority .eyebrow {
+  margin: 0;
+}
+
+.athlete-daily-feed-priority h2,
+.athlete-daily-feed-priority h3,
+.athlete-daily-feed-history h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.athlete-daily-feed-priority h2 {
+  font-size: 1.15rem;
+}
+
+.athlete-daily-feed-priority h3,
+.athlete-daily-feed-history h3 {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.athlete-daily-feed-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.athlete-daily-feed-status {
+  border: 1px solid var(--color-control-border);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.athlete-daily-feed-status-atribuido,
+.athlete-daily-feed-status-em_andamento {
+  border-color: rgba(226, 255, 0, 0.4);
+  color: var(--color-accent);
+}
+
+.athlete-daily-feed-detail {
+  margin: 0;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.athlete-daily-feed-action {
+  min-width: 0;
+}
+
+.athlete-daily-feed-action form {
+  min-width: 0;
+}
+
+.athlete-daily-feed-history {
+  display: grid;
+  gap: 1rem;
+}
+
+.athlete-daily-feed-history ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.athlete-daily-feed-history li {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+}
+
+.athlete-daily-feed-error {
+  margin-top: 2.5rem;
+}
+
 .dashboard-section {
   margin-top: 2.5rem;
 }
@@ -1655,6 +1760,16 @@ input {
 
   .dashboard-cards {
     grid-template-columns: 1fr;
+  }
+
+  .athlete-daily-feed-priority,
+  .athlete-daily-feed-history li {
+    padding: 1rem;
+  }
+
+  .athlete-daily-feed-action .button {
+    max-width: 100%;
+    white-space: normal;
   }
 
   .trainer-dashboard-header {

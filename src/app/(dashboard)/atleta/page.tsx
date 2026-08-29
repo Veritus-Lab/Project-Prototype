@@ -1,6 +1,8 @@
+import { AthleteDailyFeed } from "@/components/dashboard/athlete-daily-feed";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getAthleteDashboardData } from "@/lib/services/dashboard.service";
+import { getAthleteDailyFeed } from "@/lib/services/athlete-feed.service";
 
 export const metadata = {
   title: "Painel do atleta — FLERNK",
@@ -8,7 +10,11 @@ export const metadata = {
 
 export default async function AtletaDashboard() {
   const user = await requireRole("atleta");
-  const { metrics, trainings } = await getAthleteDashboardData(user);
+  const [dashboard, feedResult] = await Promise.all([
+    getAthleteDashboardData(user),
+    getAthleteDailyFeed(user),
+  ]);
+  const { metrics, trainings } = dashboard;
 
   return (
     <div className="dashboard-page">
@@ -27,6 +33,14 @@ export default async function AtletaDashboard() {
           </Card>
         ))}
       </div>
+
+      {"error" in feedResult ? (
+        <p className="form-error athlete-daily-feed-error" role="alert">
+          {feedResult.error}
+        </p>
+      ) : (
+        <AthleteDailyFeed feed={feedResult.data} />
+      )}
 
       <section className="dashboard-section">
         <h2>Treinos atribuídos</h2>
