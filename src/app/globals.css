@@ -571,6 +571,80 @@ input {
   margin-top: 2.5rem;
 }
 
+.athlete-equipment {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.athlete-equipment-heading h2,
+.athlete-equipment-card h3 {
+  margin: 0;
+}
+
+.athlete-equipment-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.athlete-equipment-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+.athlete-equipment-card p {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-muted);
+}
+
+.athlete-equipment-meta {
+  display: grid;
+  justify-items: end;
+  align-content: start;
+  gap: 0.25rem;
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.athlete-equipment-alert,
+.athlete-equipment-card form {
+  grid-column: 1 / -1;
+}
+
+.athlete-equipment-alert {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.athlete-equipment-alert-acompanhar { color: #e8c548; }
+.athlete-equipment-alert-limite_atingido { color: #f07070; }
+
+.athlete-equipment-details {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  background: var(--color-surface);
+}
+
+.athlete-equipment-details summary { cursor: pointer; font-weight: 800; }
+
+.athlete-equipment-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.athlete-equipment-form .button { align-self: end; }
+
 .dashboard-section {
   margin-top: 2.5rem;
 }
@@ -1688,6 +1762,11 @@ input {
     background: var(--color-surface);
     color: var(--color-text);
     cursor: pointer;
+  }
+
+  .athlete-equipment-list,
+  .athlete-equipment-form {
+    grid-template-columns: 1fr;
   }
 
   .dashboard-menu-trigger svg,

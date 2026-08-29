@@ -7,10 +7,16 @@ export interface AthleteFeedAssignment {
   title: string;
   detail: string;
   when: string;
-  status: Database["public"]["Tables"]["treinos_atletas"]["Row"]["status"];
+  status: TrainingAssignmentStatus;
   isToday: boolean;
   scheduledAt: string;
 }
+
+export type TrainingAssignmentStatus =
+  | "atribuido"
+  | "em_andamento"
+  | "concluido"
+  | "cancelado";
 
 export interface AthleteDailyFeedData {
   priority: AthleteFeedAssignment | null;
@@ -35,6 +41,16 @@ type AssignmentRow = Pick<
 };
 
 const feedError = "Nao foi possivel carregar seu treino de hoje.";
+const trainingAssignmentStatuses = new Set<TrainingAssignmentStatus>([
+  "atribuido",
+  "em_andamento",
+  "concluido",
+  "cancelado",
+]);
+
+function isTrainingAssignmentStatus(value: string): value is TrainingAssignmentStatus {
+  return trainingAssignmentStatuses.has(value as TrainingAssignmentStatus);
+}
 
 function normalizeTrainingJoin(row: AssignmentRow) {
   return Array.isArray(row.treinos) ? row.treinos[0] : row.treinos;
@@ -57,6 +73,7 @@ function mapAssignment(
   now: Date,
 ): AthleteFeedAssignment | null {
   if (!row.agendado_para) return null;
+  if (!isTrainingAssignmentStatus(row.status)) return null;
 
   const timeZone = row.timezone ?? "UTC";
   const training = normalizeTrainingJoin(row);

@@ -1,9 +1,11 @@
 import { AthleteDailyFeed } from "@/components/dashboard/athlete-daily-feed";
+import { AthleteEquipmentPanel } from "@/components/dashboard/athlete-equipment-panel";
 import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { getAthleteDashboardData } from "@/lib/services/dashboard.service";
 import { getAthleteDailyFeed } from "@/lib/services/athlete-feed.service";
+import { getAthleteEquipment } from "@/lib/services/athlete-equipment.service";
 
 export const metadata = {
   title: "Painel do atleta — FLERNK",
@@ -11,9 +13,10 @@ export const metadata = {
 
 export default async function AtletaDashboard() {
   const user = await requireRole("atleta");
-  const [dashboard, feedResult] = await Promise.all([
+  const [dashboard, feedResult, equipmentResult] = await Promise.all([
     getAthleteDashboardData(user),
     getAthleteDailyFeed(user),
+    getAthleteEquipment(user),
   ]);
   const { metrics, trainings } = dashboard;
 
@@ -42,6 +45,14 @@ export default async function AtletaDashboard() {
         </p>
       ) : (
         <AthleteDailyFeed feed={feedResult.data} />
+      )}
+
+      {"error" in equipmentResult ? (
+        <p className="form-error athlete-daily-feed-error" role="alert">
+          {equipmentResult.error}
+        </p>
+      ) : (
+        <AthleteEquipmentPanel data={equipmentResult.data} />
       )}
 
       <section className="dashboard-section">

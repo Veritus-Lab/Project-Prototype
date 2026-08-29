@@ -7,6 +7,10 @@ create table public.tenis_atletas (
   constraint tenis_atletas_atleta_fkey foreign key (assessoria_id, atleta_id) references public.atletas (assessoria_id, id),
   constraint tenis_atletas_assessoria_id_key unique (assessoria_id, id)
 );
+
+alter table public.execucoes_treino
+  add constraint execucoes_treino_assessoria_id_key unique (assessoria_id, id);
+
 create table public.tenis_execucoes (
   assessoria_id uuid not null, tenis_id uuid not null, execucao_treino_id uuid not null, created_at timestamptz not null default now(),
   primary key (execucao_treino_id),
