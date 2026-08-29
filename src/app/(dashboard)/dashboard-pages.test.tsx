@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   getAthleteDashboardData: vi.fn(),
   getAthleteDailyFeed: vi.fn(),
+  getAthleteEquipment: vi.fn(),
   getTrainerDashboardData: vi.fn(),
   getTrainerPerformanceData: vi.fn(),
   getTrainerWeeklySchedule: vi.fn(),
@@ -22,6 +23,10 @@ vi.mock("@/lib/services/dashboard.service", () => ({
 
 vi.mock("@/lib/services/athlete-feed.service", () => ({
   getAthleteDailyFeed: mocks.getAthleteDailyFeed,
+}));
+
+vi.mock("@/lib/services/athlete-equipment.service", () => ({
+  getAthleteEquipment: mocks.getAthleteEquipment,
 }));
 
 vi.mock("@/lib/services/trainer-calendar.service", () => ({
@@ -129,12 +134,16 @@ describe("dashboard pages", () => {
         recent: [],
       },
     });
+    mocks.getAthleteEquipment.mockResolvedValueOnce({
+      data: { equipment: [], availableExecutions: [] },
+    });
 
     render(await AtletaDashboard());
 
     expect(mocks.requireRole).toHaveBeenCalledWith("atleta");
     expect(mocks.getAthleteDashboardData).toHaveBeenCalledWith(user);
     expect(mocks.getAthleteDailyFeed).toHaveBeenCalledWith(user);
+    expect(mocks.getAthleteEquipment).toHaveBeenCalledWith(user);
     expect(screen.getByRole("heading", { name: "Olá, Bia" })).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("Regenerativo")).toBeInTheDocument();
@@ -162,6 +171,9 @@ describe("dashboard pages", () => {
     });
     mocks.getAthleteDailyFeed.mockResolvedValueOnce({
       error: "Não foi possível carregar seu treino de hoje.",
+    });
+    mocks.getAthleteEquipment.mockResolvedValueOnce({
+      data: { equipment: [], availableExecutions: [] },
     });
 
     render(await AtletaDashboard());

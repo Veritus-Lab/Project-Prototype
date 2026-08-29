@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   getTrainerAthleteDetail: vi.fn(),
+  getTrainerAthletePerformanceAssessments: vi.fn(),
+  getTrainerAthleteTrainingAdherence: vi.fn(),
   requireRole: vi.fn(),
 }));
 
@@ -12,6 +14,15 @@ vi.mock("@/lib/auth/session", () => ({
 
 vi.mock("@/lib/services/athlete.service", () => ({
   getTrainerAthleteDetail: mocks.getTrainerAthleteDetail,
+}));
+
+vi.mock("@/lib/services/training-adherence.service", () => ({
+  getTrainerAthleteTrainingAdherence: mocks.getTrainerAthleteTrainingAdherence,
+}));
+
+vi.mock("@/lib/services/performance-assessment.service", () => ({
+  getTrainerAthletePerformanceAssessments:
+    mocks.getTrainerAthletePerformanceAssessments,
 }));
 
 import TrainerAthleteDetailPage from "./page";
@@ -53,6 +64,8 @@ describe("TrainerAthleteDetailPage", () => {
         ],
       },
     });
+    mocks.getTrainerAthleteTrainingAdherence.mockResolvedValueOnce({ data: [] });
+    mocks.getTrainerAthletePerformanceAssessments.mockResolvedValueOnce({ data: [] });
 
     render(
       await TrainerAthleteDetailPage({

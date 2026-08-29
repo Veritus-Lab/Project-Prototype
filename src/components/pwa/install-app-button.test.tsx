@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { InstallAppButton } from "./install-app-button";
@@ -27,7 +28,9 @@ describe("InstallAppButton", () => {
       screen.queryByRole("button", { name: "Instalar app" }),
     ).not.toBeInTheDocument();
 
-    window.dispatchEvent(createInstallPromptEvent());
+    await act(async () => {
+      window.dispatchEvent(createInstallPromptEvent());
+    });
 
     expect(
       await screen.findByRole("button", { name: "Instalar app" }),
@@ -37,18 +40,23 @@ describe("InstallAppButton", () => {
   it("prompts only after an explicit click and hides after the choice", async () => {
     const installPromptEvent = createInstallPromptEvent();
     render(<InstallAppButton />);
-    window.dispatchEvent(installPromptEvent);
+    await act(async () => {
+      window.dispatchEvent(installPromptEvent);
+    });
+    const user = userEvent.setup();
 
     const button = await screen.findByRole("button", {
       name: "Instalar app",
     });
     expect(installPromptEvent.prompt).not.toHaveBeenCalled();
 
-    fireEvent.click(button);
+    await user.click(button);
 
     expect(installPromptEvent.prompt).toHaveBeenCalledOnce();
-    expect(
-      await screen.findByRole("button", { name: "Instalar app" }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: "Instalar app" }),
+      ).not.toBeInTheDocument();
+    });
   });
 });
