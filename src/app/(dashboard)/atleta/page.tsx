@@ -22,31 +22,74 @@ export default async function AtletaDashboard() {
   const { metrics, trainings } = dashboard;
 
   return (
-    <div className="dashboard-page">
-      <p className="eyebrow">Painel do atleta</p>
-      <h1 className="dashboard-title">Olá, {user.nome}</h1>
-      <p className="dashboard-subtitle">
-        Acompanhe seus treinos e a sua evolução da semana.
-      </p>
-      <InstallAppButton />
+    <div className="dashboard-page athlete-dashboard-v2">
+      <header className="athlete-dashboard-heading">
+        <div>
+          <p className="eyebrow">Painel do atleta</p>
+          <h1 className="dashboard-title">Olá, {user.nome}</h1>
+          <p className="dashboard-subtitle">
+            Foco hoje, consistência amanhã.
+          </p>
+        </div>
+        <InstallAppButton />
+      </header>
 
-      <div className="dashboard-cards">
+      <section className="athlete-metric-strip" aria-label="Resumo dos seus treinos">
         {metrics.map((metric) => (
-          <Card key={metric.label} elevated>
-            <h3>{metric.label}</h3>
-            <p className="dashboard-card-value">{metric.value}</p>
-            <p className="dashboard-card-hint">{metric.hint}</p>
+          <Card key={metric.label} elevated className="athlete-metric-card">
+            <h2>{metric.label}</h2>
+            <p className="athlete-metric-value">{metric.value}</p>
+            <p>{metric.hint}</p>
           </Card>
         ))}
-      </div>
+      </section>
 
-      {"error" in feedResult ? (
-        <p className="form-error athlete-daily-feed-error" role="alert">
-          {feedResult.error}
-        </p>
-      ) : (
-        <AthleteDailyFeed feed={feedResult.data} />
-      )}
+      <div className="athlete-dashboard-layout">
+        <div className="athlete-dashboard-primary">
+          {"error" in feedResult ? (
+            <p className="form-error athlete-daily-feed-error" role="alert">
+              {feedResult.error}
+            </p>
+          ) : (
+            <AthleteDailyFeed feed={feedResult.data} />
+          )}
+        </div>
+
+        <aside className="athlete-dashboard-side" aria-label="Agenda de treinos">
+          <section className="athlete-side-panel" aria-labelledby="athlete-upcoming-title">
+            <div className="dashboard-section-heading">
+              <h2 id="athlete-upcoming-title">Próximos treinos</h2>
+              <Link href="/atleta/treinos">Ver todos</Link>
+            </div>
+            {trainings.length > 0 ? (
+              <ul className="athlete-upcoming-list">
+                {trainings.map((treino) => (
+                  <li key={treino.id}>
+                    <Link href="/atleta/treinos">
+                      <strong>{treino.titulo}</strong>
+                      <span>{treino.quando}</span>
+                      <small>{treino.detalhe}</small>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="dashboard-empty-state">Nenhum treino atribuído ainda.</p>
+            )}
+          </section>
+
+          <section className="athlete-side-panel athlete-calendar-shortcut" aria-labelledby="athlete-calendar-title">
+            <div>
+              <p className="eyebrow">Planejamento</p>
+              <h2 id="athlete-calendar-title">Seu calendário</h2>
+              <p>Consulte as datas dos treinos e registre sua execução.</p>
+            </div>
+            <Link className="button button-secondary" href="/atleta/calendario">
+              Abrir calendário
+            </Link>
+          </section>
+        </aside>
+      </div>
 
       {"error" in equipmentResult ? (
         <p className="form-error athlete-daily-feed-error" role="alert">
@@ -55,27 +98,6 @@ export default async function AtletaDashboard() {
       ) : (
         <AthleteEquipmentPanel data={equipmentResult.data} />
       )}
-
-      <section className="dashboard-section">
-        <h2>Treinos atribuídos</h2>
-        {trainings.length > 0 ? (
-          <ul className="dashboard-list">
-            {trainings.map((treino) => (
-              <li key={treino.id}>
-                <Link className="dashboard-list-title" href="/atleta/treinos">
-                  {treino.titulo}
-                </Link>
-                <span className="dashboard-list-when">{treino.quando}</span>
-                <span className="dashboard-list-detail">{treino.detalhe}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="dashboard-empty-state">
-            Nenhum treino atribuído ainda.
-          </p>
-        )}
-      </section>
     </div>
   );
 }
