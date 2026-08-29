@@ -88,8 +88,7 @@ export async function getAthleteDailyFeed(
     .eq("assessoria_id", user.assessoriaId)
     .eq("atleta_id", user.id)
     .not("agendado_para", "is", null)
-    .order("agendado_para", { ascending: true })
-    .limit(12);
+    .order("agendado_para", { ascending: true });
 
   if (error) return { error: feedError };
 
@@ -104,7 +103,14 @@ export async function getAthleteDailyFeed(
   return {
     data: {
       priority,
-      recent: assignments.filter((assignment) => assignment.id !== priority?.id).slice(0, 3),
+      recent: assignments
+        .filter((assignment) => assignment.id !== priority?.id)
+        .sort(
+          (left, right) =>
+            new Date(right.scheduledAt).getTime() -
+            new Date(left.scheduledAt).getTime(),
+        )
+        .slice(0, 3),
     },
   };
 }

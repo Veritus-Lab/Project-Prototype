@@ -28,14 +28,13 @@ function assignmentsQuery(
   data: unknown[] | null,
   error: unknown = null,
 ) {
-  const limit = vi.fn().mockResolvedValue({ data, error });
-  const order = vi.fn().mockReturnValue({ limit });
+  const order = vi.fn().mockResolvedValue({ data, error });
   const not = vi.fn().mockReturnValue({ order });
   const athleteEq = vi.fn().mockReturnValue({ not });
   const assessoriaEq = vi.fn().mockReturnValue({ eq: athleteEq });
   const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
 
-  return { assessoriaEq, athleteEq, limit, not, order, select };
+  return { assessoriaEq, athleteEq, not, order, select };
 }
 
 function assignment(overrides: Record<string, unknown> = {}) {
@@ -71,7 +70,9 @@ describe("athlete daily feed service", () => {
     const from = vi.fn().mockReturnValue(query);
     mocks.createServerClient.mockResolvedValue({ from });
 
-    await expect(getAthleteDailyFeed(athleteUser, now)).resolves.toMatchObject({
+    const result = await getAthleteDailyFeed(athleteUser, now);
+
+    expect(result).toMatchObject({
       data: {
         priority: {
           id: "today",
@@ -106,6 +107,51 @@ describe("athlete daily feed service", () => {
 
     expect(result).toMatchObject({
       data: { priority: { id: "next", isToday: false, status: "atribuido" } },
+    });
+  });
+
+  it("finds a future assignment after more than twelve past assignments", async () => {
+    const pastAssignments = Array.from({ length: 13 }, (_, index) =>
+      assignment({
+        id: `past-${index}`,
+        agendado_para: `2026-08-${String(1 + index).padStart(2, "0")}T12:00:00.000Z`,
+      }),
+    );
+    const query = assignmentsQuery([
+      ...pastAssignments,
+      assignment({
+        id: "future",
+        agendado_para: "2026-09-01T12:00:00.000Z",
+      }),
+    ]);
+    mocks.createServerClient.mockResolvedValue({
+      from: vi.fn().mockReturnValue(query),
+    });
+
+    await expect(getAthleteDailyFeed(athleteUser, now)).resolves.toMatchObject({
+      data: { priority: { id: "future", isToday: false } },
+    });
+  });
+
+  it("returns the three most recent assignments without the priority item", async () => {
+    const query = assignmentsQuery([
+      assignment({ id: "today" }),
+      assignment({ id: "next-1", agendado_para: "2026-08-29T12:00:00.000Z" }),
+      assignment({ id: "next-2", agendado_para: "2026-08-30T12:00:00.000Z" }),
+      assignment({ id: "next-3", agendado_para: "2026-08-31T12:00:00.000Z" }),
+      assignment({ id: "next-4", agendado_para: "2026-09-01T12:00:00.000Z" }),
+    ]);
+    mocks.createServerClient.mockResolvedValue({
+      from: vi.fn().mockReturnValue(query),
+    });
+
+    const result = await getAthleteDailyFeed(athleteUser, now);
+
+    expect(result).toMatchObject({
+      data: {
+        priority: { id: "today" },
+        recent: [{ id: "next-4" }, { id: "next-3" }, { id: "next-2" }],
+      },
     });
   });
 
