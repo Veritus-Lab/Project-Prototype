@@ -7,6 +7,8 @@ import {
   Dumbbell,
   MailCheck,
   Plus,
+  Route,
+  TrendingUp,
   UsersRound,
 } from "lucide-react";
 
@@ -22,7 +24,7 @@ import { listTrainerBillingReminders } from "@/lib/services/reminder-dashboard.s
 
 export const metadata = { title: "Painel do treinador — FLERNK" };
 
-const metricIcons = [UsersRound, Dumbbell, MailCheck];
+const metricIcons = [UsersRound, Dumbbell, MailCheck, TrendingUp, Route];
 
 export default async function TreinadorDashboard() {
   const user = await requireRole("treinador");
@@ -33,6 +35,12 @@ export default async function TreinadorDashboard() {
     listTrainerBillingReminders(user),
   ]);
   const { metrics, trainings, attention = [], scheduledTrainings = [] } = dashboardData;
+  const performanceMetrics = "data" in performanceResult
+    ? performanceResult.data.metrics.filter((metric) =>
+        metric.label === "Adesão semanal" || metric.label === "Distância registrada",
+      )
+    : [];
+  const summaryMetrics = [...metrics, ...performanceMetrics];
 
   return (
     <div className="dashboard-page trainer-dashboard">
@@ -41,7 +49,7 @@ export default async function TreinadorDashboard() {
           <p className="eyebrow">Painel do treinador</p>
           <h1 className="dashboard-title">Olá, {user.nome}</h1>
           <p className="dashboard-subtitle">
-            Visão operacional da sua assessoria.
+            Acompanhe o que precisa acontecer na sua assessoria hoje.
           </p>
         </div>
         <Link className="button bg-brand button-primary" href="/treinador/treinos/novo">
@@ -51,7 +59,7 @@ export default async function TreinadorDashboard() {
       </div>
 
       <section className="trainer-metrics" aria-label="Resumo da assessoria">
-        {metrics.map((metric, index) => {
+        {summaryMetrics.map((metric, index) => {
           const Icon = metricIcons[index] ?? Dumbbell;
 
           return (
@@ -71,8 +79,8 @@ export default async function TreinadorDashboard() {
         <section className="trainer-dashboard-panel trainer-training-panel">
           <div className="trainer-panel-heading">
             <div>
-              <p className="eyebrow">Operação</p>
-              <h2>Atividade de treinos</h2>
+              <p className="eyebrow">Agenda de hoje</p>
+              <h2>Treinos programados</h2>
             </div>
             <Link href="/treinador/calendario">
               Ver calendário
@@ -105,7 +113,7 @@ export default async function TreinadorDashboard() {
         <section className="trainer-dashboard-panel trainer-actions-panel">
           <div className="trainer-panel-heading">
             <div>
-              <p className="eyebrow">Atalhos</p>
+              <p className="eyebrow">Operação</p>
               <h2>Ações rápidas</h2>
             </div>
           </div>
@@ -134,7 +142,7 @@ export default async function TreinadorDashboard() {
           <div className="trainer-panel-heading">
             <div>
               <p className="eyebrow">Acompanhamento</p>
-              <h2>Atletas que precisam de atenção</h2>
+              <h2>Atletas em destaque</h2>
             </div>
             <Link href="/treinador/atletas">
               Ver atletas
@@ -165,8 +173,8 @@ export default async function TreinadorDashboard() {
         <section className="trainer-dashboard-panel trainer-schedule-panel">
           <div className="trainer-panel-heading">
             <div>
-              <p className="eyebrow">Agenda</p>
-              <h2>Próximos treinos programados</h2>
+              <p className="eyebrow">Próximos dias</p>
+              <h2>Agenda de treinos</h2>
             </div>
             <Link href="/treinador/calendario">
               Programar

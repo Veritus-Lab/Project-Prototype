@@ -97,6 +97,8 @@ describe("dashboard pages", () => {
     expect(screen.getByText("4")).toBeInTheDocument();
     expect(screen.getByText("Tiro de 400m")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Calendário da semana" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Agenda de treinos" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Atletas em destaque" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ritmo da equipe nesta semana" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Lembretes preparados" })).toBeInTheDocument();
     expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
