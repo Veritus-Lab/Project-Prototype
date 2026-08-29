@@ -34,3 +34,9 @@
 ## Proxima task
 
 Task 24.5: desempenho operacional com execucoes reais de treino, metas e indicadores de adesao. Nao havera dados simulados.
+
+## Entrega
+
+- Commit: `6e83c7b feat: add trainer weekly calendar`.
+- Git: publicado em `codex/task-10-real-dashboards` e em `main`.
+- Vercel: producao `READY` no deploy `dpl_Avfp7BQXhYkpfF4WDEF2UMiKJpuK`.
