@@ -41,3 +41,9 @@
 ## Proxima task
 
 Task 25: tela do atleta e PWA leve, iniciando pelo feed diario de dados reais e pela adaptacao mobile do painel do atleta.
+
+## Entrega
+
+- Commit: `68945af feat: add trainer reminder inbox`.
+- Git: publicado em `codex/task-10-real-dashboards` e em `main`.
+- Vercel: producao `READY` no deploy `dpl_6TQ8sVo4sKYQVMsgRiFeEQKZdRSr`.
