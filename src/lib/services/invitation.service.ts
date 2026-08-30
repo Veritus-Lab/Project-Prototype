@@ -66,14 +66,18 @@ const genericAcceptanceError =
   "Não foi possível aceitar o convite agora. Tente novamente.";
 
 function configuredAppOrigin() {
-  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ?? process.env.VERCEL_URL;
 
   if (!configuredUrl) {
     return undefined;
   }
 
   try {
-    const url = new URL(configuredUrl);
+    const url = new URL(
+      configuredUrl.startsWith("http") ? configuredUrl : `https://${configuredUrl}`,
+    );
 
     if (url.protocol !== "http:" && url.protocol !== "https:") {
       return undefined;

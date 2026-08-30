@@ -16,10 +16,17 @@ export default async function TrainerAthletesPage() {
   return (
     <div className="dashboard-page">
       <p className="eyebrow">Painel do treinador</p>
-      <h1 className="dashboard-title">Atletas</h1>
-      <p className="dashboard-subtitle">
-        Acompanhe os atletas vinculados à sua assessoria.
-      </p>
+      <div className="page-heading-actions">
+        <div>
+          <h1 className="dashboard-title">Atletas</h1>
+          <p className="dashboard-subtitle">
+            Acompanhe os atletas vinculados à sua assessoria.
+          </p>
+        </div>
+        <Link className="button bg-brand button-primary" href="/treinador/convites">
+          Convidar atleta
+        </Link>
+      </div>
 
       <section className="dashboard-section">
         <Card elevated>
@@ -50,7 +57,7 @@ export default async function TrainerAthletesPage() {
             </div>
           ) : (
             <p className="dashboard-empty-state">
-              Nenhum atleta vinculado ainda.
+              Nenhum atleta vinculado ainda. Envie um convite para começar.
             </p>
           )}
         </Card>
