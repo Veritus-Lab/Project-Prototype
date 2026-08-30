@@ -299,15 +299,17 @@ export async function deleteInvitation(invitationId: string): Promise<Invitation
   try {
     const user = await requireRole("treinador");
     const supabase = await createServerClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("convites_atletas")
       .delete()
       .eq("assessoria_id", user.assessoriaId)
       .eq("treinador_id", user.id)
       .eq("id", invitationId)
-      .neq("status", "aceito");
+      .neq("status", "aceito")
+      .select("id")
+      .maybeSingle();
 
-    if (error) return { error: "Não foi possível apagar o convite agora." };
+    if (error || !data) return { error: "Não foi possível apagar o convite agora." };
     return { data: undefined };
   } catch {
     return { error: "Não foi possível apagar o convite agora." };

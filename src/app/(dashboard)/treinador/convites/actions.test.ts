@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   createInvitation: vi.fn(),
   revokeInvitation: vi.fn(),
+  deleteInvitation: vi.fn(),
   revalidatePath: vi.fn(),
 }));
 
@@ -13,11 +14,13 @@ vi.mock("next/cache", () => ({
 vi.mock("@/lib/services/invitation.service", () => ({
   createInvitation: mocks.createInvitation,
   revokeInvitation: mocks.revokeInvitation,
+  deleteInvitation: mocks.deleteInvitation,
 }));
 
 import {
   createInvitationAction,
   revokeInvitationAction,
+  deleteInvitationAction,
 } from "./actions";
 import { initialInvitationActionState } from "./state";
 
@@ -73,6 +76,13 @@ describe("invitation dashboard actions", () => {
       undefined,
     );
     expect(mocks.revokeInvitation).toHaveBeenCalledWith("invite-1");
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/treinador/convites");
+  });
+
+  it("deletes an invitation and revalidates the list", async () => {
+    mocks.deleteInvitation.mockResolvedValueOnce({ data: undefined });
+    await expect(deleteInvitationAction(formData({ id: "invite-1" }))).resolves.toBe(undefined);
+    expect(mocks.deleteInvitation).toHaveBeenCalledWith("invite-1");
     expect(mocks.revalidatePath).toHaveBeenCalledWith("/treinador/convites");
   });
 });
