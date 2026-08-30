@@ -391,6 +391,8 @@ input {
 .dashboard-sidebar.is-collapsed .dashboard-nav-link, .dashboard-sidebar.is-collapsed .dashboard-nav-item { justify-content: center; padding-inline: 0; }
 .button-danger { color: #ff8c8c; }
 .button-danger:hover { background: rgba(255, 104, 104, 0.12); color: #ffb1b1; }
+.invitation-link-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.invitation-link-actions .form-error { width: 100%; margin: 0; }
 
 .dashboard-nav-link svg,
 .dashboard-nav-item svg {

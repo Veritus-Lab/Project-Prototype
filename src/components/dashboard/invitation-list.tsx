@@ -1,6 +1,7 @@
 import { deleteInvitationAction, revokeInvitationAction } from "@/app/(dashboard)/treinador/convites/actions";
 import { Button } from "@/components/ui/button";
 import { DestructiveActionForm } from "@/components/dashboard/destructive-action-form";
+import { InvitationLinkButton } from "@/components/dashboard/invitation-link-button";
 import type { InvitationSummary } from "@/lib/services/invitation.service";
 
 const stateLabel: Record<InvitationSummary["state"], string> = {
@@ -45,16 +46,7 @@ export function InvitationList({
             {stateLabel[invitation.state]}
           </span>
           {invitation.state === "active" ? (
-            <form action={revokeInvitationAction}>
-              <input type="hidden" name="id" value={invitation.id} />
-              <Button
-                type="submit"
-                variant="ghost"
-                aria-label={`Revogar ${invitation.email}`}
-              >
-                Revogar
-              </Button>
-            </form>
+            <><InvitationLinkButton email={invitation.email} /><form action={revokeInvitationAction}><input type="hidden" name="id" value={invitation.id} /><Button type="submit" variant="ghost" aria-label={`Revogar ${invitation.email}`}>Revogar</Button></form></>
           ) : null}
           {invitation.state !== "used" ? <DestructiveActionForm action={deleteInvitationAction} fieldName="id" value={invitation.id} label="Apagar" confirmation={`Apagar o convite de ${invitation.email}? Esta ação não pode ser desfeita.`} /> : null}
         </article>
