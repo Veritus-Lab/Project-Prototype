@@ -148,6 +148,18 @@ export async function listTrainerTrainings(
   return { data: trainings as TrainerTrainingListItem[] };
 }
 
+export async function deleteTrainerTraining(user: SessionUser, trainingId: string): Promise<TrainingResult<void>> {
+  const supabase = await createServerClient();
+  const { error } = await supabase
+    .from("treinos")
+    .delete()
+    .eq("assessoria_id", user.assessoriaId)
+    .eq("treinador_id", user.id)
+    .eq("id", trainingId);
+
+  return error ? { error: "Não foi possível apagar o treino agora." } : { data: undefined };
+}
+
 export async function assignTrainingToAthletes(
   user: SessionUser,
   input: AssignTrainingInput,

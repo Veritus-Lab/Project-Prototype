@@ -295,6 +295,25 @@ function translateAcceptanceError(message: string) {
   return genericAcceptanceError;
 }
 
+export async function deleteInvitation(invitationId: string): Promise<InvitationResult<void>> {
+  try {
+    const user = await requireRole("treinador");
+    const supabase = await createServerClient();
+    const { error } = await supabase
+      .from("convites_atletas")
+      .delete()
+      .eq("assessoria_id", user.assessoriaId)
+      .eq("treinador_id", user.id)
+      .eq("id", invitationId)
+      .neq("status", "aceito");
+
+    if (error) return { error: "Não foi possível apagar o convite agora." };
+    return { data: undefined };
+  } catch {
+    return { error: "Não foi possível apagar o convite agora." };
+  }
+}
+
 async function completeInvitationAcceptanceWithClient(
   supabase: ServerSupabaseClient,
   token: string,

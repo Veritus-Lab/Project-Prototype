@@ -6,6 +6,7 @@ import { requireRole } from "@/lib/auth/session";
 import {
   assignTrainingToAthletes,
   createTraining,
+  deleteTrainerTraining,
 } from "@/lib/services/training.service";
 import { assignTrainingSchema } from "@/lib/validators/training-assignment";
 import { createTrainingSchema } from "@/lib/validators/training";
@@ -20,6 +21,15 @@ function parseBlocks(value: FormDataEntryValue | null) {
     return JSON.parse(value);
   } catch {
     return undefined;
+  }
+}
+
+export async function deleteTrainingAction(formData: FormData): Promise<void> {
+  const user = await requireRole("treinador");
+  const result = await deleteTrainerTraining(user, String(formData.get("trainingId") ?? ""));
+  if (!("error" in result)) {
+    revalidatePath("/treinador/treinos");
+    revalidatePath("/treinador");
   }
 }
 

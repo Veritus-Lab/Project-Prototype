@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import {
   createInvitation,
+  deleteInvitation,
   revokeInvitation,
 } from "@/lib/services/invitation.service";
 import { invitationEmailSchema } from "@/lib/validators/invitation";
@@ -41,6 +42,11 @@ export async function createInvitationAction(
     createdLink: result.data.link,
     createdEmail: result.data.email,
   };
+}
+
+export async function deleteInvitationAction(formData: FormData): Promise<void> {
+  const result = await deleteInvitation(String(formData.get("id") ?? ""));
+  if (!("error" in result)) revalidatePath(invitationsPath);
 }
 
 export async function revokeInvitationAction(

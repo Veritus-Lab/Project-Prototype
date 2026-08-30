@@ -50,8 +50,8 @@ input {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-text-muted);
+  outline-offset: 2px;
 }
 
 ::selection {
@@ -324,11 +324,23 @@ input {
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem 1rem;
+  transition: width 180ms ease, padding 180ms ease;
   border-right: 1px solid var(--color-border);
   background: var(--color-surface);
 }
 
+.dashboard-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .dashboard-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
   padding-left: 0.5rem;
   font-size: 1.15rem;
   font-weight: 900;
@@ -367,6 +379,18 @@ input {
   color: #747c87;
   cursor: default;
 }
+
+.dashboard-brand img { width: 1.65rem; height: 1.65rem; object-fit: contain; }
+.dashboard-sidebar-toggle { display: inline-grid; width: 2rem; height: 2rem; place-items: center; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text-muted); cursor: pointer; }
+.dashboard-sidebar-toggle:hover { background: var(--color-surface-elevated); color: var(--color-accent); }
+.dashboard-sidebar.is-collapsed { width: 4.75rem; padding-inline: 0.75rem; }
+.dashboard-sidebar.is-collapsed .dashboard-brand span:not(.dashboard-brand),
+.dashboard-sidebar.is-collapsed .dashboard-nav-link span,
+.dashboard-sidebar.is-collapsed .dashboard-nav-item span { display: none; }
+.dashboard-sidebar.is-collapsed .dashboard-brand { padding-left: 0; }
+.dashboard-sidebar.is-collapsed .dashboard-nav-link, .dashboard-sidebar.is-collapsed .dashboard-nav-item { justify-content: center; padding-inline: 0; }
+.button-danger { color: #ff8c8c; }
+.button-danger:hover { background: rgba(255, 104, 104, 0.12); color: #ffb1b1; }
 
 .dashboard-nav-link svg,
 .dashboard-nav-item svg {

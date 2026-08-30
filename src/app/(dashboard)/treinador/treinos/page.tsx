@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 import { TrainingAssignmentForm } from "@/components/dashboard/training-assignment-form";
+import { DestructiveActionForm } from "@/components/dashboard/destructive-action-form";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
 import { listTrainerAthletes } from "@/lib/services/athlete.service";
 import { listTrainerTrainings } from "@/lib/services/training.service";
+import { deleteTrainingAction } from "@/lib/actions/training.actions";
 
 export const metadata = { title: "Treinos - FLERNK" };
 
@@ -61,6 +63,7 @@ export default async function TrainerTrainingsPage() {
                       <TrainingAssignmentForm athletes={athletes} trainingId={training.id} />
                     )}
                   </details>
+                  <DestructiveActionForm action={deleteTrainingAction} fieldName="trainingId" value={training.id} label="Apagar treino" confirmation={`Apagar o treino ${training.titulo}? As atribuições relacionadas também serão removidas.`} />
                 </li>
               ))}
             </ul>
