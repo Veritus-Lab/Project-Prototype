@@ -10,14 +10,18 @@
 
 ## Bloqueios para concluir a entrega
 
-1. A branch `codex/task-10-real-dashboards` possui sete commits ainda fora de
-   `origin/main`. A Vercel de produção continua refletindo `main`; não houve
-   promoção desta entrega.
-2. A carga demo não pode ser executada com segurança neste ambiente porque
+1. A carga demo não pode ser executada com segurança neste ambiente porque
    `SUPABASE_SERVICE_ROLE_KEY` e `FLERNK_DEMO_PASSWORD` não estão definidos.
-3. O runner local encerrou `npm test` sem resumo e não avançou para `npm run
+2. O runner local encerrou `npm test` sem resumo e não avançou para `npm run
    build` quando ambos foram solicitados. Por isso não há declaração de suite
    completa ou build verde.
+
+## Promoção e disponibilidade
+
+- `origin/main` foi promovido por fast-forward para `f8cc8aa`.
+- O deploy automático da Vercel foi acionado pelo push para `main`.
+- O smoke test pós-promoção em `https://project-prototype-ashy.vercel.app/login`
+  respondeu HTTP 200 e exibiu a tela de entrada.
 
 ## Próximas ações de liberação
 
@@ -25,5 +29,4 @@
    executar `scripts/seed-demo.mjs` conforme `docs/DEMO_APRESENTACAO.md`.
 2. Executar `npm test` e `npm run build` em CI ou em terminal que mantenha os
    processos até o fim.
-3. Revisar e promover `codex/task-10-real-dashboards` para `main`.
-4. Confirmar o deploy Vercel e testar login nas contas demo, desktop e celular.
+3. Testar login nas contas demo, desktop e celular.
