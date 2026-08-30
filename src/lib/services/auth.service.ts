@@ -19,16 +19,18 @@ const accountExistsPatterns = [
 
 const invalidCredentialsPattern = "invalid login credentials";
 const emailNotConfirmedPattern = "email not confirmed";
+const productionAppOrigin = "https://project-prototype-ashy.vercel.app";
 
 export function getConfiguredAppOrigin(): string | undefined {
-  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
-
-  if (!configuredUrl) {
-    return undefined;
-  }
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ?? process.env.VERCEL_URL
+    ?? productionAppOrigin;
 
   try {
-    const url = new URL(configuredUrl);
+    const url = new URL(
+      configuredUrl.startsWith("http") ? configuredUrl : `https://${configuredUrl}`,
+    );
 
     if (url.protocol !== "http:" && url.protocol !== "https:") {
       return undefined;

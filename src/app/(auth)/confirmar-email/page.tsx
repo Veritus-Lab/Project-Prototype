@@ -37,7 +37,7 @@ export default async function ConfirmEmailPage({
         <h1>Quase lá.</h1>
         <p className="auth-lead">
           Enviamos um link de confirmação{email ? ` para ${email}` : ""}. Abra o
-          e-mail para ativar a sua conta de treinador.
+          e-mail para ativar sua conta e concluir o acesso à plataforma.
         </p>
         <p className="field-hint">
           Não encontrou a mensagem? Verifique também a caixa de spam.
