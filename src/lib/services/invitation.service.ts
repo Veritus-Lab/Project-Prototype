@@ -396,7 +396,8 @@ export async function acceptInvitation(
       if (signInError) return { error: genericAcceptanceError };
 
       const completion = await completeInvitationAcceptanceWithClient(supabase, token, nome);
-      return "error" in completion ? { error: completion.error } : { data: { confirmationRequired: false } };
+      if ("error" in completion) return { error: completion.error ?? genericAcceptanceError };
+      return { data: { confirmationRequired: false } };
     }
 
     if (signUpError || !signUpData.user?.id) {
