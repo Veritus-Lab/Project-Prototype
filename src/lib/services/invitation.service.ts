@@ -64,6 +64,7 @@ const genericRevokeError =
 
 const genericAcceptanceError =
   "Não foi possível aceitar o convite agora. Tente novamente.";
+const existingAccountPattern = "already registered";
 
 const productionAppOrigin = "https://project-prototype-ashy.vercel.app";
 
@@ -389,6 +390,14 @@ export async function acceptInvitation(
         },
       },
     });
+
+    if (signUpError && signUpError.message.toLowerCase().includes(existingAccountPattern)) {
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password: senha });
+      if (signInError) return { error: genericAcceptanceError };
+
+      const completion = await completeInvitationAcceptanceWithClient(supabase, token, nome);
+      return "error" in completion ? { error: completion.error } : { data: { confirmationRequired: false } };
+    }
 
     if (signUpError || !signUpData.user?.id) {
       return { error: genericAcceptanceError };
