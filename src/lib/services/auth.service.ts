@@ -22,10 +22,12 @@ const emailNotConfirmedPattern = "email not confirmed";
 const productionAppOrigin = "https://project-prototype-ashy.vercel.app";
 
 export function getConfiguredAppOrigin(): string | undefined {
-  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL
-    ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ?? process.env.VERCEL_URL
-    ?? productionAppOrigin;
+  const configuredUrl = process.env.NODE_ENV === "production"
+    ? process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ?? process.env.VERCEL_URL
+      ?? productionAppOrigin
+    : process.env.NEXT_PUBLIC_SITE_URL
+      ?? productionAppOrigin;
 
   try {
     const url = new URL(
