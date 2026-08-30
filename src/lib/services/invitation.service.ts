@@ -65,14 +65,13 @@ const genericRevokeError =
 const genericAcceptanceError =
   "Não foi possível aceitar o convite agora. Tente novamente.";
 
+const productionAppOrigin = "https://project-prototype-ashy.vercel.app";
+
 function configuredAppOrigin() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL
     ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ?? process.env.VERCEL_URL;
-
-  if (!configuredUrl) {
-    return undefined;
-  }
+    ?? process.env.VERCEL_URL
+    ?? productionAppOrigin;
 
   try {
     const url = new URL(
