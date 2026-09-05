@@ -16,7 +16,7 @@ export default async function ConvitesPage() {
       <p className="eyebrow">Painel do treinador</p>
       <h1 className="dashboard-title">Convites</h1>
       <p className="dashboard-subtitle">
-        Gere links seguros para atletas entrarem na sua assessoria.
+        Envie convites seguros por e-mail para atletas entrarem na sua assessoria.
       </p>
 
       <div className="invitation-grid">
@@ -26,7 +26,7 @@ export default async function ConvitesPage() {
         </Card>
 
         <section className="dashboard-section invitation-panel">
-          <h2>Convites recentes</h2>
+          <h2>Acompanhe os convites</h2>
           {"error" in result ? (
             <p className="form-error" role="alert">{result.error}</p>
           ) : (

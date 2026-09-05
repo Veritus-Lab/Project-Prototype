@@ -94,6 +94,108 @@ Observação: a plataforma deve tratar essa biblioteca como ferramenta do treina
 
 ## Roadmap por Tasks
 
+### Task 25 — Fundação de e-mails transacionais (concluída)
+
+Objetivo: preparar o envio seguro de e-mails pelo Resend sem expor credenciais.
+
+Entregas:
+
+- SDK oficial `resend` instalado.
+- Cliente exclusivo do servidor e validação de `RESEND_API_KEY`.
+- Segredo cadastrado na Vercel para Development, Preview e Production.
+- Exemplo de ambiente atualizado sem valores reais.
+
+Testes de fluxo:
+
+- Treinador: nenhuma tela muda nesta task; a criação de convite atual continua funcionando.
+- Atleta: nenhuma tela muda nesta task; o aceite atual continua protegido por token, expiração e e-mail.
+- Técnico: tipos, lint e testes automatizados antes de seguir para o template.
+
+### Task 26 — Modelo de e-mail de convite (em andamento)
+
+Objetivo: criar o e-mail transacional FLERNK que leva o atleta ao aceite seguro.
+
+Entregas:
+
+- Template responsivo com nome da assessoria, validade, orientação e botão de aceite.
+- Remetente de teste `onboarding@resend.dev` enquanto não houver domínio verificado.
+- Token apenas no URL do botão; nunca em banco, lista, interface ou logs.
+
+Testes de fluxo:
+
+- Treinador: revisa o conteúdo e confirma que o e-mail identifica a assessoria correta.
+- Atleta: recebe o e-mail de teste, abre o botão e chega à tela pública de convite.
+- Técnico: teste de renderização, link seguro e conteúdo sem segredos.
+
+### Task 27 — Envio confiável de convites (implementação inicial concluída)
+
+Objetivo: enviar o convite automaticamente ao criar ou reenviar.
+
+Entregas:
+
+- Service servidor cria o convite e despacha o e-mail pelo Resend.
+- Idempotência para evitar duplicidade em retries.
+- Tratamento claro de falha: convite preservado e opção de reenviar.
+
+Implementado: criação agora dispara o e-mail no servidor com chave de idempotência
+por convite; o botão de reenvio cria um novo convite seguro e invalida o anterior.
+O registro detalhado de entrega/falha no banco entra na Task 29.
+
+Testes de fluxo:
+
+- Treinador: cria convite, vê confirmação de envio e consegue reenviar após falha.
+- Atleta: recebe apenas um convite válido e conclui o cadastro com o mesmo e-mail.
+- Técnico: sucesso, erro Resend, retry e convite revogado cobertos por testes.
+
+### Task 28 — Redesenho da central de convites (em andamento)
+
+Objetivo: substituir a exposição de links pela experiência de envio de e-mail.
+
+Entregas:
+
+- Formulário com ação “Enviar convite”.
+- Lista com estados enviado, falhou, reenviar, aceito, expirado e revogado.
+- Remoção dos controles de copiar/abrir link da interface do treinador.
+
+Testes de fluxo:
+
+- Treinador: envia, reenviа, revoga e acompanha o estado de um convite.
+- Atleta: usa o botão recebido; convite revogado/expirado deixa de permitir cadastro.
+- Técnico: acessibilidade, responsividade e estados vazios/erro.
+
+### Task 29 — Entrega e eventos de e-mail
+
+Objetivo: registrar o ciclo de entrega sem comprometer privacidade ou RLS.
+
+Entregas:
+
+- Migration forward-only para status, horários e identificador externo de entrega.
+- Webhook assinado da Resend para entregue, bounce, reclamação e supressão.
+- Reenvio bloqueado ou alertado para falhas permanentes.
+
+Testes de fluxo:
+
+- Treinador: vê status compreensível, sem dados técnicos ou tokens.
+- Atleta: recebe comunicação adequada; endereços com bounce não recebem tentativas repetidas.
+- Técnico: assinatura, idempotência de webhook, RLS e isolamento multi-tenant validados.
+
+### Task 30 — QA de entrega FLERNK
+
+Objetivo: concluir o fluxo ponta a ponta e deixá-lo pronto para a entrega.
+
+Entregas:
+
+- Roteiro manual de homologação para treinador e atleta.
+- Testes automatizados, lint, typecheck e build verdes.
+- QA desktop/mobile e documentação operacional atualizada.
+- Configuração de domínio/remetente de produção quando disponível.
+
+Testes de fluxo:
+
+- Treinador: cadastro/login → envio → reenvio → revogação → consulta do resultado.
+- Atleta: recebimento → abertura → cadastro/confirmar e-mail → login → dashboard.
+- Segurança: cross-tenant, convite duplicado, expirado, revogado, usado e e-mail divergente.
+
 ### Task 10 — Dashboards com dados reais — concluída em desenvolvimento
 
 - Dashboard do treinador lê contadores e treinos reais.
@@ -355,6 +457,7 @@ Critérios:
 11. Task 22: preparação WhatsApp.
 12. Task 23: integração WhatsApp.
 13. Task 24: dashboards v2.
+14. Tasks 25–30: e-mails transacionais e central de convites para entrega.
 
 ## Critério de Pronto da Etapa 2
 

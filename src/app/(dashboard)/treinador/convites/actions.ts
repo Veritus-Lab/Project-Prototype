@@ -39,7 +39,6 @@ export async function createInvitationAction(
   revalidatePath(invitationsPath);
 
   return {
-    createdLink: result.data.link,
     createdEmail: result.data.email,
   };
 }

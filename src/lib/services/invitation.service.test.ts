@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({
   createServerClient: vi.fn(),
   requireRole: vi.fn(),
   createInvitationToken: vi.fn(),
+  sendInvitationEmail: vi.fn(),
 }));
 
 vi.mock("@/lib/supabase/server", () => ({
@@ -12,6 +13,10 @@ vi.mock("@/lib/supabase/server", () => ({
 
 vi.mock("@/lib/auth/session", () => ({
   requireRole: mocks.requireRole,
+}));
+
+vi.mock("@/lib/email/invitation-email", () => ({
+  sendInvitationEmail: mocks.sendInvitationEmail,
 }));
 
 vi.mock("@/lib/invitations/token", async (importOriginal) => {
@@ -67,6 +72,13 @@ function createSupabaseMock(updateMode: "duplicate" | "revoke" = "duplicate") {
 
   const insert = vi.fn().mockReturnValue({ select: insertSelect });
 
+  const assessoriaSingle = vi.fn().mockResolvedValue({
+    data: { nome: "Corre Forte" },
+    error: null,
+  });
+  const assessoriaEq = vi.fn().mockReturnValue({ single: assessoriaSingle });
+  const assessoriaSelect = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
   const listOrder = vi.fn();
   const listEqTrainer = vi.fn();
   const listEqAssessoria = vi.fn();
@@ -110,7 +122,11 @@ function createSupabaseMock(updateMode: "duplicate" | "revoke" = "duplicate") {
 
   const update = vi.fn(() => (updateMode === "revoke" ? revoke : revokeDuplicates));
 
-  const from = vi.fn(() => ({ update, insert, select }));
+  const from = vi.fn((table: string) =>
+    table === "assessorias"
+      ? { select: assessoriaSelect }
+      : { update, insert, select },
+  );
 
   return {
     from,
@@ -129,6 +145,7 @@ function createSupabaseMock(updateMode: "duplicate" | "revoke" = "duplicate") {
     revokeEqAssessoria,
     revokeEqTrainer,
     revokeEqId,
+    assessoriaEq,
   };
 }
 
@@ -147,9 +164,10 @@ describe("invitation service", () => {
       token: "raw_url_safe_token",
       hash: "a".repeat(64),
     });
+    mocks.sendInvitationEmail.mockResolvedValue({ id: "email-1" });
   });
 
-  it("creates an invitation for the current trainer and returns the raw link only once", async () => {
+  it("creates an invitation and sends its private link by email", async () => {
     const supabase = createSupabaseMock();
     mocks.createServerClient.mockResolvedValue(supabase);
 
@@ -157,12 +175,20 @@ describe("invitation service", () => {
       data: expect.objectContaining({
         id: "invite-1",
         email: "atleta@example.com",
-        link: "https://app.flernk.test/convite/raw_url_safe_token",
+        emailMessageId: "email-1",
         state: "active",
       }),
     });
 
     expect(mocks.requireRole).toHaveBeenCalledWith("treinador");
+    expect(supabase.assessoriaEq).toHaveBeenCalledWith("id", "assessoria-1");
+    expect(mocks.sendInvitationEmail).toHaveBeenCalledWith({
+      to: "atleta@example.com",
+      assessoriaNome: "Corre Forte",
+      invitationUrl: "https://app.flernk.test/convite/raw_url_safe_token",
+      expiresAt: "2026-08-31T12:00:00.000Z",
+      invitationId: "invite-1",
+    });
     expect(supabase.updateDuplicatesEqAssessoria).toHaveBeenCalledWith(
       "assessoria_id",
       "assessoria-1",

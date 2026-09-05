@@ -47,12 +47,12 @@ describe("invitation dashboard actions", () => {
     expect(mocks.createInvitation).not.toHaveBeenCalled();
   });
 
-  it("creates an invitation and returns the one-time link", async () => {
+  it("creates an invitation and confirms the e-mail delivery request", async () => {
     mocks.createInvitation.mockResolvedValueOnce({
       data: {
         id: "invite-1",
         email: "atleta@example.com",
-        link: "https://app.flernk.test/convite/raw_token",
+        emailMessageId: "email-1",
       },
     });
 
@@ -62,7 +62,6 @@ describe("invitation dashboard actions", () => {
         formData({ email: "atleta@example.com" }),
       ),
     ).resolves.toEqual({
-      createdLink: "https://app.flernk.test/convite/raw_token",
       createdEmail: "atleta@example.com",
     });
     expect(mocks.createInvitation).toHaveBeenCalledWith("atleta@example.com");

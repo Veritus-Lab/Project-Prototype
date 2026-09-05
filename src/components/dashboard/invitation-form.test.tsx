@@ -11,23 +11,19 @@ describe("InvitationForm", () => {
       "autocomplete",
       "email",
     );
-    expect(screen.getByRole("button", { name: "Gerar convite" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Enviar convite" })).toBeEnabled();
   });
 
-  it("shows the one-time link when a new invitation was created", () => {
+  it("confirms that the invitation was sent without exposing its private link", () => {
     render(
       <InvitationForm
         initialState={{
           createdEmail: "atleta@example.com",
-          createdLink: "https://app.flernk.test/convite/raw_token",
         }}
       />,
     );
 
-    expect(screen.getByText("Link criado para atleta@example.com")).toBeInTheDocument();
-    expect(screen.getByLabelText("Link do convite")).toHaveValue(
-      "https://app.flernk.test/convite/raw_token",
-    );
-    expect(screen.getByRole("button", { name: "Copiar link" })).toBeEnabled();
+    expect(screen.getByText("Convite enviado para atleta@example.com.")).toBeInTheDocument();
+    expect(screen.queryByText(/convite\//i)).not.toBeInTheDocument();
   });
 });

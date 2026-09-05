@@ -5,7 +5,7 @@ import { InvitationLinkButton } from "@/components/dashboard/invitation-link-but
 import type { InvitationSummary } from "@/lib/services/invitation.service";
 
 const stateLabel: Record<InvitationSummary["state"], string> = {
-  active: "Ativo",
+  active: "Enviado",
   expired: "Expirado",
   used: "Aceito",
   revoked: "Revogado",
@@ -27,7 +27,7 @@ export function InvitationList({
   if (invitations.length === 0) {
     return (
       <p className="dashboard-demo-note">
-        Nenhum convite criado ainda.
+        Nenhum convite enviado ainda. Convide o primeiro atleta por e-mail.
       </p>
     );
   }
@@ -38,15 +38,21 @@ export function InvitationList({
         <article className="invitation-row" key={invitation.id}>
           <div>
             <p className="invitation-email">{invitation.email}</p>
-            <p className="dashboard-list-detail">
-              Expira em {formatDate(invitation.expira_em)}
-            </p>
+            <p className="dashboard-list-detail">Expira em {formatDate(invitation.expira_em)}</p>
           </div>
           <span className={`invitation-status invitation-status-${invitation.state}`}>
             {stateLabel[invitation.state]}
           </span>
           {invitation.state === "active" ? (
-            <><InvitationLinkButton email={invitation.email} /><form action={revokeInvitationAction}><input type="hidden" name="id" value={invitation.id} /><Button type="submit" variant="ghost" aria-label={`Revogar ${invitation.email}`}>Revogar</Button></form></>
+            <>
+              <InvitationLinkButton email={invitation.email} />
+              <form action={revokeInvitationAction}>
+                <input type="hidden" name="id" value={invitation.id} />
+                <Button type="submit" variant="ghost" aria-label={`Revogar ${invitation.email}`}>
+                  Revogar
+                </Button>
+              </form>
+            </>
           ) : null}
           {invitation.state !== "used" ? <DestructiveActionForm action={deleteInvitationAction} fieldName="id" value={invitation.id} label="Apagar" confirmation={`Apagar o convite de ${invitation.email}? Esta ação não pode ser desfeita.`} /> : null}
         </article>

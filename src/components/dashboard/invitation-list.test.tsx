@@ -31,7 +31,7 @@ describe("InvitationList", () => {
     render(<InvitationList invitations={invitations} />);
 
     expect(screen.getByText("ativo@example.com")).toBeInTheDocument();
-    expect(screen.getByText("Ativo")).toBeInTheDocument();
+    expect(screen.getByText("Enviado")).toBeInTheDocument();
     expect(screen.getByText("usado@example.com")).toBeInTheDocument();
     expect(screen.getByText("Aceito")).toBeInTheDocument();
     expect(screen.queryByText(/convite\//i)).not.toBeInTheDocument();

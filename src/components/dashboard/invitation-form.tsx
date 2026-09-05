@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 
 import {
   createInvitationAction,
@@ -29,16 +29,6 @@ export function InvitationForm({
     createInvitationAction,
     initialState,
   );
-  const [copyFeedback, setCopyFeedback] = useState("");
-
-  async function copyLink() {
-    if (!state.createdLink) {
-      return;
-    }
-
-    await navigator.clipboard?.writeText(state.createdLink);
-    setCopyFeedback("Link copiado");
-  }
 
   return (
     <form className="invitation-form" action={formAction} noValidate>
@@ -59,20 +49,12 @@ export function InvitationForm({
       {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}
 
       <Button type="submit" disabled={isPending}>
-        {isPending ? "Gerando…" : "Gerar convite"}
+        {isPending ? "Enviando…" : "Enviar convite"}
       </Button>
 
-      {state.createdLink ? (
+      {state.createdEmail ? (
         <section className="invitation-created" aria-live="polite">
-          <p>Link criado para {state.createdEmail}</p>
-          <label htmlFor="created-link">Link do convite</label>
-          <div className="invitation-copy">
-            <Input id="created-link" readOnly value={state.createdLink} />
-            <Button type="button" variant="secondary" onClick={copyLink}>
-              Copiar link
-            </Button>
-          </div>
-          {copyFeedback ? <p className="field-hint">{copyFeedback}</p> : null}
+          <p>Convite enviado para {state.createdEmail}.</p>
         </section>
       ) : null}
     </form>

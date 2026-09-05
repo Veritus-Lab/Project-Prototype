@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ComponentType } from "react";
 import {
@@ -85,10 +86,10 @@ export function DashboardNavigation({ items }: { items: DashboardNavigationItem[
 
   return <>
     <aside className={`dashboard-sidebar${isCollapsed ? " is-collapsed" : ""}`}>
-      <div className="dashboard-brand-row"><span className="dashboard-brand"><img src="/flernk-mark.png" alt="" aria-hidden="true" /><span>FLERNK</span></span><button type="button" className="dashboard-sidebar-toggle" aria-label={isCollapsed ? "Expandir barra lateral" : "Recolher barra lateral"} onClick={() => setIsCollapsed((collapsed) => !collapsed)}>{isCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}</button></div>
+      <div className="dashboard-brand-row"><span className="dashboard-brand"><Image src="/flernk-mark.png" alt="" aria-hidden="true" width={24} height={24} /><span>FLERNK</span></span><button type="button" className="dashboard-sidebar-toggle" aria-label={isCollapsed ? "Expandir barra lateral" : "Recolher barra lateral"} onClick={() => setIsCollapsed((collapsed) => !collapsed)}>{isCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}</button></div>
       <NavigationLinks items={items} />
     </aside>
     <button type="button" className="dashboard-menu-trigger" aria-label="Abrir navegação" aria-expanded={isOpen} aria-controls="dashboard-mobile-navigation" onClick={() => setIsOpen(true)}><Menu aria-hidden="true" /></button>
-    {isOpen ? <div className="dashboard-mobile-navigation" id="dashboard-mobile-navigation"><button type="button" className="dashboard-navigation-backdrop" aria-label="Fechar navegação" onClick={() => setIsOpen(false)} /><aside className="dashboard-navigation-drawer" aria-label="Menu do painel"><div className="dashboard-drawer-heading"><span className="dashboard-brand"><img src="/flernk-mark.png" alt="" aria-hidden="true" /><span>FLERNK</span></span><button type="button" className="dashboard-drawer-close" aria-label="Fechar navegação" onClick={() => setIsOpen(false)}><X aria-hidden="true" /></button></div><NavigationLinks items={items} onNavigate={() => setIsOpen(false)} /></aside></div> : null}
+    {isOpen ? <div className="dashboard-mobile-navigation" id="dashboard-mobile-navigation"><button type="button" className="dashboard-navigation-backdrop" aria-label="Fechar navegação" onClick={() => setIsOpen(false)} /><aside className="dashboard-navigation-drawer" aria-label="Menu do painel"><div className="dashboard-drawer-heading"><span className="dashboard-brand"><Image src="/flernk-mark.png" alt="" aria-hidden="true" width={24} height={24} /><span>FLERNK</span></span><button type="button" className="dashboard-drawer-close" aria-label="Fechar navegação" onClick={() => setIsOpen(false)}><X aria-hidden="true" /></button></div><NavigationLinks items={items} onNavigate={() => setIsOpen(false)} /></aside></div> : null}
   </>;
 }

@@ -58,6 +58,8 @@ describe("TrainerAthletesPage", () => {
 
     render(await TrainerAthletesPage());
 
-    expect(screen.getByText("Nenhum atleta vinculado ainda.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Nenhum atleta vinculado ainda. Envie um convite para começar."),
+    ).toBeInTheDocument();
   });
 });

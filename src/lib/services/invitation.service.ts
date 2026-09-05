@@ -1,4 +1,5 @@
 import { requireRole } from "@/lib/auth/session";
+import { sendInvitationEmail } from "@/lib/email/invitation-email";
 import {
   createInvitationToken,
   getInvitationState,
@@ -32,7 +33,7 @@ export interface InvitationSummary extends InvitationRow {
 }
 
 export interface CreatedInvitation extends InvitationSummary {
-  link: string;
+  emailMessageId: string;
 }
 
 export type PublicInvitationState =
@@ -147,6 +148,16 @@ export async function createInvitation(
     const { token, hash } = createInvitationToken();
     const email = parsedEmail.data;
 
+    const { data: assessoria, error: assessoriaError } = await supabase
+      .from("assessorias")
+      .select("nome")
+      .eq("id", user.assessoriaId)
+      .single();
+
+    if (assessoriaError || !assessoria) {
+      return { error: genericInvitationError };
+    }
+
     const { error: revokeDuplicateError } = await supabase
       .from("convites_atletas")
       .update({
@@ -180,12 +191,21 @@ export async function createInvitation(
       return { error: genericInvitationError };
     }
 
-    return {
-      data: {
-        ...mapInvitation(data, now),
-        link: new URL(`/convite/${token}`, origin).toString(),
-      },
-    };
+    try {
+      const sentEmail = await sendInvitationEmail({
+        to: email,
+        assessoriaNome: assessoria.nome,
+        invitationUrl: new URL(`/convite/${token}`, origin).toString(),
+        expiresAt: data.expira_em,
+        invitationId: data.id,
+      });
+
+      return { data: { ...mapInvitation(data, now), emailMessageId: sentEmail.id } };
+    } catch {
+      return {
+        error: "O convite foi criado, mas o e-mail não pôde ser enviado. Tente reenviar.",
+      };
+    }
   } catch {
     return { error: genericInvitationError };
   }

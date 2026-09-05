@@ -18,6 +18,7 @@ Copie `.env.example` para `.env.local` e configure:
 - `NEXT_PUBLIC_SUPABASE_URL`;
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`;
 - `NEXT_PUBLIC_SITE_URL`.
+- `RESEND_API_KEY` (somente servidor; configurada como Secret na Vercel).
 
 No Supabase hospedado, configure Confirm email e Redirect URLs contendo `/auth/callback` para cada ambiente.
 
@@ -46,6 +47,12 @@ Confirme sessao Auth, cookie SSR e existencia de `profiles` para o usuario.
 ### Convite nao aparece
 
 Confira se o usuario e treinador da assessoria correta e se a consulta nao pede `token_hash`.
+
+### E-mail de convite nao chega
+
+Enquanto o remetente for `onboarding@resend.dev`, a Resend limita os envios de teste
+ao endereço autorizado na conta. Para enviar aos atletas reais, verifique um domínio
+na Resend e configure o remetente FLERNK antes de publicar o fluxo.
 
 ### Aceite falha com e-mail divergente
 
