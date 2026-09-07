@@ -13,7 +13,7 @@ Concluída em 07/09/2026. Estado: CONCLUÍDA. Referência: [MVP_FLERNK_GESTAO.md
 | D07 | Pix e cartão usam um único provedor, selecionado por oferecer checkout seguro. Confirmação vem do provedor, não do navegador. | Provedor, conta, credenciais e métodos disponíveis. |
 | D08 | Lembretes de WhatsApp seguem D-5, D-1 e D+3 como padrão configurável. Há opt-out e revalidação de cobrança, matrícula e preferência antes de cada envio. | Número, conta, modelos, limites e credenciais aprovados. |
 | D09 | Após três faltas consecutivas em encontros elegíveis, há alerta interno configurável. Aluno solicita justificativa; equipe decide. | Limiar e turmas reais; cancelado ou não registrado nunca conta como falta. |
-| D10 | Landing capta interesse em plano ou aula experimental quando disponível. A equipe converte manualmente; envio do formulário não cria usuário, assinatura ou cobrança. Preços ficam ocultos até haver material comercial real. | Oferta de experimental, preços, locais, equipe, fotos e depoimentos autorizados. |
+| D10 | Landing capta interesse em plano ou aula experimental quando disponível. A equipe converte manualmente; envio do formulário não cria usuário, assinatura ou cobrança. Preços ficam ocultos até haver decisão dos Sócios FLERNK e material comercial real. | Oferta de experimental, preços, locais, equipe, fotos e depoimentos autorizados. |
 | D11 | Prazo, orçamento e aceite são entradas de governança, não regras inventadas pelo produto. | Valores e aceite dos Sócios FLERNK. |
 
 ## Estados e invariantes

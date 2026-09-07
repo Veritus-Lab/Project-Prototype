@@ -74,7 +74,7 @@ Além das skills abaixo, tasks que implementem comportamento usam o ciclo de tes
 | 22 | `api-design`, `security-review`, documentação oficial WhatsApp/provedor | Segurança: autorização de contato, número, modelos e ambientes separados |
 | 23 | `backend-patterns`, `security-review`; skill de agendamento conforme decisão técnica | Testes: relógio controlado, fila, corrida pagamento/envio, opt-out e falhas |
 | 24 | `frontend-patterns`, `vercel:react-best-practices` | Testes + E2E: indicadores conferem com listas; erro não vira zero |
-| 25 | `frontend-patterns`, `vercel:nextjs`, `e2e-testing` | E2E: professor consulta somente em dia/pendente, sem detalhes financeiros e aluno justifica sem modificar chamada |
+| 25 | `frontend-patterns`, `vercel:nextjs`, `e2e-testing` | E2E: professor consulta somente `em dia`, `pendente`, `não configurado` ou `indisponível`, sem detalhes financeiros e aluno justifica sem modificar chamada |
 | 26 | `api-design`, `security-review`, `frontend-patterns` | Testes + E2E: spam, reenvio, conversão única e proibição de criação automática de conta |
 | 27 | `brand-discovery`, `brand-voice`, `frontend-patterns`; `imagegen` somente se necessário | E2E/revisor: CTA, formulário, teclado, celular, conteúdo factual e ausência de cadastro SaaS |
 | 28 | `supabase:supabase`, `security-review`; `spreadsheets:Spreadsheets` se houver arquivos para analisar | Dados: importação de ensaio, rejeições, saldo e reexecução sem duplicação |
@@ -133,7 +133,7 @@ Cada task de comportamento termina antes do marco com teste focado e revisão. N
 
 | ID | Tasks | Resultado exigido |
 | --- | --- | --- |
-| AUTH-01 | 07–09 | Professor lê somente situação agregada em dia/pendente; valores, cobranças e mutações financeiras são negados por URL, Server Action e Data API |
+| AUTH-01 | 07–09 | Professor lê somente situação agregada `em dia`, `pendente`, `não configurado` ou `indisponível`; valores, cobranças e mutações financeiras são negados por URL, Server Action e Data API |
 | AUTH-02 | 07, 21, 25 | Aluno A não consulta nem altera cobrança/perfil/presença de B |
 | AUTH-03 | 08 | Payload de cadastro antigo não cria assessoria nem promove usuário |
 | AUTH-04 | 07–09 | Sessão anterior à retirada de permissão não mantém acesso restrito |

@@ -24,7 +24,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 06 — Fundação de dados | Migrations aditivas e tipos para os módulos novos; migração planejada da organização | 04–05 | Schema recriável em teste; vínculos e integridade verificados, sem perda de dados existentes |
-| 07 — Papéis e permissões | Sócio, professor e aluno; autorização em banco/servidor e migração dos papéis antigos | 06 | Testes negativos por papel e por aluno passam; professor consulta apenas em dia/pendente, sem detalhes financeiros |
+| 07 — Papéis e permissões | Sócio, professor e aluno; autorização em banco/servidor e migração dos papéis antigos | 06 | Testes negativos por papel e por aluno passam; professor consulta somente `em dia`, `pendente`, `não configurado` ou `indisponível`, sem detalhes financeiros |
 | 08 — Acesso exclusivo FLERNK | Encerrar cadastro público de assessoria e bootstrap antigo; convite de equipe; contas individuais dos dois sócios e professor | 07 | Fluxo antigo não cria organização nem eleva papel; último sócio protegido; contas provisionadas em ambiente apropriado |
 | 09 — Estrutura dos portais | Menus, layouts, acesso e recuperação de conta para os três papéis | 08, 03 | Cada papel chega ao painel correto em desktop/celular, sem exposição de dados indevidos |
 
@@ -62,7 +62,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 24 — Painel dos sócios | Indicadores financeiros, carteira, faltas e atalhos para ação | 13, 18, 20, 23 | Cada indicador corresponde à sua lista/mesmo período; falha de consulta não aparece como zero |
-| 25 — Painel do professor e portal do aluno | Agenda, chamada, frequência, justificativas e treinos reaproveitados | 09, 13, 21 | Operação diária com indicador em dia/pendente para professor, sem valores ou detalhes; aluno só altera campos autorizados |
+| 25 — Painel do professor e portal do aluno | Agenda, chamada, frequência, justificativas e treinos reaproveitados | 09, 13, 21 | Operação diária com indicador `em dia`, `pendente`, `não configurado` ou `indisponível` para professor, sem valores ou detalhes; aluno só altera campos autorizados |
 | 26 — Funil de interessados | Cadastro público protegido, acompanhamento, experimental e conversão | 10, 12 | Formulário não cria conta/cobrança; conversão preserva origem e evita duplicidade |
 | 27 — Landing de prospecção | Conteúdo da FLERNK, equipe, locais, benefícios, CTA e acesso de alunos | 03, 26, materiais do cliente | Formulário e CTA funcionam no celular; sem cadastro de assessoria, prova social fictícia ou promessa não validada |
 
@@ -92,7 +92,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 3. Cobrança do ciclo aparece uma vez e pode ser paga pelo próprio aluno.
 4. Webhook confirma; repetição e chegada fora de ordem não corrompem valores; relatório confere.
 5. Lembrete pendente não é enviado após quitação; uma falha de envio pode ser diagnosticada.
-6. Professor consulta indicador em dia/pendente; tentativa de consultar valores, cobranças detalhadas ou dar baixa por URL/API é negada; chamada funciona.
+6. Professor consulta indicador `em dia`, `pendente`, `não configurado` ou `indisponível`; tentativa de consultar valores, cobranças detalhadas ou dar baixa por URL/API é negada; chamada funciona.
 7. Encontro cancelado não gera falta; aluno solicita justificativa e equipe decide.
 8. Sócio lança despesa e confere fluxo realizado/previsto.
 9. Outro aluno tenta acessar cobrança/presença alheia e tem acesso negado.

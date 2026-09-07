@@ -137,7 +137,7 @@ Estrutura proposta:
 4. Diferenciais reais, locais e horários de atendimento.
 5. Equipe com fotos e informações fornecidas pelo cliente.
 6. Depoimentos autorizados; omitir a seção se não houver material real.
-7. Interesse em planos ou aula experimental; preços públicos apenas se o cliente desejar.
+7. Interesse em planos ou aula experimental; preços públicos somente após decisão dos Sócios FLERNK e recebimento de material comercial real.
 8. Perguntas frequentes e contato.
 
 CTA principal: “Quero correr com a FLERNK”. CTA secundário: “Já sou aluno”. Acesso da equipe discreto. Remover comunicação de cadastrar assessoria ou vender software a treinadores.
@@ -168,7 +168,7 @@ Cadastro de outras assessorias; planos SaaS; marketplace; split; aplicativo nati
 
 ## 8. Critérios globais de entrega
 
-- Cada sócio tem conta individual e acesso completo; professor consulta apenas a situação em dia/pendente e é impedido de consultar detalhes ou alterar financeiro inclusive por URL/API; aluno acessa somente seus dados.
+- Cada sócio tem conta individual e acesso completo; professor consulta apenas a situação `em dia`, `pendente`, `não configurado` ou `indisponível` e é impedido de consultar detalhes ou alterar financeiro inclusive por URL/API; aluno acessa somente seus dados.
 - Cadastro público não cria assessoria nem membro da equipe.
 - Interessado pode ser convertido em aluno sem duplicação; aluno pode existir sem login.
 - Ciclos geram cobranças únicas; pagar atualiza o portal e o painel sem duplicação por webhook repetido.
@@ -188,7 +188,7 @@ Cadastro de outras assessorias; planos SaaS; marketplace; split; aplicativo nati
 - Pix e cartão serão oferecidos pelo mesmo provedor escolhido, que deve fornecer checkout seguro. A confirmação de pagamento vem do provedor; nenhuma conta ou provedor real é presumido.
 - A cadência padrão de cobrança por WhatsApp é D-5, D-1 e D+3, configurável. Antes de cada envio, revalidar cobrança, matrícula e preferência; respeitar opt-out. A Task 01 não envia mensagens.
 - Após três faltas consecutivas em encontros elegíveis, gerar alerta interno configurável. O aluno solicita justificativa; a equipe decide. Encontro cancelado ou não registrado não conta como falta.
-- A landing capta interesse para plano ou aula experimental quando essa modalidade estiver disponível. A equipe converte manualmente; preços permanecem ocultos até existir material comercial real.
+- A landing capta interesse para plano ou aula experimental quando essa modalidade estiver disponível. A equipe converte manualmente; preços permanecem ocultos até haver decisão dos Sócios FLERNK e material comercial real.
 
 ## 10. Entradas externas ainda necessárias
 
@@ -205,9 +205,11 @@ Estas não são decisões operacionais em aberto: são valores, identidades, mat
 | Identidades das contas da equipe e aceite operacional final | Sócios FLERNK | 08, 30 e 31 |
 | Prazo e orçamento operacional | Sócios FLERNK | 31 e 32 |
 
-## 10. Evidências e limites do diagnóstico
+## 11. Evidências e limites do diagnóstico histórico
 
-Inspeção de 06/09/2026: HEAD local e commit GitHub `6ee81a2`; deployment Vercel de produção READY no mesmo SHA; Supabase `hrmyqrekasuqhiqmqske` ativo, 20 tabelas públicas com RLS e 13 versões de migrations correspondentes às locais. Contadores retornados: quatro assessorias e cinco atletas; financeiro/comunicação sem linhas reportadas. Correspondência de versões não substitui comparação integral de schema.
+Este é um diagnóstico externo histórico, verificado pelo coordenador em 06/09/2026; não é evidência da QA documental da Task 01 nem afirma integração atual. Referências verificáveis sem credenciais: [commit GitHub `55863f0da0ea082c0052016e7b030f744686cec5`](https://github.com/Veritus-Lab/Project-Prototype/commit/55863f0da0ea082c0052016e7b030f744686cec5), alias público/deployment [project-prototype-ashy.vercel.app](https://project-prototype-ashy.vercel.app/login) e project ref Supabase `hrmyqrekasuqhiqmqske`.
+
+Na inspeção histórica, o HEAD local e o commit GitHub `6ee81a2` foram associados a deployment Vercel de produção READY; o Supabase `hrmyqrekasuqhiqmqske` estava ativo, com 20 tabelas públicas com RLS e 13 versões de migrations correspondentes às locais. Contadores retornados: quatro assessorias e cinco atletas; financeiro/comunicação sem linhas reportadas. Correspondência de versões não substitui comparação integral de schema.
 
 Código financeiro atual cria só a cobrança inicial, grava operações separadamente e precisa de revisão de datas. Políticas financeiras remotas atuais não dão leitura ao aluno. Comunicação prepara lembretes, sem envio identificado; nenhuma Edge Function listada. Não foi realizada nova suíte completa de testes nem validação autenticada ponta a ponta nesta análise.
 
