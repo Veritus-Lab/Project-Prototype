@@ -1,6 +1,6 @@
 # FLERNK — MVP de gestão e financeiro
 
-Data: 07/09/2026. Estado: regras operacionais da Task 01 concluídas; implementação não iniciada.
+Data: 07/09/2026. Estado: definição documental das Tasks 01–04 concluída; implementação não iniciada.
 
 Este documento orienta o novo produto junto de `TASKS_MVP_FLERNK.md`. Para o novo MVP, substitui as prioridades dos roadmaps anteriores. Os documentos históricos continuam como evidência de implementações, não como sequência de execução atual.
 
@@ -22,7 +22,7 @@ Estas escolhas permitem delimitar o trabalho, mas não substituem respostas sobr
 - Professor acessa todas as turmas da FLERNK e consulta somente um indicador de situação financeira do aluno: `em dia`, `pendente`, `não configurado` ou `indisponível`. Não acessa valores, saldo devedor, cobranças detalhadas, receitas, despesas ou configurações de pagamento.
 - Chamada feita pela equipe; aluno consulta frequência e pode solicitar justificativa, sem alterar a chamada.
 - Site responsivo com experiência adequada no celular; sem aplicativo nativo.
-- Um único provedor de pagamentos para Pix e cartão, escolhido antes da implementação por suportar checkout seguro; uma integração de WhatsApp. Não há conta, provedor ou número real selecionado neste documento.
+- Asaas Checkout hospedado é o provedor definido para Pix e cartão no MVP; Meta WhatsApp Cloud API é a integração definida para lembretes por template. Contas, credenciais, número e templates reais ainda não estão disponíveis ou validados.
 - Dinheiro recebido diretamente na conta da FLERNK no provedor; sem split ou intermediação financeira da plataforma.
 - Conversão de interessado para aluno feita pela equipe; não haverá matrícula pública com ativação automática no MVP.
 - Cobrança não bloqueia automaticamente acesso ou presença; suspensão será uma ação administrativa explícita.
@@ -78,7 +78,7 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 
 - Catálogo de planos com nome, preço e periodicidade; edição futura não altera cobranças passadas.
 - Assinatura do aluno com condições contratadas, início, vencimento e término quando houver.
-- Cobrança por competência/ciclo, sem duplicação. Um único responsável pela geração recorrente: provedor ou aplicação, definido na integração.
+- Cobrança por competência/ciclo, sem duplicação. O motor interno da aplicação é o único responsável pela geração recorrente; o Asaas somente recebe pagamentos por checkout e não mantém recorrência paralela.
 - Estados explícitos de cobrança e pagamento, com vencimento calculado no fuso da operação.
 - Regra para meses curtos, primeira cobrança, suspensão, cancelamento, desconto e reajuste definida na Task 01.
 - Baixa manual com valor, data, meio, responsável e motivo; correção auditável.
@@ -107,7 +107,7 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 
 ### 4.7 WhatsApp
 
-- Integração oficial ou provedor compatível com a plataforma oficial; definição de número, conta e modelos antes do desenvolvimento.
+- Meta WhatsApp Cloud API por templates; número, conta, opt-in, token e modelos aprovados precisam ser validados antes da implementação real.
 - Lembretes de vencimento e atraso, com acesso à cobrança. Cadência padrão configurável: D−5, D−1 e D+3.
 - Preferências de contato, evidência de autorização e opção de interrupção.
 - Fila persistente, identificação de envio, status, tentativas limitadas e tratamento de falhas.
@@ -162,7 +162,7 @@ Revisar o bootstrap atual de treinador no banco: retirar apenas o botão públic
 
 Entidades propostas: membros da equipe/papéis, alunos/matrículas, planos, assinaturas, cobranças, pagamentos, eventos do provedor, movimentações/despesas, turmas, vínculos, encontros, presenças, justificativas, interessados e fila de mensagens. Mapear para tabelas existentes antes de adicionar novas.
 
-Migrations aditivas, migração explícita de papéis e testes de permissões. Backup e restauração verificados antes da carga/virada. Preview não deve usar pagamentos ou envios reais. Integrações precisam de idempotência, validação de autenticidade e conciliação de eventos perdidos.
+Migrations aditivas, migração explícita de papéis e testes de permissões. Backup e restauração verificados antes da carga/virada. Preview não deve usar pagamentos ou envios reais. O contrato de dados, Asaas Checkout, Meta Cloud API, Vercel Cron, idempotência e reconciliação está em [TASK_04_CONTRATO_TECNICO.md](TASK_04_CONTRATO_TECNICO.md).
 
 ## 7. Fora do MVP
 
@@ -187,7 +187,7 @@ Cadastro de outras assessorias; planos SaaS; marketplace; split; aplicativo nati
 - Cada plano define dia de vencimento e se renova automaticamente. O padrão é renovação mensal automática; não há rateio automático complexo. Desconto, reajuste, cancelamento de cobrança já emitida e exceções de pausa são ações manuais auditáveis.
 - A primeira cobrança é o próximo vencimento igual ou posterior ao início da assinatura. Se o dia configurado não existir no mês, usa-se o último dia daquele mês. Todo cálculo de data usa `America/Sao_Paulo`.
 - Pausa interrompe a geração de novos ciclos a partir da data efetiva, sem apagar histórico nem alterar automaticamente cobranças já emitidas. Qualquer ajuste é manual e auditável.
-- Pix e cartão serão oferecidos pelo mesmo provedor escolhido, que deve fornecer checkout seguro. A confirmação de pagamento vem do provedor; nenhuma conta ou provedor real é presumido.
+- Pix e cartão serão oferecidos pelo Asaas Checkout hospedado. A confirmação vem de webhook autenticado ou baixa manual auditável; retorno do navegador nunca dá baixa. Nenhuma conta ou credencial real é presumida.
 - A cadência padrão de cobrança por WhatsApp é D-5, D-1 e D+3, configurável. Antes de cada envio, revalidar cobrança, matrícula e preferência; respeitar opt-out. A Task 01 não envia mensagens.
 - Após três faltas consecutivas em encontros elegíveis, gerar alerta interno configurável. O aluno solicita justificativa; a equipe decide. Encontro cancelado ou não registrado não conta como falta.
 - A landing capta interesse para plano ou aula experimental quando essa modalidade estiver disponível. A equipe converte manualmente; preços permanecem ocultos até haver decisão dos Sócios FLERNK e material comercial real.
@@ -200,8 +200,8 @@ Estas não são decisões operacionais em aberto: são valores, identidades, mat
 | --- | --- | --- |
 | Dados reais de alunos, planos, ferramenta atual e saldo inicial | Sócios FLERNK | 02, 14, 18 e 28 |
 | Valores, dias de vencimento, descontos, reajustes e condições comerciais efetivas | Sócios FLERNK | 14, 15 e 30 |
-| Provedor escolhido, conta, credenciais e ambiente de teste para Pix/cartão | Sócios FLERNK | 19 e 20 |
-| Número, conta, modelos aprovados e credenciais de WhatsApp | Sócios FLERNK | 22 e 23 |
+| Conta Asaas, credenciais, condições comerciais e ambiente Sandbox/produção para Pix/cartão | Sócios FLERNK | 19 e 20 |
+| Número, conta, opt-in, modelos aprovados e credenciais da Meta WhatsApp Cloud API | Sócios FLERNK | 22 e 23 |
 | Turmas, locais, horários e atribuição real de professor | Sócios FLERNK | 02, 12 e 25 |
 | Materiais comerciais, oferta de experimental, fotos, depoimentos autorizados e decisão sobre preços públicos | Sócios FLERNK | 27 |
 | Identidades das contas da equipe e aceite operacional final | Sócios FLERNK | 08, 30 e 31 |
