@@ -11,4 +11,9 @@ export const createSubscriptionSchema = z.object({
 });
 
 export const markChargePaidSchema = z.object({ chargeId: z.string().uuid("Cobrança inválida.") });
+export const updateSubscriptionStatusSchema = z.object({
+  subscriptionId: z.string().uuid("Assinatura inválida."),
+  status: z.enum(["ativa", "suspensa", "isenta", "cancelada"]),
+});
 export type CreateSubscriptionInput = z.infer<typeof createSubscriptionSchema>;
+export type UpdateSubscriptionStatusInput = z.infer<typeof updateSubscriptionStatusSchema>;

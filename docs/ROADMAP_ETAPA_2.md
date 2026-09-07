@@ -368,6 +368,12 @@ Segurança:
 
 Objetivo: acompanhar mensalidades, vencimentos e status de cobrança.
 
+Status: concluída em desenvolvimento. A base tenant-safe está em
+`assinaturas_atletas`, `cobrancas` e `eventos_financeiros`, com RLS forçada e
+auditoria append-only. O treinador cria assinaturas e a primeira cobrança,
+registra pagamento e atualiza o estado da assinatura em
+`/treinador/financeiro`. Não há gateway de pagamento nesta etapa.
+
 Entregas:
 
 - Tabelas `assinaturas_atletas`, `cobrancas`, `eventos_financeiros`.

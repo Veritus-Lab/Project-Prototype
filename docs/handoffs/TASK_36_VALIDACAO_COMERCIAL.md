@@ -7,14 +7,23 @@
 - Testes direcionados das Tasks 30 a 34 foram aprovados durante as entregas.
 - `npm run typecheck` foi executado sem erro nesta task.
 - `git diff --check` não encontrou erros de whitespace.
+- `npm run lint`, `npm run typecheck` e `npm run build` foram executados
+  novamente em 06/09/2026 e aprovados.
+- O build deixou de depender do download da fonte Inter durante a compilação,
+  preservando a fonte de sistema como fallback explícito. Assim, a validação de
+  produção também funciona em ambientes sem acesso ao Google Fonts.
 
-## Bloqueios para concluir a entrega
+## Bloqueio externo para a validação comercial completa
 
 1. A carga demo não pode ser executada com segurança neste ambiente porque
    `SUPABASE_SERVICE_ROLE_KEY` e `FLERNK_DEMO_PASSWORD` não estão definidos.
-2. O runner local encerrou `npm test` sem resumo e não avançou para `npm run
-   build` quando ambos foram solicitados. Por isso não há declaração de suite
-   completa ou build verde.
+2. Sem a carga demo, não é possível testar login de treinador e atleta,
+   jornadas desktop/mobile ou persistência no Supabase sem inventar contas ou
+   alterar o ambiente remoto.
+
+O runner agregado do Vitest ainda não devolve um resumo final de forma
+confiável neste Windows. Os testes exibidos durante a execução permanecem
+verdes, mas a suíte completa deve ser confirmada no CI antes da liberação.
 
 ## Promoção e disponibilidade
 
@@ -27,6 +36,6 @@
 
 1. Disponibilizar as credenciais administrativas somente no terminal local e
    executar `scripts/seed-demo.mjs` conforme `docs/DEMO_APRESENTACAO.md`.
-2. Executar `npm test` e `npm run build` em CI ou em terminal que mantenha os
-   processos até o fim.
+2. Executar `npm test` em CI ou em terminal que mantenha os processos até o
+   fim. O build já está validado localmente.
 3. Testar login nas contas demo, desktop e celular.

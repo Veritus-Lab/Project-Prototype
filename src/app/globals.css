@@ -35,7 +35,7 @@ body {
   overflow-x: clip;
   background: var(--color-background);
   color: var(--color-text);
-  font-family: var(--font-inter), Arial, sans-serif;
+  font-family: Arial, sans-serif;
   line-height: 1.5;
 }
 
@@ -490,6 +490,17 @@ input {
 
 .dashboard-card-hint {
   margin: 0.5rem 0 0;
+}
+
+.subscription-status-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.subscription-status-form .input {
+  min-width: 9rem;
 }
 
 .athlete-daily-feed {
