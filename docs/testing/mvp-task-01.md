@@ -1,6 +1,6 @@
 # Revisão documental da Task 01 — contribuição para QA-A
 
-Data: 07/09/2026. Estado: PARCIAL/PENDENTE. Versão final avaliada: `0422f2c` (`docs: clarify FLERNK task 01 contract`). Ambiente: repositório local; nenhuma aplicação, banco, provedor de pagamento ou WhatsApp foi executado.
+Data: 07/09/2026. Estado: PARCIAL/PENDENTE. Versão avaliada: conjunto documental da Task 01 na branch `codex/mvp-flernk`, diff da base `55863f0da0ea082c0052016e7b030f744686cec5` até `HEAD`. Histórico de ciclos já fechados: `3fedb5c`, `0422f2c` e `513b068`. O SHA final deste ciclo é registrado pelo Git e pelo relatório de execução; ele não é previsto dentro do próprio commit. Ambiente: repositório local; nenhuma aplicação, banco, provedor de pagamento ou WhatsApp foi executado.
 
 Esta revisão cobre exclusivamente a Task 01. O marco QA-A permanece pendente de conclusão após as Tasks 02–04, que devem acrescentar inventário/migração, jornadas/navegação e contrato técnico de integrações. Este relatório não declara o marco QA-A completo ou aprovado.
 
