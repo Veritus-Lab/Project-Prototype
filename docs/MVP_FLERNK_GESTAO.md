@@ -152,6 +152,8 @@ Formulário mínimo: nome, WhatsApp, objetivo opcional e preferência de turma q
 
 ## 6. Estratégia técnica de transição
 
+O inventário de origem/destino, classificação pendente e estratégia de carga está em [TASK_02_INVENTARIO_MIGRACAO.md](TASK_02_INVENTARIO_MIGRACAO.md). A identificação explícita da organização FLERNK e dos dados aprovados é um gate antes de migrations de dados ou carga.
+
 Manter Next.js, Supabase e componentes aproveitáveis. A assessoria FLERNK será provisionada de forma controlada; cadastro público não poderá criar organizações nem papéis de equipe.
 
 Manter `assessoria_id` internamente evita uma migração destrutiva desnecessária. Isso não cria uma oferta multiassessoria no produto. As outras organizações encontradas no ambiente não devem ser apagadas ou incorporadas à FLERNK por suposição. Identificar a organização e os cadastros corretos antes de migrar.

@@ -1,8 +1,9 @@
 # FLERNK — Tasks do planejamento à entrega
 
-Data: 07/09/2026. Task 01 CONCLUÍDA (regras operacionais e pendências externas registradas); Tasks 02–34 NÃO INICIADAS.
+Data: 07/09/2026. Tasks 01–02 CONCLUÍDAS documentalmente; Tasks 03–34 NÃO INICIADAS. A Task 02 mantém o gate externo de identificação da organização e aprovação dos dados reais antes de qualquer migration de dados ou carga.
 
 Registro da Task 01: [TASK_01_REGRAS_OPERACAO.md](TASK_01_REGRAS_OPERACAO.md).
+Registro da Task 02: [TASK_02_INVENTARIO_MIGRACAO.md](TASK_02_INVENTARIO_MIGRACAO.md).
 Escopo de referência: `MVP_FLERNK_GESTAO.md`. A redação deste plano não inicia implementação nem autoriza disparos, pagamentos ou mudanças de produção.
 
 Skills, agentes e testes obrigatórios: [SKILLS_E_TESTES_MVP_FLERNK.md](SKILLS_E_TESTES_MVP_FLERNK.md). A matriz cobre individualmente as 34 tasks. A Task 05 inclui a subetapa 05-QA de infraestrutura; os marcos QA-A a QA-I são condições das tasks existentes, sem renumerar o roadmap. Cada task de comportamento inclui teste focado e revisão independente antes de sua conclusão.
@@ -14,7 +15,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 01 — Regras da operação | **CONCLUÍDA.** Fixar padrões operacionais configuráveis e registrar somente entradas externas reais | — | Exemplos de matrícula, vencimento, pausa, atraso e renovação documentados; pendências externas têm responsável e task bloqueada |
-| 02 — Inventário e migração | Identificar FLERNK, usuários reais, dados de teste, planilhas e módulos reutilizáveis | 01 | Mapa de origem/destino e tratamento de duplicidades; nenhuma exclusão presumida |
+| 02 — Inventário e migração | **CONCLUÍDA tecnicamente (documental/read-only).** Mapa de origem/destino, duplicidades e gate de identificação registrado | 01 | Nenhuma exclusão presumida; identificar explicitamente a organização e aprovar dados reais antes de migrations de dados ou carga |
 | 03 — Jornadas e navegação | Desenhar fluxos dos sócios, professor, aluno e interessado; wireframes das telas essenciais | 01 | Jornada de cobrança e chamada completas; matriz de acesso validada |
 | 04 — Contrato técnico e integrações | Modelo de dados, estados financeiros, escolha de provedores, geração recorrente e estratégia de tarefas agendadas | 01–03 | Uma fonte de geração de cobranças; meios de autenticação, eventos e falhas mapeados |
 | 05 — Baseline e ambientes | Executar checks existentes; preparar desenvolvimento/homologação/produção e isolamento de integrações | 02, 04 | Baseline registrado; preview sem escrita financeira/envio real; estratégia de backup e rollback definida |
