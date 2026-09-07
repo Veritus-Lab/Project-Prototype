@@ -207,9 +207,11 @@ Estas não são decisões operacionais em aberto: são valores, identidades, mat
 
 ## 11. Evidências e limites do diagnóstico histórico
 
-Este é um diagnóstico externo histórico, verificado pelo coordenador em 06/09/2026; não é evidência da QA documental da Task 01 nem afirma integração atual. Referências verificáveis sem credenciais: [commit GitHub `55863f0da0ea082c0052016e7b030f744686cec5`](https://github.com/Veritus-Lab/Project-Prototype/commit/55863f0da0ea082c0052016e7b030f744686cec5), alias público/deployment [project-prototype-ashy.vercel.app](https://project-prototype-ashy.vercel.app/login) e project ref Supabase `hrmyqrekasuqhiqmqske`.
+Este é um diagnóstico externo histórico; não é evidência da QA documental da Task 01 nem afirma integração atual.
 
-Na inspeção histórica, o HEAD local e o commit GitHub `6ee81a2` foram associados a deployment Vercel de produção READY; o Supabase `hrmyqrekasuqhiqmqske` estava ativo, com 20 tabelas públicas com RLS e 13 versões de migrations correspondentes às locais. Contadores retornados: quatro assessorias e cinco atletas; financeiro/comunicação sem linhas reportadas. Correspondência de versões não substitui comparação integral de schema.
+Em 06/09/2026, o diagnóstico associou o HEAD local e o commit GitHub `6ee81a2` a deployment Vercel de produção READY. No Supabase `hrmyqrekasuqhiqmqske`, registrou 20 tabelas públicas com RLS e 13 versões de migrations correspondentes às locais; os contadores retornados foram quatro assessorias e cinco atletas, sem linhas reportadas em financeiro/comunicação. Correspondência de versões não substitui comparação integral de schema.
+
+Em 07/09/2026, auditoria posterior no [commit GitHub `55863f0da0ea082c0052016e7b030f744686cec5`](https://github.com/Veritus-Lab/Project-Prototype/commit/55863f0da0ea082c0052016e7b030f744686cec5) confirmou a disponibilidade atual do alias/deployment público [project-prototype-ashy.vercel.app](https://project-prototype-ashy.vercel.app/login) e do project ref Supabase `hrmyqrekasuqhiqmqske`, sem registrar credenciais. Essa confirmação posterior não transforma o diagnóstico em teste de integração, checkout ou QA-A.
 
 Código financeiro atual cria só a cobrança inicial, grava operações separadamente e precisa de revisão de datas. Políticas financeiras remotas atuais não dão leitura ao aluno. Comunicação prepara lembretes, sem envio identificado; nenhuma Edge Function listada. Não foi realizada nova suíte completa de testes nem validação autenticada ponta a ponta nesta análise.
 

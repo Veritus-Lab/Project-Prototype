@@ -1,6 +1,6 @@
 # Revisão documental da Task 01 — contribuição para QA-A
 
-Data: 07/09/2026. Estado: PARCIAL/PENDENTE. Versão avaliada: `3fedb5c` mais o Fix round 1 ainda não commitado. Ambiente: repositório local; nenhuma aplicação, banco, provedor de pagamento ou WhatsApp foi executado.
+Data: 07/09/2026. Estado: PARCIAL/PENDENTE. Versão final avaliada: `0422f2c` (`docs: clarify FLERNK task 01 contract`). Ambiente: repositório local; nenhuma aplicação, banco, provedor de pagamento ou WhatsApp foi executado.
 
 Esta revisão cobre exclusivamente a Task 01. O marco QA-A permanece pendente de conclusão após as Tasks 02–04, que devem acrescentar inventário/migração, jornadas/navegação e contrato técnico de integrações. Este relatório não declara o marco QA-A completo ou aprovado.
 
