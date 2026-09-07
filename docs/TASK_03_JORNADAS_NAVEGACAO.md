@@ -17,7 +17,7 @@ Concluída em 07/09/2026. Este desenho transforma o contrato da Task 01 em naveg
 
 | Superfície / dado | Sócio | Professor | Aluno | Visitante | Menu | Server Action / route | RLS / RPC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Painel e indicadores operacionais | Completo | Próprias turmas e agenda | Próprio resumo | — | Mostrar somente itens do papel | Verificar sessão, papel e escopo | Restringir linhas à FLERNK e à titularidade/vínculo |
+| Painel e indicadores operacionais | Completo | Todas as turmas e agenda da FLERNK | Próprio resumo | — | Mostrar somente itens do papel | Verificar sessão, papel e escopo | Restringir linhas à FLERNK e à titularidade/vínculo |
 | Cadastro, matrícula, plano e situação operacional | Gerencia | Consulta/edita somente campos operacionais permitidos | Consulta próprio vínculo/perfil permitido | — | Professor sem ações comerciais | Ações administrativas só para sócio; convite não cria matrícula | Bloquear alteração comercial pelo professor e acesso cruzado do aluno |
 | Financeiro completo, cobranças, pagamentos, despesas, caixa, exportação | Completo | Nunca | Próprias cobranças/pagamentos | Nunca | Sócio vê Financeiro; professor não vê item; aluno vê Meu financeiro | Rotas/ações financeiras exigem sócio, exceto consulta/pagamento da própria cobrança pelo aluno | Professor não lê tabelas, views ou RPC financeiras; aluno só lê/aciona a própria cobrança |
 | Indicador financeiro do aluno na operação | Completo | Apenas `em dia`, `pendente`, `não configurado` ou `indisponível` | Própria situação e detalhes autorizados do portal | — | Professor vê o indicador nas listas e detalhes | Endpoint do professor retorna somente enum agregado; nunca valor, vencimento, cobrança, pagamento ou ação financeira | RPC/visão de professor expõe apenas aluno autorizado e enum agregado |
@@ -135,7 +135,7 @@ Agenda de hoje | próximas turmas | chamada pendente
 Faltas recorrentes | justificativas aguardando | alunos: [em dia|pendente|não configurado|indisponível]
 ```
 
-Objetivo: conduzir a operação diária. Dados: agenda, turmas, pendências de chamada/justificativa, alunos e o único enum financeiro permitido. Ações: abrir turma, chamada, aluno, justificativa e interessado. Vazio: agenda sem encontros; carregando: reserva; erro: indisponível/recarga, sem inferir estado financeiro; sem permissão: login. Destinos: `/professor/turmas/[turmaId]/chamada`, aluno, frequência ou interessados. Nenhum valor, vencimento, cobrança, pagamento ou ação financeira aparece em qualquer estado.
+Objetivo: conduzir a operação diária em todas as turmas e agenda da FLERNK. Dados: agenda e turmas completas da FLERNK, pendências de chamada/justificativa, alunos e o único enum financeiro permitido. Ações: abrir turma, chamada, aluno, justificativa e interessado. Vazio: agenda sem encontros; carregando: reserva; erro: indisponível/recarga, sem inferir estado financeiro; sem permissão: login. Destinos: `/professor/turmas/[turmaId]/chamada`, aluno, frequência ou interessados. Nenhum valor, vencimento, cobrança, pagamento ou ação financeira aparece em qualquer estado.
 
 ### Chamada móvel (`/socio/turmas/[turmaId]/chamada`, `/professor/turmas/[turmaId]/chamada`)
 

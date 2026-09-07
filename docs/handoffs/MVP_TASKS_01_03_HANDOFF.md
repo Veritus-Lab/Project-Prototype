@@ -21,7 +21,7 @@ Data: 07/09/2026. Branch: `codex/mvp-flernk`. Base de produção analisada: `558
 ## Estado verificado
 
 - Baseline no SHA de origem: 52 arquivos/150 testes passaram; typecheck, lint e build passaram.
-- O inventário encontrou quatro organizações candidatas no ambiente atual; nenhuma foi presumida como a organização real e nenhum identificador interno foi versionado.
+- O inventário observou quatro organizações: três candidatas chamadas Flernk e uma rotulada “Demonstração”. Nenhuma está definitivamente classificada como a organização real; o rótulo não autoriza exclusão, e nenhum identificador interno foi versionado.
 - Não foi aplicada migration, criada conta, enviada mensagem, executada cobrança ou alterado deployment neste ciclo documental.
 
 ## Entradas externas pendentes
