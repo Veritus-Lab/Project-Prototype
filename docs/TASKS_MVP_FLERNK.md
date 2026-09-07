@@ -1,0 +1,107 @@
+# FLERNK — Tasks do planejamento à entrega
+
+Data: 07/09/2026. Task 01 CONCLUÍDA (regras operacionais e pendências externas registradas); Tasks 02–34 NÃO INICIADAS.
+
+Registro da Task 01: [TASK_01_REGRAS_OPERACAO.md](TASK_01_REGRAS_OPERACAO.md).
+Escopo de referência: `MVP_FLERNK_GESTAO.md`. A redação deste plano não inicia implementação nem autoriza disparos, pagamentos ou mudanças de produção.
+
+Skills, agentes e testes obrigatórios: [SKILLS_E_TESTES_MVP_FLERNK.md](SKILLS_E_TESTES_MVP_FLERNK.md). A matriz cobre individualmente as 34 tasks. A Task 05 inclui a subetapa 05-QA de infraestrutura; os marcos QA-A a QA-I são condições das tasks existentes, sem renumerar o roadmap. Cada task de comportamento inclui teste focado e revisão independente antes de sua conclusão.
+
+Cada task deve terminar com evidência do aceite e atualização de status. A sequência é baseada em dependências, não em estimativa de dias. Datas e esforço serão estimados após Task 01. Conferir o estado real do código antes de implementar: reaproveitar o existente e evitar duplicação.
+
+## Fase A — Fechar produto e preparar execução
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 01 — Regras da operação | **CONCLUÍDA.** Fixar padrões operacionais configuráveis e registrar somente entradas externas reais | — | Exemplos de matrícula, vencimento, pausa, atraso e renovação documentados; pendências externas têm responsável e task bloqueada |
+| 02 — Inventário e migração | Identificar FLERNK, usuários reais, dados de teste, planilhas e módulos reutilizáveis | 01 | Mapa de origem/destino e tratamento de duplicidades; nenhuma exclusão presumida |
+| 03 — Jornadas e navegação | Desenhar fluxos dos sócios, professor, aluno e interessado; wireframes das telas essenciais | 01 | Jornada de cobrança e chamada completas; matriz de acesso validada |
+| 04 — Contrato técnico e integrações | Modelo de dados, estados financeiros, escolha de provedores, geração recorrente e estratégia de tarefas agendadas | 01–03 | Uma fonte de geração de cobranças; meios de autenticação, eventos e falhas mapeados |
+| 05 — Baseline e ambientes | Executar checks existentes; preparar desenvolvimento/homologação/produção e isolamento de integrações | 02, 04 | Baseline registrado; preview sem escrita financeira/envio real; estratégia de backup e rollback definida |
+
+## Fase B — Identidade FLERNK e acesso
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 06 — Fundação de dados | Migrations aditivas e tipos para os módulos novos; migração planejada da organização | 04–05 | Schema recriável em teste; vínculos e integridade verificados, sem perda de dados existentes |
+| 07 — Papéis e permissões | Sócio, professor e aluno; autorização em banco/servidor e migração dos papéis antigos | 06 | Testes negativos por papel e por aluno passam; professor consulta apenas em dia/pendente, sem detalhes financeiros |
+| 08 — Acesso exclusivo FLERNK | Encerrar cadastro público de assessoria e bootstrap antigo; convite de equipe; contas individuais dos dois sócios e professor | 07 | Fluxo antigo não cria organização nem eleva papel; último sócio protegido; contas provisionadas em ambiente apropriado |
+| 09 — Estrutura dos portais | Menus, layouts, acesso e recuperação de conta para os três papéis | 08, 03 | Cada papel chega ao painel correto em desktop/celular, sem exposição de dados indevidos |
+
+## Fase C — Carteira e operação
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 10 — Cadastro administrativo de alunos | Cadastro, busca, filtros e convite posterior desacoplado da matrícula | 06–09 | Aluno sem login pode ser gerido; aceite de convite vincula cadastro sem duplicação |
+| 11 — Matrículas e histórico | Ativação, suspensão, encerramento e histórico operacional | 10 | Professor não altera condições comerciais; situação independente de pagamento |
+| 12 — Turmas e encontros | Cadastro de turmas, alunos vinculados, agenda recorrente e cancelamento de encontro | 10–11 | Recorrência sem encontros duplicados; histórico preservado em alterações |
+| 13 — Chamada e faltas | Chamada em lote, correção auditada, justificativas e alerta interno | 12 | Fluxo móvel completo; cancelado/não registrado não é falta; indicador usa encontros elegíveis |
+
+## Fase D — Núcleo financeiro
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 14 — Planos e assinaturas | Catálogo, condições contratadas, ciclo e vínculo ao aluno | 04, 11 | Mudança de preço não reescreve passado; renovação e parcela separadas |
+| 15 — Motor de cobranças | Geração por ciclo, datas, suspensão/cancelamento e restrições contra duplicação | 14 | Casos de mês curto, início após vencimento e repetição do processamento passam |
+| 16 — Pagamentos manuais e auditoria | Baixa, correção, motivos e histórico consistente | 15 | Falha não deixa operação parcialmente concluída; lançamento repetido não duplica recebimento |
+| 17 — Despesas e receitas avulsas | Categorias, contas a pagar e lançamentos realizados | 06–07, 16 | Receitas avulsas não duplicam mensalidades; apenas sócios acessam |
+| 18 — Caixa e relatórios | Saldo inicial, realizado/previsto, taxas e CSV | 16–17 | Totais conferem com fixtures e listas; saldo não é apresentado como lucro |
+
+## Fase E — Pagamento online e comunicação
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 19 — Integração de pagamento em teste | Clientes, cobranças e checkout/Pix conforme método escolhido | 04–05, 15 | Aluno inicia pagamento somente de sua cobrança; nenhum dado bruto de cartão persistido no sistema |
+| 20 — Webhooks e sincronização | Autenticidade, idempotência, eventos fora de ordem, falhas, estornos e reconciliação | 19, 16 | Evento repetido não duplica pagamento; retorno do navegador não dá baixa; evento perdido é recuperável |
+| 21 — Portal financeiro do aluno | Plano, cobrança, pagamento e histórico | 09, 18–20 | Cobrança quitada atualiza no portal; tentativa de acesso a outro aluno falha |
+| 22 — Configuração WhatsApp | Conta/número, modelos e preferências; configuração restrita aos sócios | 04–05, 10 | Conta de teste pronta e mensagens aprovadas/validadas conforme provedor; preferências persistidas |
+| 23 — Automação de lembretes | Agendamento, fila, envio, tentativas e cancelamento de pendências | 15, 20, 22 | Quitação impede novo envio pendente; reexecução não duplica; falhas ficam visíveis; cadência validada |
+
+## Fase F — Experiência e captação
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 24 — Painel dos sócios | Indicadores financeiros, carteira, faltas e atalhos para ação | 13, 18, 20, 23 | Cada indicador corresponde à sua lista/mesmo período; falha de consulta não aparece como zero |
+| 25 — Painel do professor e portal do aluno | Agenda, chamada, frequência, justificativas e treinos reaproveitados | 09, 13, 21 | Operação diária com indicador em dia/pendente para professor, sem valores ou detalhes; aluno só altera campos autorizados |
+| 26 — Funil de interessados | Cadastro público protegido, acompanhamento, experimental e conversão | 10, 12 | Formulário não cria conta/cobrança; conversão preserva origem e evita duplicidade |
+| 27 — Landing de prospecção | Conteúdo da FLERNK, equipe, locais, benefícios, CTA e acesso de alunos | 03, 26, materiais do cliente | Formulário e CTA funcionam no celular; sem cadastro de assessoria, prova social fictícia ou promessa não validada |
+
+## Fase G — Homologação e entrega
+
+| Task | Entrega | Depende de | Critério de aceite |
+| --- | --- | --- | --- |
+| 28 — Importação de ensaio | Carga em homologação, validação de alunos, planos e saldos | 02, 11, 15, 18 | Relatório de importados/rejeitados, totais conferidos e reexecução sem duplicação |
+| 29 — Qualidade e segurança ponta a ponta | Checks técnicos e jornadas integradas de todos os papéis | 23–28 | Testes de isolamento, datas, webhooks, envio duplicado, chamada e landing passam; bloqueadores resolvidos |
+| 30 — Homologação com a FLERNK | Dois sócios e professor validam tarefas reais em teste; aluno piloto valida portal | 29 | Roteiro de aceite registrado, ajustes concluídos e regras comerciais conferidas |
+| 31 — Preparação da publicação | Domínio, configuração real, alertas, backups, restauração e plano de virada | 30 | Checklist revisável; responsáveis, credenciais via canal seguro, rollback e custos definidos |
+| 32 — Publicação e carga final | Aplicar versão homologada, importar dados aprovados e ativar integrações | 31 e liberação operacional | Smoke dos papéis; contagens e saldos conferidos; lembretes habilitados só após validação financeira |
+| 33 — Piloto acompanhado | Conferir recebimento, lembrete, chamada e captação reais; tratar incidentes | 32 | Transações autorizadas conferem com provedor; sem cobrança/envio duplicado; falhas tratáveis pela equipe |
+| 34 — Entrega e operação | Manual breve, treinamento, acessos, suporte e registro final do escopo | 33 | Sócios operam financeiro; professor faz chamada; suporte e pendências não bloqueantes têm responsáveis |
+
+## Portões de execução
+
+- Após Tasks 01–04: escopo, desenho e integrações fechados antes de código de produto.
+- Antes de Tasks 19/22: acesso às contas e escolha dos provedores resolvidos; não simular conclusão da integração com placeholders.
+- Antes de Task 32: versão concreta homologada e plano de virada revisado. Esta publicação não é parte da autorização atual de planejamento.
+- Entrega completa somente após Task 34; deployment READY sozinho não comprova operação financeira correta.
+
+## Roteiro mínimo de homologação
+
+1. Visitante registra interesse; equipe agenda atendimento e converte em cadastro único de aluno.
+2. Sócio vincula plano e aluno recebe convite; login associa a matrícula existente.
+3. Cobrança do ciclo aparece uma vez e pode ser paga pelo próprio aluno.
+4. Webhook confirma; repetição e chegada fora de ordem não corrompem valores; relatório confere.
+5. Lembrete pendente não é enviado após quitação; uma falha de envio pode ser diagnosticada.
+6. Professor consulta indicador em dia/pendente; tentativa de consultar valores, cobranças detalhadas ou dar baixa por URL/API é negada; chamada funciona.
+7. Encontro cancelado não gera falta; aluno solicita justificativa e equipe decide.
+8. Sócio lança despesa e confere fluxo realizado/previsto.
+9. Outro aluno tenta acessar cobrança/presença alheia e tem acesso negado.
+10. Recuperação de acesso e restauração ensaiada têm procedimento documentado.
+
+## Não iniciado neste planejamento
+
+Nenhuma mudança em telas, rotas, schema, usuários, pagamentos, envios ou deployments. Somente estes documentos de escopo e tasks foram criados.
+
+## Diretriz de execução confirmada
+
+Executar o roadmap completo com os escopos informados, sem rodadas repetidas de confirmação. Tasks 03, 07, 10, 20, 25 e 29 devem incluir o indicador financeiro limitado do professor e sua atualização após pagamento. Testar também aluno sem configuração e falha de consulta; nenhum deles pode aparecer indevidamente como em dia. Dados reais e integrações externas seguem explicitamente dependentes de sua disponibilidade, sem simular conclusão.
