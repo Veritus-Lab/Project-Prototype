@@ -55,7 +55,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 19 — Integração de pagamento em teste | Clientes, cobranças e checkout/Pix conforme método escolhido | 04–05, 15 | Aluno inicia pagamento somente de sua cobrança; nenhum dado bruto de cartão persistido no sistema |
-| 20 — Webhooks e sincronização | Autenticidade, idempotência, confirmação, liquidação, eventos fora de ordem, disputas, estornos e reconciliação | 19, 16 | Confirmação não infla caixa; recebimento gera movimento uma vez; disputa/resolução preserva o pagamento; evento perdido é recuperável |
+| 20 — Webhooks e sincronização | Autenticidade, idempotência, autorização, confirmação, liquidação, eventos fora de ordem, disputas, estornos e reconciliação | 19, 16 | Autorização não quita; confirmação não infla caixa; recebimento gera movimento uma vez; disputa/resolução preserva o pagamento; evento perdido é recuperável |
 | 21 — Portal financeiro do aluno | Plano, cobrança, pagamento e histórico | 09, 18–20 | Cobrança quitada atualiza no portal; tentativa de acesso a outro aluno falha |
 | 22 — Configuração WhatsApp | Conta/número, modelos e preferências; configuração restrita aos sócios | 04–05, 10 | Conta de teste pronta e mensagens aprovadas/validadas conforme provedor; preferências persistidas |
 | 23 — Automação de lembretes | Agendamento, fila, envio, tentativas e cancelamento de pendências | 15, 20, 22 | Quitação impede novo envio pendente; reexecução não duplica; falhas ficam visíveis; cadência validada |

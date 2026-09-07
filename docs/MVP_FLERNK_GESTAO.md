@@ -82,8 +82,8 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 - Estados explícitos de cobrança e pagamento, com vencimento calculado no fuso da operação.
 - Regra para meses curtos, primeira cobrança, suspensão, cancelamento, desconto e reajuste definida na Task 01.
 - Baixa manual com valor, data, meio, responsável e motivo; correção auditável.
-- Pagamento online com confirmação pelo provedor, nunca apenas pelo retorno do navegador. Confirmação pode quitar a cobrança e interromper lembretes, mas permanece separada de liquidação/recebimento.
-- Registrar bruto, tarifa e líquido quando o provedor informar recebimento/disponibilidade. Somente o evento de recebimento/liquidação validado entra no caixa realizado; autorização ou `PAYMENT_CONFIRMED` equivalente fica em confirmado a liquidar.
+- Pagamento online com confirmação pelo provedor, nunca apenas pelo retorno do navegador. Autorização de cartão aguardando captura não quita e não interrompe lembretes; somente confirmação/captura concluída ou recebimento validado cobre a cobrança.
+- Registrar bruto, tarifa e líquido quando o provedor informar recebimento/disponibilidade. Somente o evento de recebimento/liquidação validado entra no caixa realizado; autorização fica em aguardando confirmação e `PAYMENT_CONFIRMED` aplicável fica em confirmado a liquidar.
 - Tratar falha, expiração, estorno e contestação no mesmo identificador de pagamento. Solicitação de estorno pode ocorrer no painel do provedor no MVP, com sincronização local; resolução favorável de disputa restaura a cobertura sem fabricar novo pagamento.
 - Sem exclusão destrutiva de histórico financeiro pela interface.
 - Renovação contratual é diferente de vencimento de parcela. Avisos e datas devem refletir o evento correto.
