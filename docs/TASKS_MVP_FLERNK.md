@@ -48,14 +48,14 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | 15 — Motor de cobranças | Geração por ciclo, datas, suspensão/cancelamento e restrições contra duplicação | 14 | Casos de mês curto, início após vencimento e repetição do processamento passam |
 | 16 — Pagamentos manuais e auditoria | Baixa, correção, motivos e histórico consistente | 15 | Falha não deixa operação parcialmente concluída; lançamento repetido não duplica recebimento |
 | 17 — Despesas e receitas avulsas | Categorias, contas a pagar e lançamentos realizados | 06–07, 16 | Receitas avulsas não duplicam mensalidades; apenas sócios acessam |
-| 18 — Caixa e relatórios | Saldo inicial, realizado/previsto, taxas e CSV | 16–17 | Totais conferem com fixtures e listas; saldo não é apresentado como lucro |
+| 18 — Caixa e relatórios | Saldo inicial, realizado/previsto, confirmado a liquidar, bruto/taxas/líquido e CSV | 16–17 | Somente liquidação recebida entra no realizado; totais conferem com fixtures e listas; saldo não é apresentado como lucro |
 
 ## Fase E — Pagamento online e comunicação
 
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 19 — Integração de pagamento em teste | Clientes, cobranças e checkout/Pix conforme método escolhido | 04–05, 15 | Aluno inicia pagamento somente de sua cobrança; nenhum dado bruto de cartão persistido no sistema |
-| 20 — Webhooks e sincronização | Autenticidade, idempotência, eventos fora de ordem, falhas, estornos e reconciliação | 19, 16 | Evento repetido não duplica pagamento; retorno do navegador não dá baixa; evento perdido é recuperável |
+| 20 — Webhooks e sincronização | Autenticidade, idempotência, confirmação, liquidação, eventos fora de ordem, disputas, estornos e reconciliação | 19, 16 | Confirmação não infla caixa; recebimento gera movimento uma vez; disputa/resolução preserva o pagamento; evento perdido é recuperável |
 | 21 — Portal financeiro do aluno | Plano, cobrança, pagamento e histórico | 09, 18–20 | Cobrança quitada atualiza no portal; tentativa de acesso a outro aluno falha |
 | 22 — Configuração WhatsApp | Conta/número, modelos e preferências; configuração restrita aos sócios | 04–05, 10 | Conta de teste pronta e mensagens aprovadas/validadas conforme provedor; preferências persistidas |
 | 23 — Automação de lembretes | Agendamento, fila, envio, tentativas e cancelamento de pendências | 15, 20, 22 | Quitação impede novo envio pendente; reexecução não duplica; falhas ficam visíveis; cadência validada |

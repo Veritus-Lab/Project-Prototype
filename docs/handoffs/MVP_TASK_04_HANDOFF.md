@@ -15,9 +15,12 @@ Data: 07/09/2026. Branch: `codex/mvp-flernk`. Base anterior: `b331d00629e4b0d0a9
 - Produto dedicado à FLERNK, com `assessoria_id` preservado para ownership e sem cadastro público de outra assessoria.
 - Aluno administrativo é desacoplado de `auth.users`; papéis são `socio`, `professor` e `aluno`.
 - Professor não consulta tabelas financeiras e recebe somente `em_dia`, `pendente`, `nao_configurado` ou `indisponivel`.
-- Matrícula, assinatura, cobrança, checkout, pagamento e reversão têm estados distintos.
+- Matrícula, assinatura, cobrança, checkout, pagamento, liquidação, estorno e disputa têm estados distintos. Confirmação quita a cobrança, mas somente recebimento/disponibilidade validado gera bruto, tarifa, líquido e caixa realizado.
 - Dinheiro usa centavos/BRL; vencimentos usam datas civis em `America/Sao_Paulo`; instantes usam UTC.
 - Webhooks persistem antes de 2xx, deduplicam por ID externo e processam assincronamente. Redirect nunca confirma pagamento.
+- Disputa, derrota e resolução favorável permanecem no mesmo `payments`/`external_payment_id`; fatos externos efetivos ordenados atualizam a projeção sem criar pagamento fictício.
+- Eventos financeiros e mensagens têm rotas `GET` próprias, autenticadas por `CRON_SECRET`, para execução pelo Vercel Cron.
+- O indicador do professor só calcula adimplência após comprovar watermark/cobertura dos ciclos esperados; lacuna ou run falho retorna `indisponivel`, e isenção ativa válida/coberta retorna `em_dia`.
 - Jobs são reentrantes, têm chave natural, claim/lease, retry limitado, dead-letter e replay auditável.
 - Operações multirregistro usam RPC/transação; funções privilegiadas ficam em schema privado com privilégios mínimos.
 
@@ -25,7 +28,7 @@ Data: 07/09/2026. Branch: `codex/mvp-flernk`. Base anterior: `b331d00629e4b0d0a9
 
 - Task 05: validar plano Vercel, ambientes separados, segredos, Sandbox, backup e rollback.
 - Tasks 06–08: criar schema/RLS e migrar papéis após identificar explicitamente a organização/dados FLERNK.
-- Tasks 14–21: implementar motor interno, transações financeiras, Asaas Checkout, webhook e reconciliação após acesso a Sandbox/credenciais/condições.
+- Tasks 14–21: implementar motor interno com watermark, transações financeiras, confirmação separada de liquidação, disputas, Asaas Checkout, webhook e reconciliação após acesso a Sandbox/credenciais/condições.
 - Tasks 22–23: implementar Meta Cloud API e fila após conta, número, opt-in, token e templates aprovados.
 - Tasks 29–33: validar duplicação, ordem, perda, recuperação, alertas e piloto antes de produção.
 

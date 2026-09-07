@@ -48,10 +48,10 @@ Todas as entidades de negócio têm UUID interno, `assessoria_id`, `created_at` 
 | Turmas | `classes`, `class_memberships`, `class_meetings`, `attendances`, `absence_justifications` | Unicidade por turma+ocorrência e encontro+aluno; encontro cancelado não aceita presença e não entra no denominador |
 | Planos | `plans` identifica oferta; `plan_versions` congela preço, moeda, periodicidade e regras | Assinatura referencia versão/snapshot; editar plano não reescreve passado |
 | Assinaturas | `subscriptions` liga aluno, matrícula e versão de plano; `subscription_history` registra condição e transição | Ciclo, dia de vencimento, vigência e renovação separados da matrícula e do pagamento |
-| Cobrança | `billing_cycles` representa competência; `charges` representa obrigação; `charge_adjustments` registra desconto/cancelamento/ajuste | `unique(subscription_id, cycle_key)`; valor e vencimento ficam congelados; nenhuma exclusão destrutiva |
+| Cobrança | `billing_cycles` representa competência; `charges` representa obrigação; `charge_adjustments` registra desconto/cancelamento/ajuste; `billing_generation_runs` e `billing_generation_watermarks` comprovam a cobertura gerada por assinatura | `unique(subscription_id, cycle_key)`; watermark aponta o último ciclo esperado concluído e o run de origem; valor e vencimento ficam congelados; nenhuma exclusão destrutiva |
 | Checkout | `payment_checkouts` liga cobrança a sessão externa | `unique(provider, provider_checkout_id)` e no máximo um checkout ativo reutilizável por cobrança/método; expiração não quita |
-| Pagamento | `payments` registra recebimento confirmado; `payment_reversals` registra estorno/chargeback | `unique(provider, external_payment_id)`; baixa manual tem chave idempotente, autor e motivo; reversão não apaga pagamento |
-| Caixa | `expenses`, `other_revenues`, `cash_movements` e categorias | Valores previstos e realizados separados; movimentos originados por cobrança/receita não se duplicam |
+| Pagamento | `payments` registra a confirmação/autorização financeira; `payment_settlements` registra liquidação/disponibilidade; `payment_refunds` registra estorno; `payment_disputes` registra contestação e resultado | `unique(provider, external_payment_id)` permanece estável em confirmação, disputa e resolução; cada fato externo tem chave única; baixa manual tem chave idempotente, autor e motivo |
+| Caixa | `payment_settlements`, `expenses`, `other_revenues`, `cash_movements` e categorias | Liquidação guarda `gross_amount_cents`, `fee_amount_cents`, `net_amount_cents`, `received_at` e `available_at`; somente disponibilidade/recebimento cria realizado, com movimento único por liquidação ou reversão |
 | Integrações | `provider_events` persiste envelope mínimo; `integration_attempts` registra chamadas sanitizadas | `unique(provider, external_event_id)`; payload bruto sensível não vai para logs e retenção é definida na Task 20 |
 | Comunicação | `contact_preferences`, `message_jobs`, `message_events`, `message_templates` | `unique(charge_id, cadence_offset, template_version)`; opt-in/opt-out e versão do template ficam rastreáveis |
 | Captação | `leads`, `lead_history` | Chave de deduplicação normalizada; conversão referencia o lead e não cria conta/cobrança implicitamente |
@@ -76,9 +76,12 @@ Todas as entidades de negócio têm UUID interno, `assessoria_id`, `created_at` 
 | --- | --- | --- |
 | Matrícula | `active`, `suspended`, `ended` | `active ↔ suspended`; ambos podem ir a `ended`; reativação de encerrada cria novo vínculo/histórico conforme Task 11. Pagamento nunca muda matrícula automaticamente |
 | Assinatura | `draft`, `active`, `paused`, `ended`, `canceled`, `exempt` | `draft → active/exempt/canceled`; `active ↔ paused`; `active/paused → ended/canceled`. Pausa impede ciclos cuja elegibilidade começa na data efetiva; cobrança emitida permanece |
-| Cobrança | `draft`, `open`, `overdue`, `paid`, `reversed`, `canceled`, `exempt` | `draft → open/canceled/exempt`; `open ↔ overdue` por data; `open/overdue → paid/canceled/exempt`; `paid → reversed` somente por reversão confirmada; `reversed → paid` somente por novo pagamento confirmado. Cada mudança aponta para o fato causador |
+| Cobrança | `draft`, `open`, `overdue`, `paid`, `reversed`, `canceled`, `exempt` | `draft → open/canceled/exempt`; `open ↔ overdue` por data; `open/overdue → paid/canceled/exempt`; `paid → reversed` por estorno/contestação que retire a cobertura; `reversed → paid` por resolução favorável da mesma disputa ou outro pagamento confirmado. Cada projeção aponta para o fato efetivo causador |
 | Checkout | `created`, `active`, `paid`, `expired`, `canceled`, `failed` | `created → active/failed`; `active → paid/expired/canceled/failed`. Estado terminal não retrocede; novo checkout recebe novo registro |
-| Pagamento | `pending`, `confirmed`, `failed` | `pending → confirmed/failed`; confirmação é única por ID externo. Estorno e chargeback ficam em `payment_reversals` com `requested/confirmed/failed`, sem excluir o pagamento |
+| Pagamento | `pending`, `confirmed`, `failed`, `canceled` | `pending → confirmed/failed/canceled`; confirmação é única por ID externo e pode quitar a obrigação, mas não representa dinheiro disponível. Disputa ou estorno não cria outro `payments` nem troca `external_payment_id` |
+| Liquidação | `pending`, `received`, `reversed` | Confirmação cria/atualiza `pending`; evento efetivo de recebimento move para `received` e gera caixa realizado; estorno/chargeback após recebimento move para `reversed` e gera movimento compensatório uma vez |
+| Estorno | `requested`, `confirmed`, `reversed`, `failed`, `canceled` | `requested → confirmed/failed/canceled`; `confirmed → reversed` somente se novo fato oficial desfizer o estorno. A projeção preserva o pagamento e todo o histórico |
+| Disputa | `open`, `under_review`, `won`, `lost`, `reversed`, `canceled` | `open → under_review/won/lost/canceled`; `lost → reversed` quando uma reversão favorável posterior desfaz o chargeback; correção oficial também pode atualizar resultado por novo fato efetivo. `won/reversed` restaura a cobertura do mesmo pagamento, sem novo `payments` |
 | Despesa | `planned`, `paid`, `canceled` | `planned → paid/canceled`; correção de pagamento é movimento compensatório auditado, não remoção silenciosa |
 | Evento externo | `received`, `processing`, `processed`, `retryable_failure`, `dead_letter`, `ignored` | Persistir antes de 2xx; claim atômico; falha transitória volta à fila com limite; evento válido mas irrelevante/antigo vira `ignored` com motivo |
 | Mensagem | `queued`, `claimed`, `submitted`, `delivered`, `read`, `retryable_failure`, `canceled`, `dead_letter` | Claim atômico; revalidação pode cancelar; confirmações externas avançam monotonicamente; `read` não retrocede para `delivered` |
@@ -88,11 +91,12 @@ Invariantes transversais:
 
 - matrícula, assinatura, cobrança, checkout e pagamento são fatos distintos;
 - no máximo uma cobrança por assinatura+ciclo, inclusive sob dois crons concorrentes;
-- no máximo um pagamento confirmado por identificador externo; repetição não cria caixa duplicado;
-- evento fora de ordem nunca reabre estado terminal nem desfaz confirmação válida;
-- a ordem financeira usa o instante efetivo e o identificador do fato externo, não a ordem de chegada; evento antigo processado depois não vence pagamento/reversão mais recente;
+- no máximo um pagamento por identificador externo; confirmação repetida não duplica quitação e recebimento repetido não duplica liquidação ou caixa;
+- confirmação/autorização do pagamento pode marcar a cobrança como paga e cancelar lembretes, mas não entra em recebido bruto, taxa, líquido ou caixa realizado até um evento de liquidação/recebimento validado;
+- a ordem financeira usa `provider_occurred_at`, sequência do provedor quando disponível, tipo e identificador do fato, nunca apenas `received_at`; evento antigo processado depois não vence confirmação, estorno, disputa ou resolução efetivamente posterior;
+- estados projetados podem mudar somente por novo fato válido: isso permite resolver/reverter disputa no mesmo `payments` sem tratar uma correção legítima como regressão ou exigir novo pagamento;
 - cancelamento/isenção exigem motivo e ator; quitação confirmada cancela lembretes ainda não submetidos;
-- baixa manual exige sócio, valor, data, meio, motivo e `Idempotency-Key`; sua transação confirma pagamento, atualiza cobrança, cria movimento e auditoria ou não grava nada;
+- baixa manual exige sócio, valor, data, meio, motivo e `Idempotency-Key`; por representar dinheiro já recebido fora do gateway, sua transação confirma pagamento, cria liquidação manual com bruto/taxa/líquido, atualiza cobrança, cria movimento realizado e auditoria ou não grava nada;
 - workers usam claim transacional (`FOR UPDATE SKIP LOCKED` ou equivalente), lease com expiração e contador de tentativas;
 - funções que alteram vários agregados usam RPC/transação no banco; falha não deixa auditoria ou movimento órfão.
 
@@ -106,27 +110,35 @@ As APIs são internas ao produto, versionadas em `/api/v1` quando consumidas pel
 | `POST /api/v1/charges/{chargeId}/checkout` | Sessão Supabase do aluno; CSRF/origin conforme estratégia da Task 09; valida cobrança pertencente ao aluno autenticado | Requer `Idempotency-Key`; reutiliza checkout ativo; rate limit por usuário/cobrança/IP; só cria no Asaas após reserva interna |
 | `POST /api/v1/payments/manual` | Sessão de sócio e reautenticação quando definida; professor/aluno negados | Chave idempotente, transação única, estado esperado, motivo obrigatório e auditoria |
 | `POST /api/v1/webhooks/asaas` | Público por necessidade; valida `asaas-access-token` contra segredo de webhook separado, em comparação segura; HTTPS, método, tipo e tamanho | Persiste `provider+event_id` antes de responder 2xx; duplicado retorna 2xx; processamento assíncrono; rate limit não pode descartar eventos legítimos |
-| `POST /api/internal/provider-events/process` | Cron/worker autenticado internamente | Claim com lease; processador reentrante valida `externalReference`, IDs e valor/moeda; transação monotônica |
-| `GET /api/internal/cron/billing/reconcile` | Cron autenticado; somente ambiente correto | Seleciona eventos/checkouts pendentes ou antigos em lote limitado; chamadas ao provedor com timeout/backoff; não inventa quitação |
+| `GET /api/internal/cron/provider-events/process` | `Authorization: Bearer $CRON_SECRET`; rota concreta do Vercel Cron chama serviço/RPC privado de processamento | Claim com lease; processador reentrante valida `externalReference`, IDs, bruto/moeda e ordenação efetiva; resposta traz contagens sanitizadas |
+| `GET /api/internal/cron/billing/reconcile` | `Authorization: Bearer $CRON_SECRET`; somente ambiente correto | Seleciona eventos/checkouts/liquidações pendentes ou antigos em lote limitado; chamadas ao provedor com timeout/backoff; não inventa quitação ou caixa |
 | `GET /api/v1/professor/students/{studentId}/financial-status` | Sessão `professor`/`socio`, aluno da mesma FLERNK e vínculo operacional autorizado | Retorna exclusivamente `{ data: { status: enum } }`; erro/dependência indisponível retorna `indisponivel`; sem IDs/valores/datas |
-| `GET /api/internal/cron/messages/enqueue` | Cron autenticado | Enfileira D-5, D-1 e D+3 configuráveis; chave cobrança+cadência+versão impede duplicação |
-| `POST /api/internal/message-jobs/process` | Worker autenticado | Claim com lease; revalida cobrança, matrícula e preferência imediatamente antes da chamada Meta; tentativas exponenciais limitadas |
+| `GET /api/internal/cron/messages/enqueue` | `Authorization: Bearer $CRON_SECRET`; rota concreta do Vercel Cron | Enfileira D-5, D-1 e D+3 configuráveis; chave cobrança+cadência+versão impede duplicação |
+| `GET /api/internal/cron/message-jobs/process` | `Authorization: Bearer $CRON_SECRET`; rota concreta do Vercel Cron chama serviço/RPC privado de processamento | Claim com lease; revalida cobrança, matrícula e preferência imediatamente antes da chamada Meta; tentativas exponenciais limitadas; resposta sem PII |
 | `GET /api/v1/webhooks/meta` | Challenge do webhook conforme contrato Meta, com verify token secreto | Responde challenge apenas quando token e parâmetros forem válidos; sem sessão de usuário |
 | `POST /api/v1/webhooks/meta` | Verifica assinatura da requisição com segredo do app antes de interpretar o corpo | Persiste evento único, responde rápido e atualiza entrega monotonicamente em processamento assíncrono |
 
-Os nomes são contrato de direção e podem mudar na Task de implementação somente por ADR equivalente e atualização desta rastreabilidade. Webhooks devem tolerar campos novos, rejeitar tipos essenciais inválidos e armazenar apenas o necessário. Segundo a documentação do Asaas, a entrega de webhooks é pelo menos uma vez; o consumidor deve deduplicar pelo ID do evento, persistir antes do processamento e responder rapidamente ([idempotência](https://docs.asaas.com/docs/como-implementar-idempotencia-em-webhooks), [autenticação e recebimento](https://docs.asaas.com/docs/receba-eventos-do-asaas-no-seu-endpoint-de-webhook), consulta em 07/09/2026).
+Os nomes são contrato de direção e podem mudar na Task de implementação somente por ADR equivalente e atualização desta rastreabilidade. Todos os disparadores agendados são `GET` compatíveis com o Vercel Cron e autenticados por `CRON_SECRET`; `POST` pode existir apenas como função/execução privada não configurada como cron. Webhooks devem tolerar campos novos, rejeitar tipos essenciais inválidos e armazenar apenas o necessário. Segundo a documentação do Asaas, a entrega de webhooks é pelo menos uma vez; o consumidor deve deduplicar pelo ID do evento, persistir antes do processamento e responder rapidamente ([idempotência](https://docs.asaas.com/docs/como-implementar-idempotencia-em-webhooks), [autenticação e recebimento](https://docs.asaas.com/docs/receba-eventos-do-asaas-no-seu-endpoint-de-webhook), consulta em 07/09/2026).
 
 ### Derivação do indicador do professor
 
-A projeção é calculada no servidor/banco e aplica esta precedência: falha ao consultar os dados necessários resulta em `indisponivel`; ausência de assinatura/configuração financeira elegível resulta em `nao_configurado`; qualquer cobrança vencida, não cancelada, não isenta e sem recebimento líquido suficiente — inclusive após reversão confirmada — resulta em `pendente`; caso contrário, resulta em `em_dia`. Cobrança futura aberta não torna o aluno pendente antes do vencimento. O contrato não retorna a causa, o valor ou a data ao professor e não usa o indicador para suspender matrícula ou presença.
+A projeção é calculada no servidor/banco na data civil da FLERNK e aplica esta precedência:
+
+1. Falha de consulta, run incompleto/falho, watermark ausente/atrasado ou lacuna entre ciclos esperados e cobranças materializadas resulta em `indisponivel`. O watermark da assinatura precisa cobrir ao menos o último `cycle_key` que a regra de geração exige para a data de referência; ausência de cobrança não pode ser interpretada como adimplência.
+2. Completude comprovada, mas sem assinatura/configuração financeira ativa nem isenção vigente resulta em `nao_configurado`.
+3. Isenção ativa, válida para a data e com cobertura comprovada resulta em `em_dia`.
+4. Qualquer cobrança vencida, não cancelada/não isenta e sem cobertura confirmada suficiente resulta em `pendente`. Estorno confirmado, disputa aberta com cobertura retirada ou disputa perdida também resulta em `pendente`; resolução favorável restaura a cobertura do mesmo pagamento.
+5. Completude comprovada e nenhuma pendência vencida resulta em `em_dia`. Cobrança futura aberta não torna o aluno pendente antes do vencimento.
+
+O contrato não retorna watermark, causa, valor, data ou detalhe de disputa ao professor e não usa o indicador para suspender matrícula ou presença.
 
 ### Processos ponta a ponta
 
-**Geração recorrente.** O cron solicita uma janela civil. A RPC seleciona assinaturas elegíveis, calcula competência/vencimento em `America/Sao_Paulo`, congela o snapshot, insere por chave única e registra auditoria. Repetição retorna a mesma cobrança. Pausa/cancelamento interrompe somente ciclos futuros conforme data efetiva.
+**Geração recorrente.** O cron solicita uma janela civil. A RPC abre um `billing_generation_run`, seleciona assinaturas elegíveis, calcula competência/vencimento em `America/Sao_Paulo`, congela o snapshot, insere por chave única e registra auditoria. O watermark por assinatura avança somente na mesma transação que comprova todos os ciclos esperados daquela janela; run parcial/falho nunca avança cobertura. Repetição retorna a mesma cobrança. Pausa/cancelamento interrompe somente ciclos futuros conforme data efetiva.
 
 **Checkout.** O servidor valida sessão, ownership e cobrança `open/overdue`, reserva uma tentativa e chama o Asaas com `externalReference = charge.id`. Se a chamada conclui, grava ID/URL/expiração. Se a resposta se perde, a reserva fica reconciliável e a mesma chave não cria uma sequência descontrolada de checkouts. Retorno do navegador consulta o estado local e mostra espera até webhook.
 
-**Webhook financeiro.** O handler autentica, valida envelope mínimo e insere evento por chave única. Após persistência responde 2xx. Worker trava o evento e a cobrança, compara provedor, referência, valor e moeda e aplica transição monotônica numa transação. Apenas o evento de pagamento confirmado aplicável — correlacionado ao checkout quando necessário — cria pagamento e movimento uma vez; um estado de checkout sozinho não substitui essa validação. Expiração/cancelamento/falha não quita. Estorno/chargeback confirmado cria reversão, altera a projeção da cobrança e do caixa e mantém o pagamento original.
+**Webhook financeiro.** O handler autentica, valida envelope mínimo e insere evento por chave única. Após persistência responde 2xx. O worker GET trava o evento e a cobrança, compara provedor, referência, valor e moeda e ordena por fato efetivo. `PAYMENT_CONFIRMED` ou equivalente validado confirma o mesmo `payments` e pode quitar a cobrança/cancelar lembretes, mas mantém a liquidação `pending` e não cria caixa realizado. Somente `PAYMENT_RECEIVED` ou estado equivalente validado registra `payment_settlements.received`, bruto, tarifa, líquido, datas de recebimento/disponibilidade e um `cash_movements` idempotente. Estorno após liquidação cria movimento compensatório único. Contestação, derrota e reversão favorável atualizam disputa, cobertura e liquidação no mesmo pagamento/ID externo por novos fatos ordenados; não fabricam outro pagamento. Um estado de checkout sozinho não confirma nem liquida. Expiração/cancelamento/falha não quita.
 
 **Reconciliação.** Job periódico revisa evento em falha, checkout pendente acima do limite e pagamento divergente. Consulta Asaas por ID estável dentro da janela operacional, persiste o resultado como evento/fato e reutiliza o mesmo processador. A operação é paginada, limitada e observável. O Asaas informa retenção limitada de eventos no mecanismo de webhooks; a Task 20 definirá frequência e runbook dentro da capacidade real da conta.
 
@@ -161,22 +173,26 @@ A projeção é calculada no servidor/banco e aplica esta precedência: falha ao
 | Retorno do navegador sem webhook | Mostrar aguardando confirmação | Poll limitado do estado local e job de reconciliação; nunca baixa pelo redirect |
 | Evento perdido | Estado continua pendente, sem falso positivo | Reconciliação consulta provedor; alerta por idade de pendência |
 | Cron executado duas vezes | Uma cobrança/job por chave natural | Constraint única, transação e contagem `created/reused/conflict` |
+| Geração parcial ou watermark atrasado | Não inferir `em_dia` pela ausência de cobrança | Run falha sem avançar watermark; indicador do professor retorna `indisponivel`; alerta e reexecução idempotente |
 | Dois workers no mesmo item | Um claim válido; outro ignora | Lock/lease e `SKIP LOCKED`; lease vencida permite retomada |
 | Token/assinatura inválido | Rejeitar antes de persistir efeito | `401/403`, log sanitizado e alerta por volume; nenhum dado de domínio muda |
 | Payload válido com campos futuros | Processar envelope conhecido | Parser tolerante a desconhecidos; payload essencial inválido vai para falha observável |
 | Opt-out antes do envio | Cancelar job | Revalidação imediatamente antes de chamar Meta e motivo auditado |
 | Quitação após enqueue | Cancelar se ainda não submetido | Lock/revalidação; se já submetido, conservar status e não repetir |
+| Confirmação sem recebimento | Quitar a cobrança sem inflar caixa realizado | Liquidação permanece `pending`; reconciliação e alerta por idade; painel separa confirmado a liquidar |
+| Recebimento repetido | Não duplicar bruto, tarifa, líquido ou caixa | Chave do fato/liquidação e movimento único; duplicado vira efeito nulo auditável |
+| Disputa e resolução fora de ordem | Não criar novo pagamento nem deixar derrota posterior vencer resolução efetivamente mais nova | Ordenar fatos pelo instante/sequência do provedor; atualizar projeção no mesmo `external_payment_id`; reconciliar divergência |
 | Meta aceita e resposta local se perde | Não enviar de novo imediatamente | Estado desconhecido/reconciliável, ID/correlação quando disponível, retry limitado |
 | Retry esgotado | Não loopar indefinidamente | `dead_letter`, alerta, ação de replay exclusiva de sócio e auditada |
-| Baixa manual concorrente com webhook | Uma confirmação e um movimento | Lock da cobrança, chave externa/manual e conflito idempotente |
+| Baixa manual concorrente com webhook | Uma cobertura da cobrança e movimentos apenas para recebimentos reais | Lock da cobrança, chaves externa/manual, detecção de duplicidade e conflito idempotente |
 | Banco indisponível no webhook | Não confirmar efeito nem descartar silenciosamente | Retornar erro para retry do provedor; alerta; só responder 2xx após persistência |
 
 ## 8. Observabilidade e operação
 
 - Propagar `request_id`/`correlation_id` entre cron, chamada externa, evento, cobrança, job e auditoria.
 - Registrar `attempt_count`, `next_attempt_at`, `claimed_at`, `lease_until`, `processed_at`, erro categorizado e resposta externa sanitizada.
-- Métricas mínimas: cobranças criadas/reutilizadas/conflitantes; idade de checkout pendente; eventos recebidos/duplicados/falhos/dead-letter; pagamentos confirmados/revertidos; mensagens enfileiradas/submetidas/entregues/falhas/canceladas; duração e atraso dos crons.
-- Alertas: cron sem execução, crescimento de fila, lease expirada repetida, falha de autenticação anormal, evento financeiro morto, divergência de valor/moeda e pendência acima do SLA definido nas Tasks 20/23/31.
+- Métricas mínimas: cobranças criadas/reutilizadas/conflitantes; cobertura/watermark por assinatura; idade de checkout pendente; eventos recebidos/duplicados/falhos/dead-letter; pagamentos confirmados; liquidações pendentes/recebidas/revertidas; bruto, tarifas, líquido e caixa realizado; disputas abertas/ganhas/perdidas; mensagens enfileiradas/submetidas/entregues/falhas/canceladas; duração e atraso dos crons.
+- Alertas: cron sem execução, watermark atrasado/run parcial, crescimento de fila, lease expirada repetida, falha de autenticação anormal, confirmação sem liquidação acima do SLA, evento financeiro morto, disputa sem resolução, divergência de valor/moeda e pendência acima do SLA definido nas Tasks 20/23/31.
 - Replay de evento/job exige sócio, motivo, escopo explícito e auditoria; o mesmo processador idempotente é reutilizado.
 - Runbooks da Task 31 devem cobrir rotação de segredo, pausa de scheduler, reconciliação, dead-letter, indisponibilidade do provedor e rollback sem apagar histórico.
 
@@ -187,8 +203,8 @@ A projeção é calculada no servidor/banco e aplica esta precedência: falha ao
 | 05 | Scheduler, ambientes e segredos separados | Confirmar capacidade do plano Vercel, isolamento preview/Sandbox, backup e rollback |
 | 06–08 | Entidades, ownership, RLS, papéis e schema privado | Identificar a organização FLERNK e dados autorizados; migrations reproduzíveis e testes negativos |
 | 10–13 | Aluno desacoplado, matrícula, turmas e presença | Dados reais aprovados; invariantes operacionais testados |
-| 14–18 | Planos versionados, motor único, pagamentos manuais, despesas e caixa | Condições comerciais reais; transações e fixtures conferidas |
-| 19–21 | Asaas Checkout, webhook, reconciliação e portal próprio | Conta Sandbox/produção, credenciais, tarifas e eventos disponíveis; nenhum cartão bruto persistido |
+| 14–18 | Planos versionados, motor único, watermark, pagamentos manuais, despesas e caixa | Condições comerciais reais; transações e fixtures de confirmação/liquidação conferidas |
+| 19–21 | Asaas Checkout, webhook, liquidação, disputa, reconciliação e portal próprio | Conta Sandbox/produção, credenciais, tarifas e eventos disponíveis; nenhum cartão bruto persistido |
 | 22–23 | Meta Cloud API, preferências, templates e fila | Conta/número/token, opt-in e templates aprovados; ambiente seguro de teste |
 | 24–29 | Projeções por papel e cenários ponta a ponta | Professor continua limitado ao enum; testes de duplicação, ordem, falha e isolamento passam |
 | 31–33 | Alertas, runbooks, virada e piloto | Custos, planos comerciais, domínios, backups, credenciais e liberação operacional aprovados |
@@ -200,12 +216,13 @@ Não estão comprovados nesta task: contas Asaas/Meta, credenciais, templates, p
 1. Executar o gerador duas vezes para o mesmo ciclo produz uma cobrança e registra uma reutilização.
 2. Duas requisições concorrentes de checkout com a mesma chave retornam a mesma tentativa ativa ou um conflito seguro.
 3. Redirect do checkout sem webhook mantém `aguardando_confirmacao`.
-4. Repetir e reordenar eventos não duplica pagamento/movimento nem reabre estado terminal.
+4. `PAYMENT_CONFIRMED` quita a cobrança e cancela lembretes, mas não cria caixa; somente `PAYMENT_RECEIVED` equivalente validado gera bruto, tarifa, líquido e movimento realizado uma vez.
 5. Falha entre mutações de baixa manual não persiste nenhuma parte.
-6. Professor recebe somente os quatro estados do enum; acesso direto/API a detalhes financeiros retorna negação.
+6. Professor recebe somente os quatro estados do enum; acesso direto/API a detalhes financeiros retorna negação. Watermark atrasado, run parcial ou ciclo esperado ausente resulta em `indisponivel`; isenção ativa e coberta resulta em `em_dia`.
 7. Aluno não lê nem paga cobrança de outro aluno, mesmo alterando URL ou payload.
-8. Cron duplicado e workers concorrentes não duplicam cobranças ou mensagens.
+8. Cron duplicado e workers concorrentes não duplicam cobranças ou mensagens; as filas de eventos e mensagens têm disparadores `GET` autenticados configuráveis no Vercel Cron.
 9. Pagamento confirmado antes do envio cancela o lembrete; opt-out também cancela.
 10. Falha externa esgotada chega a dead-letter visível e pode ser reprocessada com auditoria.
 11. Mês curto, primeiro vencimento, pausa e não renovação seguem os exemplos da Task 01 no fuso definido.
 12. Logs e respostas não contêm segredo, cartão bruto, SQL, stack ou PII além do necessário.
+13. Disputa aberta/perdida e resolução favorável atualizam a mesma linha/ID de pagamento por fatos efetivos ordenados; evento duplicado ou fora de ordem não fabrica novo pagamento nem vence um fato posterior.

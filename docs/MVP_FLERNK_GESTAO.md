@@ -53,7 +53,7 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 
 ### 4.1 Painel dos sócios
 
-- Indicadores do período: recebido bruto, taxas registradas, recebido líquido, contas a receber, atrasos e despesas pagas.
+- Indicadores do período: recebido bruto, taxas registradas, recebido líquido, confirmado a liquidar, contas a receber, atrasos e despesas pagas. Recebido bruto/líquido e caixa realizado incluem somente liquidações efetivamente recebidas/disponíveis, nunca mera confirmação/autorização.
 - Fluxo de caixa realizado e previsto apresentados separadamente. Não chamar cobrança emitida de receita recebida nem saldo de caixa de lucro contábil.
 - Alunos ativos, novas matrículas, cancelamentos, frequência e interessados aguardando atendimento.
 - Acesso às listas que explicam cada indicador, com filtro por período.
@@ -82,9 +82,9 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 - Estados explícitos de cobrança e pagamento, com vencimento calculado no fuso da operação.
 - Regra para meses curtos, primeira cobrança, suspensão, cancelamento, desconto e reajuste definida na Task 01.
 - Baixa manual com valor, data, meio, responsável e motivo; correção auditável.
-- Pagamento online com confirmação pelo provedor, nunca apenas pelo retorno do navegador.
-- Registrar taxas e liquidação quando fornecidas; não tratar autorização de cartão como dinheiro disponível em caixa.
-- Tratar falha, expiração, estorno e contestação. Solicitação de estorno pode ocorrer no painel do provedor no MVP, com sincronização local.
+- Pagamento online com confirmação pelo provedor, nunca apenas pelo retorno do navegador. Confirmação pode quitar a cobrança e interromper lembretes, mas permanece separada de liquidação/recebimento.
+- Registrar bruto, tarifa e líquido quando o provedor informar recebimento/disponibilidade. Somente o evento de recebimento/liquidação validado entra no caixa realizado; autorização ou `PAYMENT_CONFIRMED` equivalente fica em confirmado a liquidar.
+- Tratar falha, expiração, estorno e contestação no mesmo identificador de pagamento. Solicitação de estorno pode ocorrer no painel do provedor no MVP, com sincronização local; resolução favorável de disputa restaura a cobertura sem fabricar novo pagamento.
 - Sem exclusão destrutiva de histórico financeiro pela interface.
 - Renovação contratual é diferente de vencimento de parcela. Avisos e datas devem refletir o evento correto.
 
