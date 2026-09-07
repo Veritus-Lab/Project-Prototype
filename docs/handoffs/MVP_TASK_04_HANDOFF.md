@@ -18,9 +18,9 @@ Data: 07/09/2026. Branch: `codex/mvp-flernk`. Base anterior: `b331d00629e4b0d0a9
 - Matrícula, assinatura, cobrança, checkout, pagamento, liquidação, estorno e disputa têm estados distintos. Confirmação quita a cobrança, mas somente recebimento/disponibilidade validado gera bruto, tarifa, líquido e caixa realizado.
 - Dinheiro usa centavos/BRL; vencimentos usam datas civis em `America/Sao_Paulo`; instantes usam UTC.
 - Webhooks persistem antes de 2xx, deduplicam por ID externo e processam assincronamente. Redirect nunca confirma pagamento.
-- Disputa, derrota e resolução favorável permanecem no mesmo `payments`/`external_payment_id`; fatos externos efetivos ordenados atualizam a projeção sem criar pagamento fictício.
-- Eventos financeiros e mensagens têm rotas `GET` próprias, autenticadas por `CRON_SECRET`, para execução pelo Vercel Cron.
-- O indicador do professor só calcula adimplência após comprovar watermark/cobertura dos ciclos esperados; lacuna ou run falho retorna `indisponivel`, e isenção ativa válida/coberta retorna `em_dia`.
+- Disputa, derrota e resolução favorável permanecem no mesmo `payments`/`external_payment_id`; resolução oficial pode restaurar `reversed → received` com movimento compensatório idempotente.
+- Geração, eventos financeiros, reconciliação, enqueue, jobs de envio e eventos Meta têm seis rotas `GET` próprias, autenticadas por `CRON_SECRET`, para execução pelo Vercel Cron.
+- O indicador do professor classifica primeiro a configuração: ausência retorna `nao_configurado`; isenção vigente retorna `em_dia` sem ciclo; somente assinatura geradora exige watermark, e lacuna/run falho retorna `indisponivel`.
 - Jobs são reentrantes, têm chave natural, claim/lease, retry limitado, dead-letter e replay auditável.
 - Operações multirregistro usam RPC/transação; funções privilegiadas ficam em schema privado com privilégios mínimos.
 

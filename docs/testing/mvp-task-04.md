@@ -13,9 +13,9 @@ Data: 07/09/2026. Estado: PASSOU para a entrega documental. QA-A (Tasks 01–04)
 | Atomicidade e concorrência | Invariantes, RPCs, locks, leases e constraints únicas | Passou documentalmente |
 | Autenticação/autorização | Contratos HTTP/RPC e matriz de permissão | Passou: cron, webhooks, sessão, papel e ownership mapeados |
 | Confirmação versus caixa | Modelo, estados, webhook e indicadores | Passou: confirmação quita sem gerar realizado; recebimento validado gera bruto/taxa/líquido e movimento uma vez |
-| Filas acionáveis no Vercel | Contratos HTTP/RPC | Passou: provider events, reconciliação, enqueue e message jobs têm rotas `GET` autenticadas por `CRON_SECRET` |
-| Disputa e resolução | Estados, ordenação e webhook | Passou: mesmo `payments`/`external_payment_id`, fatos efetivos ordenados e resolução favorável sem novo pagamento |
-| Professor limitado e completo | Decisões 7, watermark, endpoint agregado e RLS | Passou: somente `em_dia`, `pendente`, `nao_configurado`, `indisponivel`; lacuna/run falho retorna `indisponivel`; isenção válida retorna `em_dia` |
+| Filas acionáveis no Vercel | Contratos HTTP/RPC | Passou: seis rotas `GET` autenticadas cobrem geração, provider events, reconciliação, enqueue, message jobs e message events |
+| Disputa e resolução | Estados, ordenação e webhook | Passou: mesmo `payments`/`external_payment_id`, fatos efetivos ordenados e `reversed → received` com restauração idempotente, sem novo pagamento |
+| Professor limitado e completo | Decisões 7, precedência, watermark, endpoint agregado e RLS | Passou: sem configuração retorna `nao_configurado`; isenção vigente retorna `em_dia` sem ciclo; somente assinatura geradora exige cobertura e lacuna retorna `indisponivel` |
 | Webhooks idempotentes | Persistência antes de 2xx, chave externa, processamento assíncrono e monotônico | Passou documentalmente |
 | Falhas e reconciliação | Matriz de falhas, dead-letter, replay e job de reconciliação | Passou |
 | Segredos e dados sensíveis | RLS/schema privado, segredos por ambiente e logs redigidos | Passou: nenhum cartão bruto ou segredo é armazenado/logado |
@@ -33,9 +33,9 @@ Data: 07/09/2026. Estado: PASSOU para a entrega documental. QA-A (Tasks 01–04)
 | Pausa e renovação | Pausa bloqueia ciclos futuros; cobrança emitida fica; renovação separada | 14–15 | Pausa na data efetiva e plano sem renovação (QA-E) |
 | Uma cobrança por ciclo | Motor interno e `unique(subscription_id, cycle_key)` | 15 | Reexecução/concorrência cria uma linha (QA-E) |
 | Pagamento confiável | Checkout próprio; redirect não paga; confirmação separada de liquidação; disputa no mesmo pagamento | 16, 19–21 | Confirmado sem caixa, recebimento único, duplicação, ordem, disputa/resolução, falha parcial e acesso alheio (QA-E/F/G) |
-| Professor vê quatro estados sem detalhe | Contrato retorna somente enum após validar watermark/completude; professor sem leitura financeira | 07, 15, 20, 25 | `nao_configurado`/erro/lacuna não viram `em_dia`; isenção válida vira `em_dia`; payload não contém detalhes (QA-C/E/F/G) |
+| Professor vê quatro estados sem detalhe | Contrato classifica configuração/isenção antes de exigir watermark da assinatura geradora; professor sem leitura financeira | 07, 15, 20, 25 | Sem configuração=`nao_configurado`; isenção vigente=`em_dia` sem ciclo; lacuna em assinatura geradora=`indisponivel`; payload não contém detalhes (QA-C/E/F/G) |
 | WhatsApp D-5/D-1/D+3 e opt-out | Fila única, revalidação e chave cobrança+cadência+template | 22–23 | Reexecução não duplica; quitação/opt-out cancelam (QA-F) |
-| Falhas recuperáveis | GETs de cron, eventos duráveis, retry limitado, dead-letter, reconciliação e replay auditado | 20, 23, 29, 31 | Evento perdido, timeout, worker concorrente, cron duplicado e replay (QA-F/H) |
+| Falhas recuperáveis | Seis GETs de cron, eventos duráveis, retry limitado, dead-letter, reconciliação e replay auditado | 20, 23, 29, 31 | Evento Asaas/Meta perdido, duplicado ou fora de ordem; timeout, worker concorrente, cron duplicado e replay (QA-F/H) |
 | Chamada e falta elegível | Modelo de encontro/presença e unicidade | 12–13, 25 | Cancelado/não registrado fora do denominador (QA-D/G) |
 | Interesse não cria vínculo financeiro | Lead separado e conversão administrativa | 26–27 | Spam/reenvio/conversão sem conta ou cobrança (QA-G) |
 | Indicadores financeiros honestos | Cobrança, confirmação, liquidação, disputa, despesa e movimentos separados | 16–18, 20, 24 | `PAYMENT_CONFIRMED` não entra no realizado; recebimento expõe bruto/taxa/líquido; falha não vira zero (QA-E/F/G) |
@@ -50,9 +50,9 @@ QA-A passa no escopo documental. Esse resultado confirma completude e rastreabil
 
 - Busca focada confirmou uma única fonte de geração recorrente e ausência de recorrência paralela no Asaas.
 - Busca focada confirmou que o professor recebe somente quatro estados agregados e não acessa tabelas financeiras.
-- Revisão cruzada confirmou que run parcial, watermark atrasado ou ciclo ausente produz `indisponivel`, enquanto isenção ativa válida e coberta produz `em_dia`.
-- Revisão cruzada confirmou autenticação de cron/webhooks, quatro disparadores `GET` compatíveis com Vercel Cron, ownership de aluno/FLERNK, chaves de idempotência, resposta rápida, fila, dead-letter e reconciliação.
-- Revisão da matriz de falhas cobriu confirmação sem liquidação, recebimento repetido, disputa/resolução fora de ordem, duplicação, evento perdido, falha depois de chamada externa, concorrência, opt-out e quitação após enqueue.
+- Revisão cruzada confirmou a precedência: sem configuração=`nao_configurado`; isenção vigente=`em_dia` sem ciclo; apenas assinatura geradora aplica watermark e lacuna=`indisponivel`.
+- Revisão cruzada confirmou seis disparadores `GET` autenticados compatíveis com Vercel Cron, incluindo o consumidor dedicado e idempotente de eventos Meta.
+- Revisão da matriz de falhas cobriu confirmação sem liquidação, recebimento repetido, restauração `reversed → received`, disputa/resolução fora de ordem, eventos Meta duplicados/reordenados, concorrência, opt-out e quitação após enqueue.
 - `git diff --check` passou para a entrega documental.
 
 ## Limites da evidência
