@@ -7,7 +7,7 @@ Concluída em 07/09/2026. Este desenho transforma o contrato da Task 01 em naveg
 | Área | Rotas-alvo | Navegação desktop | Navegação móvel |
 | --- | --- | --- | --- |
 | Pública | `/`, `/interesse`, `/login` | Cabeçalho: início, materiais reais quando disponíveis, `Quero correr com a FLERNK`, `Já sou aluno`; acesso de equipe discreto | Menu recolhido; CTAs de interesse e login preservados |
-| Sócio | `/socio`, `/socio/alunos`, `/socio/alunos/[alunoId]`, `/socio/financeiro`, `/socio/financeiro/cobrancas`, `/socio/turmas`, `/socio/frequencia`, `/socio/interessados`, `/socio/mensagens`, `/socio/treinos`, `/socio/configuracoes` | Barra lateral com Visão geral, Alunos, Financeiro, Turmas e agenda, Frequência, Interessados, Mensagens, Treinos, Configurações | Cabeçalho contextual e navegação inferior para Visão geral, Alunos, Financeiro e Mais; Mais contém as demais áreas |
+| Sócio | `/socio`, `/socio/alunos`, `/socio/alunos/[alunoId]`, `/socio/financeiro`, `/socio/financeiro/cobrancas`, `/socio/turmas`, `/socio/turmas/[turmaId]/chamada`, `/socio/frequencia`, `/socio/interessados`, `/socio/mensagens`, `/socio/treinos`, `/socio/configuracoes` | Barra lateral com Visão geral, Alunos, Financeiro, Turmas e agenda, Frequência, Interessados, Mensagens, Treinos, Configurações | Cabeçalho contextual e navegação inferior para Visão geral, Alunos, Financeiro e Mais; Mais contém as demais áreas |
 | Professor | `/professor`, `/professor/alunos`, `/professor/alunos/[alunoId]`, `/professor/turmas`, `/professor/turmas/[turmaId]/chamada`, `/professor/frequencia`, `/professor/interessados`, `/professor/treinos` | Barra lateral com Minha gestão, Alunos, Turmas e agenda, Frequência, Interessados e Treinos | Navegação inferior para Minha gestão, Turmas, Chamada e Mais; a chamada prioriza uso com uma mão |
 | Aluno | `/aluno`, `/aluno/financeiro`, `/aluno/agenda`, `/aluno/frequencia`, `/aluno/treinos`, `/aluno/perfil`, `/aluno/justificativas/nova` | Barra lateral com Início, Meu financeiro, Agenda, Minha frequência, Meus treinos e Perfil | Navegação inferior para Início, Financeiro, Agenda e Mais |
 
@@ -41,7 +41,7 @@ Menu é orientação visual, não autorização. Cada link, Server Action, handl
 
 ### Chamada, correção e justificativa
 
-1. Professor ou sócio abre a turma e toca em “Fazer chamada” no encontro. A tela móvel carrega alunos vinculados, estado atual e marca se o encontro foi cancelado.
+1. Professor abre `/professor/turmas/[turmaId]/chamada` e sócio abre `/socio/turmas/[turmaId]/chamada` ao tocar em “Fazer chamada” no encontro. A tela móvel carrega alunos vinculados, estado atual e marca se o encontro foi cancelado.
 2. Para encontro elegível, seleciona em lote `presente` ou `falta`, ajusta casos individuais para `justificada` ou mantém `não registrado`, revisa e confirma. `não registrado` não é convertido em falta automaticamente.
 3. Se o encontro estiver cancelado, a chamada é bloqueada e ele fica fora do denominador da frequência; a tela mostra o motivo/estado operacional disponível.
 4. Depois de salvo, correção exige seleção explícita de aluno/estado, motivo e registro de responsável/data. O histórico auditado preserva valor anterior, novo valor e contexto.
@@ -137,7 +137,7 @@ Faltas recorrentes | justificativas aguardando | alunos: [em dia|pendente|não c
 
 Objetivo: conduzir a operação diária. Dados: agenda, turmas, pendências de chamada/justificativa, alunos e o único enum financeiro permitido. Ações: abrir turma, chamada, aluno, justificativa e interessado. Vazio: agenda sem encontros; carregando: reserva; erro: indisponível/recarga, sem inferir estado financeiro; sem permissão: login. Destinos: `/professor/turmas/[turmaId]/chamada`, aluno, frequência ou interessados. Nenhum valor, vencimento, cobrança, pagamento ou ação financeira aparece em qualquer estado.
 
-### Chamada móvel (`/professor/turmas/[turmaId]/chamada`)
+### Chamada móvel (`/socio/turmas/[turmaId]/chamada`, `/professor/turmas/[turmaId]/chamada`)
 
 ```
 < Turma / encontro [cancelado?]
@@ -147,7 +147,7 @@ Aluno D  [não registrado v]
 [Revisar e confirmar]  Histórico de correções
 ```
 
-Objetivo: registrar presença com rapidez e rastreabilidade. Dados: encontro, vínculos, estado por aluno, cancelamento e histórico autorizado. Ações: lote, alteração individual, confirmar, corrigir com motivo. Vazio: turma sem alunos; carregando: itens bloqueados; erro: alterações não salvas identificadas e nova tentativa; sem permissão: voltar à agenda. Se cancelado, bloqueia registro e informa exclusão do denominador. Destinos: frequência/turma; correção abre registro auditado.
+Objetivo: registrar presença com rapidez e rastreabilidade. Dados: encontro, vínculos, estado por aluno, cancelamento e histórico autorizado. Ações: lote, alteração individual, confirmar, corrigir com motivo. Vazio: turma sem alunos; carregando: itens bloqueados; erro: alterações não salvas identificadas e nova tentativa; sem permissão: voltar à agenda do papel. Se cancelado, bloqueia registro e informa exclusão do denominador. Destinos: frequência/turma de `/socio` ou `/professor`; correção abre registro auditado.
 
 ### Painel, financeiro e frequência do aluno (`/aluno`, `/aluno/financeiro`, `/aluno/frequencia`)
 

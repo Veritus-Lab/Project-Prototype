@@ -1,6 +1,6 @@
 # FLERNK — Tasks do planejamento à entrega
 
-Data: 07/09/2026. Tasks 01–02 CONCLUÍDAS documentalmente; Tasks 03–34 NÃO INICIADAS. A Task 02 mantém o gate externo de identificação da organização e aprovação dos dados reais antes de qualquer migration de dados ou carga.
+Data: 07/09/2026. Tasks 01–03 CONCLUÍDAS documentalmente; Tasks 04–34 NÃO INICIADAS. A Task 02 mantém o gate externo de identificação da organização e aprovação dos dados reais antes de qualquer migration de dados ou carga.
 
 Registro da Task 01: [TASK_01_REGRAS_OPERACAO.md](TASK_01_REGRAS_OPERACAO.md).
 Registro da Task 02: [TASK_02_INVENTARIO_MIGRACAO.md](TASK_02_INVENTARIO_MIGRACAO.md).
