@@ -8,6 +8,7 @@ import {
   type InvitationState,
 } from "@/lib/invitations/token";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import {
   acceptInvitationSchema,
   invitationEmailSchema,
@@ -142,6 +143,7 @@ export async function createInvitation(
   }
 
   try {
+    assertApplicationMutationAllowed();
     const user = await requireRole("treinador");
     const supabase = await createServerClient();
     const now = new Date();
@@ -215,6 +217,7 @@ export async function revokeInvitation(
   invitationId: string,
 ): Promise<InvitationResult<void>> {
   try {
+    assertApplicationMutationAllowed();
     const user = await requireRole("treinador");
     const supabase = await createServerClient();
     const { error } = await supabase
@@ -323,6 +326,7 @@ function translateAcceptanceError(message: string) {
 
 export async function deleteInvitation(invitationId: string): Promise<InvitationResult<void>> {
   try {
+    assertApplicationMutationAllowed();
     const user = await requireRole("treinador");
     const supabase = await createServerClient();
     const { data, error } = await supabase
@@ -372,6 +376,7 @@ export async function completeInvitationAcceptance(
   }
 
   try {
+    assertApplicationMutationAllowed();
     const supabase = await createServerClient();
     return completeInvitationAcceptanceWithClient(
       supabase,
@@ -399,6 +404,7 @@ export async function acceptInvitation(
   }
 
   try {
+    assertApplicationMutationAllowed();
     const supabase = await createServerClient();
     const { token, nome, email, senha } = parsedInput.data;
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({

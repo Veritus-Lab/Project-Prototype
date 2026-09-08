@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { AthleteOperationalProfileInput } from "@/lib/validators/athlete-operational";
 import type { Database } from "@/types/database";
 
@@ -238,6 +239,7 @@ export async function updateTrainerAthleteOperationalProfile(
   athleteId: string,
   input: AthleteOperationalProfileInput,
 ): Promise<AthleteResult<TrainerAthleteOperationalProfile>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: athlete, error: athleteError } = await supabase
     .from("atletas")

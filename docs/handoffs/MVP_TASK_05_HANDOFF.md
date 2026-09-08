@@ -1,12 +1,13 @@
 # Handoff — MVP FLERNK Task 05
 
-Data: 07/09/2026. Branch: `codex/mvp-flernk`.
+Data: 08/09/2026. Branch: `codex/mvp-flernk`.
 
 ## Entregue
 
 - dependências exatas de Playwright/cobertura no `package-lock.json`;
-- cobertura V8 com meta global de 80%;
+- cobertura V8 com baseline global visível e meta de 80% para o núcleo crítico;
 - guard de ambiente fail-closed e testes TDD;
+- preview read-only aplicado antes de mutações de Auth e banco, com sandbox externo sob habilitação explícita;
 - Playwright desktop/mobile, relatório HTML, trace e screenshot em falha;
 - fixture sintética para dois sócios, professor, dois alunos e anônimo;
 - runner pgTAP que fixa Supabase local;
@@ -15,7 +16,7 @@ Data: 07/09/2026. Branch: `codex/mvp-flernk`.
 
 ## Gates para continuidade
 
-1. O baseline legado permanece abaixo de 80%, visível separadamente; o núcleo crítico estabilizado passa o gate de 80%.
+1. O baseline global permanece abaixo de 80%, visível separadamente; o núcleo financeiro, comunicação, convite, autenticação e ambiente passa o gate de 80% em todas as métricas.
 2. Docker está ausente localmente. Exigir resultado verde do job `database` antes de aceitar migrations da Task 06.
 3. Preview não possui Supabase isolado e só pode receber smoke público read-only.
 4. Vercel Hobby não atende cron frequente; decidir Pro ou scheduler alternativo antes das integrações.

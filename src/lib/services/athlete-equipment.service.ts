@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { EquipmentFormInput } from "@/lib/validators/athlete-equipment";
 import type { Database } from "@/types/database";
 
@@ -92,18 +93,21 @@ export async function getAthleteEquipment(
 }
 
 export async function createAthleteEquipment(user: SessionUser, input: EquipmentFormInput) {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { error } = await supabase.from("tenis_atletas").insert({ assessoria_id: user.assessoriaId, atleta_id: user.id, nome: input.name, inicio_em: input.startedOn, quilometragem_inicial_metros: input.initialMileageMeters, limite_rodagem_metros: input.mileageLimitMeters ?? null });
   return error ? { error: "Não foi possível cadastrar o equipamento." } : { data: true as const };
 }
 
 export async function deactivateAthleteEquipment(user: SessionUser, equipmentId: string) {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data, error } = await supabase.from("tenis_atletas").update({ ativo: false }).eq("assessoria_id", user.assessoriaId).eq("atleta_id", user.id).eq("id", equipmentId).eq("ativo", true).select("id").maybeSingle();
   return error || !data ? { error: "Não foi possível desativar o equipamento." } : { data: true as const };
 }
 
 export async function linkAthleteEquipmentExecution(user: SessionUser, equipmentId: string, executionId: string) {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { error } = await supabase.from("tenis_execucoes").insert({ assessoria_id: user.assessoriaId, tenis_id: equipmentId, execucao_treino_id: executionId });
   return error ? { error: "Não foi possível vincular esta execução. Verifique se ela já não está associada." } : { data: true as const };

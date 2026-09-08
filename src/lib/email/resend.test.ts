@@ -13,6 +13,7 @@ describe("getResendClient", () => {
 
   it("rejects a missing or invalid server key", async () => {
     vi.stubEnv("APP_ENV", "production");
+    vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("EXTERNAL_INTEGRATIONS_MODE", "live");
     vi.stubEnv("RESEND_API_KEY", "");
     const { getResendClient } = await import("./resend");
@@ -24,6 +25,7 @@ describe("getResendClient", () => {
 
   it("creates a server-side Resend client with a valid key", async () => {
     vi.stubEnv("APP_ENV", "production");
+    vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("EXTERNAL_INTEGRATIONS_MODE", "live");
     vi.stubEnv("RESEND_API_KEY", "re_test_key");
     const { Resend } = await import("resend");

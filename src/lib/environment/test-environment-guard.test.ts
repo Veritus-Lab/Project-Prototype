@@ -53,7 +53,7 @@ describe("test environment guard", () => {
     );
   });
 
-  it.each(["ASAAS_API_KEY", "WHATSAPP_ACCESS_TOKEN", "RESEND_API_KEY", "CRON_SECRET"])(
+  it.each(["RESEND_API_KEY", "CRON_SECRET"])(
     "rejects %s in test and preview",
     (name) => {
       expect(inspectTestEnvironment({ ...safeEnvironment, [name]: "real-looking-secret" })).toEqual(
@@ -64,6 +64,25 @@ describe("test environment guard", () => {
       );
     },
   );
+
+  it("accepts only explicitly allow-listed sandbox provider credentials", () => {
+    expect(inspectTestEnvironment({
+      ...safeEnvironment,
+      EXTERNAL_INTEGRATIONS_MODE: "sandbox",
+      ALLOW_SANDBOX_EXTERNAL_EFFECTS: "true",
+      SANDBOX_EXTERNAL_EFFECTS_ALLOWLIST: "payment,whatsapp",
+      ASAAS_ENVIRONMENT: "sandbox",
+      ASAAS_API_KEY: "sandbox-key",
+      WHATSAPP_ENVIRONMENT: "sandbox",
+      WHATSAPP_ACCESS_TOKEN: "sandbox-token",
+    })).toEqual([]);
+  });
+
+  it("rejects provider credentials when sandbox proof is incomplete", () => {
+    expect(inspectTestEnvironment({ ...safeEnvironment, ASAAS_API_KEY: "key" })).toEqual(
+      expect.arrayContaining([expect.stringMatching(/sandbox comprovado/i)]),
+    );
+  });
 
   it("accepts a declared non-production isolated Supabase project", () => {
     expect(

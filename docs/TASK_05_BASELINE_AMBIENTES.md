@@ -1,14 +1,14 @@
 # FLERNK — Baseline, ambientes e proteção de qualidade
 
-Data: 07/09/2026. Estado: infraestrutura implementada; QA-B local aprovado e pgTAP pendente em runner com Docker.
+Data: 08/09/2026. Estado: infraestrutura implementada; QA-B local aprovado e pgTAP pendente em runner com Docker.
 
 ## Baseline reproduzível
 
 - Node `v24.19.0`; npm temporário `11.6.0` por `pnpm dlx npm@11.6.0`, pois o runtime local não expõe `npm`.
 - Instalação inicial a partir de `package-lock.json`: 587 pacotes, 0 vulnerabilidades.
 - Baseline anterior: 52 arquivos e 150 testes passaram; typecheck, lint e build passaram; Next.js 16.3.1 gerou 21 páginas.
-- Após a infraestrutura: Playwright `1.63.0` e `@vitest/coverage-v8` `4.1.11` estão fixados no lockfile. `test:coverage:baseline` mede todo `src`; `test:coverage` exige 80% do núcleo crítico estabilizado de ambiente, sessão, convite e validação financeira/comunicação. Actions e services legados seguem visíveis no baseline e entram no gate crítico quando forem substituídos nas Tasks 06–23.
-- Suíte atual: 55 arquivos e 168 testes passaram. O baseline global é 55,06% statements, 44,15% branches, 56,82% functions e 60,33% lines. O gate crítico passou com 90,26%, 93,40%, 100% e 91,66%, respectivamente. O débito legado permanece visível no relatório global.
+- Após a infraestrutura: Playwright `1.63.0` e `@vitest/coverage-v8` `4.1.11` estão fixados no lockfile. `test:coverage:baseline` mede todo `src`; `test:coverage` exige 80% do núcleo crítico de ambiente, sessão, convite, autenticação, e-mail, actions, services e validação financeira/comunicação.
+- Suíte atual: 58 arquivos e 220 testes passaram. O baseline global é 63,92% statements, 51,11% branches, 61,17% functions e 65,16% lines. O gate crítico mede 464 statements/369 linhas executáveis e passou com 86,42%, 81,68%, 96,66% e 85,90%, respectivamente. O débito restante permanece visível no relatório global.
 - Playwright: quatro smokes públicos passaram em Chromium desktop e Pixel 7, cobrindo landing, navegação ao login e campos acessíveis sem enviar credenciais.
 
 ## Contrato de ambientes
@@ -17,10 +17,12 @@ Data: 07/09/2026. Estado: infraestrutura implementada; QA-B local aprovado e pgT
 | --- | --- | --- | --- |
 | `development` | stack local por padrão; remoto somente com ref descartável explicitamente permitido | `disabled` ou `sandbox` | fixtures sintéticas; nenhuma escrita de produção |
 | `test` | stack local descartável | `disabled` ou `sandbox` | reset, migrations, pgTAP, unitário e E2E sintético |
-| `preview` | ref isolado obrigatório para qualquer escrita; sem ele, somente smoke público read-only | `disabled` ou `sandbox` | nenhuma migration, fixture, cobrança ou mensagem contra produção |
+| `preview` | somente leitura, mesmo com ref isolado | `disabled` ou sandbox explicitamente habilitado | smoke público e efeitos sandbox allow-listed; nenhuma mutação da aplicação ou envio real |
 | `production` | projeto FLERNK identificado e aprovado | `live` apenas após gates das Tasks 19, 22 e 31 | operação real auditada; nunca usada por runners |
 
-`APP_ENV` declara o contexto e `EXTERNAL_INTEGRATIONS_MODE` declara efeitos. `NODE_ENV` sozinho não autoriza nada. O guard inspeciona URL, host/ref, credenciais privilegiadas, modos `live` e nomes de segredos em `NEXT_PUBLIC_*`; contexto ambíguo falha fechado. O ref de produção `hrmyqrekasuqhiqmqske` é bloqueado explicitamente.
+`APP_ENV` declara o contexto e `EXTERNAL_INTEGRATIONS_MODE` declara efeitos. `NODE_ENV` sozinho não autoriza nada. O guard inspeciona URL, host/ref, credenciais privilegiadas, modos `live` e nomes de segredos em `NEXT_PUBLIC_*`; contexto ambíguo falha fechado. Produção exige `VERCEL_ENV=production`, e qualquer divergência com `VERCEL_ENV`/`VERCEL_TARGET_ENV` bloqueia escrita e efeitos externos. O ref de produção `hrmyqrekasuqhiqmqske` é bloqueado explicitamente. Mutações atuais de cadastro, convite, atleta, treino, execução, equipamento, avaliação, agenda, finanças e comunicação passam pela mesma policy antes de criar o client Supabase.
+
+Asaas e WhatsApp em sandbox exigem simultaneamente modo `sandbox`, ambiente do provedor `sandbox`, `ALLOW_SANDBOX_EXTERNAL_EFFECTS=true` e inclusão nominal em `SANDBOX_EXTERNAL_EFFECTS_ALLOWLIST`. E-mail e qualquer modo `live` permanecem exclusivos de `production/live`.
 
 Um projeto remoto de teste exige `TEST_SUPABASE_PROJECT_REF` idêntico ao ref extraído do host e diferente de produção. O preview atual não possui branch Supabase isolada; portanto, testes, fixtures e migrations permanecem bloqueados nele.
 

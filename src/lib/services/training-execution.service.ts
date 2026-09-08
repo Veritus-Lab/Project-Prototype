@@ -1,10 +1,12 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { CompleteTrainingInput } from "@/lib/validators/training-execution";
 
 type Result = { data: true } | { error: string };
 
 export async function startTraining(user: SessionUser, assignmentId: string): Promise<Result> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data, error } = await supabase
     .from("treinos_atletas")
@@ -20,6 +22,7 @@ export async function startTraining(user: SessionUser, assignmentId: string): Pr
 }
 
 export async function completeTraining(user: SessionUser, input: CompleteTrainingInput): Promise<Result> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: assignment, error: assignmentError } = await supabase
     .from("treinos_atletas")

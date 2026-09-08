@@ -64,24 +64,31 @@ export function inspectTestEnvironment(environment: Environment): string[] {
     }
   }
 
-  const privilegedNames = [
+  const alwaysForbiddenCredentials = [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_SECRET_KEY",
     "POSTGRES_PASSWORD",
-    "ASAAS_API_KEY",
-    "ASAAS_WEBHOOK_TOKEN",
-    "WHATSAPP_ACCESS_TOKEN",
-    "WHATSAPP_APP_SECRET",
     "RESEND_API_KEY",
     "CRON_SECRET",
   ];
-  if (["test", "preview"].includes(appEnvironment ?? "") && privilegedNames.some((name) => Boolean(environment[name]))) {
+  if (["test", "preview"].includes(appEnvironment ?? "") && alwaysForbiddenCredentials.some((name) => Boolean(environment[name]))) {
     issues.push("Credencial privilegiada não é permitida no runner de teste/E2E/CI.");
   }
 
   const integrationMode = environment.EXTERNAL_INTEGRATIONS_MODE?.toLowerCase();
   if (!integrationMode || !["disabled", "sandbox"].includes(integrationMode)) {
     issues.push("EXTERNAL_INTEGRATIONS_MODE deve ser disabled ou sandbox; live é proibido.");
+  }
+  const sandboxAllowed = environment.ALLOW_SANDBOX_EXTERNAL_EFFECTS === "true";
+  const sandboxAllowlist = new Set((environment.SANDBOX_EXTERNAL_EFFECTS_ALLOWLIST ?? "").split(",").map((item) => item.trim()));
+  for (const [effect, credentialNames, providerVariable] of [
+    ["payment", ["ASAAS_API_KEY", "ASAAS_WEBHOOK_TOKEN"], "ASAAS_ENVIRONMENT"],
+    ["whatsapp", ["WHATSAPP_ACCESS_TOKEN", "WHATSAPP_APP_SECRET"], "WHATSAPP_ENVIRONMENT"],
+  ] as const) {
+    const hasCredential = credentialNames.some((name) => Boolean(environment[name]));
+    if (hasCredential && !(integrationMode === "sandbox" && environment[providerVariable]?.toLowerCase() === "sandbox" && sandboxAllowed && sandboxAllowlist.has(effect))) {
+      issues.push(`Credencial ${effect} exige sandbox comprovado e allowlist explícita.`);
+    }
   }
   for (const name of ["ASAAS_ENVIRONMENT", "WHATSAPP_ENVIRONMENT", "PAYMENTS_MODE"]) {
     if (environment[name]?.toLowerCase() === "live") {

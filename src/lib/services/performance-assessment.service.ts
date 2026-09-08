@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { PerformanceAssessmentInput } from "@/lib/validators/performance-assessment";
 import type { Database } from "@/types/database";
 
@@ -35,6 +36,7 @@ export async function getTrainerAthletePerformanceAssessments(user: SessionUser,
 }
 
 export async function createTrainerAthletePerformanceAssessment(user: SessionUser, input: PerformanceAssessmentInput) {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: athlete, error: athleteError } = await supabase.from("atletas").select("id").eq("assessoria_id", user.assessoriaId).eq("id", input.athleteId).eq("treinador_id", user.id).maybeSingle();
   if (athleteError || !athlete) return { error: "Atleta não encontrado." };

@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { CreateTrainingInput } from "@/lib/validators/training";
 import type { AssignTrainingInput } from "@/lib/validators/training-assignment";
 import type { TrainingBlockInput } from "@/lib/validators/training-template";
@@ -72,6 +73,7 @@ export async function createTraining(
   user: SessionUser,
   input: CreateTrainingInput,
 ): Promise<TrainingResult<TrainerTraining>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
 
   if (input.tipoTreinoId) {
@@ -149,6 +151,7 @@ export async function listTrainerTrainings(
 }
 
 export async function deleteTrainerTraining(user: SessionUser, trainingId: string): Promise<TrainingResult<void>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { error } = await supabase
     .from("treinos")
@@ -164,6 +167,7 @@ export async function assignTrainingToAthletes(
   user: SessionUser,
   input: AssignTrainingInput,
 ): Promise<TrainingResult<TrainingAssignmentSummary>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: training, error: trainingError } = await supabase
     .from("treinos")

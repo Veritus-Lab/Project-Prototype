@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { SignInInput, TrainerSignupInput } from "@/lib/validators/auth";
 
 export type ServiceResult<T> =
@@ -64,6 +65,7 @@ export async function signUpTrainer(
   }
 
   try {
+    assertApplicationMutationAllowed();
     const supabase = await createServerClient();
     const emailRedirectTo = new URL("/auth/callback", origin).toString();
     const { error } = await supabase.auth.signUp({

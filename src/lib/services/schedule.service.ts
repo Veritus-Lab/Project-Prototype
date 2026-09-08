@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { ScheduleTrainingInput } from "@/lib/validators/training-schedule";
 
 export type ScheduleTrainingResult = { data: { createdCount: number } } | { error: string };
@@ -29,6 +30,7 @@ export async function scheduleTraining(
   user: SessionUser,
   input: ScheduleTrainingInput,
 ): Promise<ScheduleTrainingResult> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: assessoria, error: assessoriaError } = await supabase
     .from("assessorias")

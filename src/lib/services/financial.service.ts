@@ -1,5 +1,6 @@
 import type { SessionUser } from "@/lib/auth/session";
 import { createServerClient } from "@/lib/supabase/server";
+import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type {
   CreateSubscriptionInput,
   UpdateSubscriptionStatusInput,
@@ -24,6 +25,7 @@ export function financialStatus(charge: Pick<FinancialCharge, "dueDate" | "statu
 }
 
 export async function createSubscription(user: SessionUser, input: CreateSubscriptionInput): Promise<FinancialResult<true>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: athlete } = await supabase.from("atletas").select("id").eq("assessoria_id", user.assessoriaId).eq("treinador_id", user.id).eq("id", input.athleteId).maybeSingle();
   if (!athlete) return { error: "Atleta não encontrado." };
@@ -38,6 +40,7 @@ export async function createSubscription(user: SessionUser, input: CreateSubscri
 }
 
 export async function markChargePaid(user: SessionUser, chargeId: string): Promise<FinancialResult<true>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: charge, error } = await supabase.from("cobrancas").update({ status: "paga", paga_em: new Date().toISOString() }).eq("assessoria_id", user.assessoriaId).eq("id", chargeId).select("id, atleta_id, assinatura_id").maybeSingle();
   if (error || !charge) return { error: "Não foi possível registrar o pagamento." };
@@ -50,6 +53,7 @@ export async function updateSubscriptionStatus(
   user: SessionUser,
   input: UpdateSubscriptionStatusInput,
 ): Promise<FinancialResult<true>> {
+  assertApplicationMutationAllowed();
   const supabase = await createServerClient();
   const { data: subscription, error: lookupError } = await supabase
     .from("assinaturas_atletas")
