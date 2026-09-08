@@ -68,8 +68,14 @@ export function inspectTestEnvironment(environment: Environment): string[] {
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_SECRET_KEY",
     "POSTGRES_PASSWORD",
+    "ASAAS_API_KEY",
+    "ASAAS_WEBHOOK_TOKEN",
+    "WHATSAPP_ACCESS_TOKEN",
+    "WHATSAPP_APP_SECRET",
+    "RESEND_API_KEY",
+    "CRON_SECRET",
   ];
-  if (privilegedNames.some((name) => Boolean(environment[name]))) {
+  if (["test", "preview"].includes(appEnvironment ?? "") && privilegedNames.some((name) => Boolean(environment[name]))) {
     issues.push("Credencial privilegiada não é permitida no runner de teste/E2E/CI.");
   }
 

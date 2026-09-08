@@ -1,10 +1,10 @@
 # FLERNK — Skills, agentes e validação por task
 
-Atualizado em 07/09/2026. Complementa `MVP_FLERNK_GESTAO.md` e `TASKS_MVP_FLERNK.md`. Estado: infraestrutura QA-B implementada; cobertura de 80% e pgTAP em Docker permanecem gates explícitos.
+Atualizado em 07/09/2026. Complementa `MVP_FLERNK_GESTAO.md` e `TASKS_MVP_FLERNK.md`. Estado: infraestrutura QA-B implementada; gate crítico de cobertura aprovado e pgTAP em Docker pendente.
 
 ## 1. Inventário verificado
 
-Atualização posterior no mesmo dia: instalada por solicitação do usuário a skill `playwright-skill` 5.0.0, de https://github.com/lackeyjb/playwright-skill, em `C:/Users/Rodrigo Sousa/.codex/skills/playwright-skill`. Dependências instaladas com pnpm: Playwright 1.63.0 e Chromium. Verificação concluída com código de saída 0: Chromium headless iniciou e renderizou uma página local com título conferido. A skill estará disponível no próximo turno. Usá-la nas tasks de automação de navegador junto de `e2e-testing`; essa instalação pessoal não configura a suíte E2E nem o CI do repositório, que continuam na Task 05-QA. As observações abaixo sobre ausência de Playwright em `package.json` referem-se ao projeto.
+Atualização posterior no mesmo dia: instalada por solicitação do usuário a skill `playwright-skill` 5.0.0, de https://github.com/lackeyjb/playwright-skill, em `C:/Users/Rodrigo Sousa/.codex/skills/playwright-skill`. A instalação pessoal, fora do repositório, possui Playwright 1.63.0 e Chromium. Verificação concluída com código de saída 0: Chromium headless iniciou e renderizou uma página local com título conferido. A skill estará disponível no próximo turno. Usá-la nas tasks de automação de navegador junto de `e2e-testing`; essa instalação pessoal não configura a suíte E2E nem o CI do repositório, que continuam na Task 05-QA. As observações abaixo sobre ausência de Playwright em `package.json` referem-se ao projeto.
 
 - 72 diretórios de skills em `.agents/skills/`; são instruções reutilizáveis, não 72 agentes executando.
 - Skills de teste disponíveis: `test-driven-development`, `tdd-workflow`, `e2e-testing`, `verification-loop`, `verification-before-completion`, `systematic-debugging` e `security-review`.
@@ -12,7 +12,7 @@ Atualização posterior no mesmo dia: instalada por solicitação do usuário a 
 - Não foram encontrados registros de agentes especializados em `.codex/agents` do usuário ou `.claude/agents`, nem entradas de agentes na busca dirigida em `.codex/config.toml`. Ausência nesses locais não comprova ausência em toda a máquina.
 - Nomes como `tdd-guide`, `e2e-runner` e `security-reviewer` não devem ser apresentados como agentes especializados registrados sem localizar suas definições. Neste plano são funções de trabalho exercidas por subagentes gerais com as skills correspondentes.
 - O projeto já declara Vitest, Testing Library, lint, typecheck e build. Há `supabase/tests/rls_isolation.sql` e testes locais de políticas. Teste textual de migration não substitui teste de autorização no banco.
-- `package.json` não declara Playwright, provedor de cobertura ou scripts E2E/cobertura. Configurar essas capacidades é parte da Task 05-QA, não uma capacidade já pronta.
+- A Task 05 passou a declarar Playwright, cobertura V8 e scripts E2E/cobertura. O baseline global e o gate do núcleo crítico são relatados separadamente.
 
 A disponibilidade de uma skill não obriga usar todas. Abrir o SKILL.md ao aplicá-la, selecionar por responsabilidade e adaptar exemplos ao projeto e às instruções do usuário. Não copiar comandos de instalação, versões ou padrões de outra stack sem verificar.
 

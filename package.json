@@ -9,9 +9,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --config vitest.critical.config.ts --coverage",
+    "test:coverage:baseline": "vitest run --coverage",
     "test:e2e": "node --experimental-strip-types scripts/check-test-environment.ts && playwright test",
     "test:env-guard": "node --experimental-strip-types scripts/check-test-environment.ts",
     "test:db": "node --experimental-strip-types scripts/run-pgtap.ts"

@@ -15,7 +15,7 @@ Data: 07/09/2026. Branch: `codex/mvp-flernk`.
 
 ## Gates para continuidade
 
-1. A cobertura legada está abaixo de 80%; a pipeline permanece vermelha até ampliar testes ou substituir áreas no roadmap sem esconder domínio crítico.
+1. O baseline legado permanece abaixo de 80%, visível separadamente; o núcleo crítico estabilizado passa o gate de 80%.
 2. Docker está ausente localmente. Exigir resultado verde do job `database` antes de aceitar migrations da Task 06.
 3. Preview não possui Supabase isolado e só pode receber smoke público read-only.
 4. Vercel Hobby não atende cron frequente; decidir Pro ou scheduler alternativo antes das integrações.

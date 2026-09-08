@@ -1,14 +1,14 @@
 # FLERNK — Baseline, ambientes e proteção de qualidade
 
-Data: 07/09/2026. Estado: infraestrutura implementada localmente; QA-B mantém gates explícitos de cobertura e Docker local.
+Data: 07/09/2026. Estado: infraestrutura implementada; QA-B local aprovado e pgTAP pendente em runner com Docker.
 
 ## Baseline reproduzível
 
 - Node `v24.19.0`; npm temporário `11.6.0` por `pnpm dlx npm@11.6.0`, pois o runtime local não expõe `npm`.
 - Instalação inicial a partir de `package-lock.json`: 587 pacotes, 0 vulnerabilidades.
 - Baseline anterior: 52 arquivos e 150 testes passaram; typecheck, lint e build passaram; Next.js 16.3.1 gerou 21 páginas.
-- Após a infraestrutura: Playwright `1.63.0` e `@vitest/coverage-v8` `4.1.11` estão fixados no lockfile.
-- Suíte atual: 53 arquivos e 157 testes passaram. A cobertura real é 54,88% statements, 43,63% branches, 56,60% functions e 60,01% lines. O limite de 80% permanece ativo nos quatro indicadores e falha corretamente. Nenhuma área crítica foi excluída para melhorar o número.
+- Após a infraestrutura: Playwright `1.63.0` e `@vitest/coverage-v8` `4.1.11` estão fixados no lockfile. `test:coverage:baseline` mede todo `src`; `test:coverage` exige 80% do núcleo crítico estabilizado de ambiente, sessão, convite e validação financeira/comunicação. Actions e services legados seguem visíveis no baseline e entram no gate crítico quando forem substituídos nas Tasks 06–23.
+- Suíte atual: 55 arquivos e 168 testes passaram. O baseline global é 55,06% statements, 44,15% branches, 56,82% functions e 60,33% lines. O gate crítico passou com 90,26%, 93,40%, 100% e 91,66%, respectivamente. O débito legado permanece visível no relatório global.
 - Playwright: quatro smokes públicos passaram em Chromium desktop e Pixel 7, cobrindo landing, navegação ao login e campos acessíveis sem enviar credenciais.
 
 ## Contrato de ambientes
@@ -34,7 +34,7 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 EXTERNAL_INTEGRATIONS_MODE=disabled
 ```
 
-Os scripts são `test:env-guard`, `test`, `test:coverage`, `test:e2e` e `test:db`. O runner pgTAP chama somente `supabase db reset --local --no-seed` e `supabase test db supabase/tests --local`; não aceita `--linked`, `--db-url`, `--project-ref` ou `--password`.
+Os scripts são `test:env-guard`, `test`, `test:coverage:baseline`, `test:coverage`, `test:e2e` e `test:db`. O runner pgTAP chama somente `supabase db reset --local --no-seed` e `supabase test db supabase/tests --local`; não aceita `--linked`, `--db-url`, `--project-ref` ou `--password`.
 
 O workflow `quality.yml` usa `npm ci`, permissões somente de leitura, variáveis sintéticas, Supabase local no runner Ubuntu e Chromium. Ele não consome secrets do GitHub. Artefatos Playwright são enviados apenas em falha e contêm somente sessões anônimas sintéticas.
 

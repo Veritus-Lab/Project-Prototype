@@ -53,6 +53,18 @@ describe("test environment guard", () => {
     );
   });
 
+  it.each(["ASAAS_API_KEY", "WHATSAPP_ACCESS_TOKEN", "RESEND_API_KEY", "CRON_SECRET"])(
+    "rejects %s in test and preview",
+    (name) => {
+      expect(inspectTestEnvironment({ ...safeEnvironment, [name]: "real-looking-secret" })).toEqual(
+        expect.arrayContaining([expect.stringMatching(/privilegiada/i)]),
+      );
+      expect(inspectTestEnvironment({ ...safeEnvironment, APP_ENV: "preview", [name]: "real-looking-secret" })).toEqual(
+        expect.arrayContaining([expect.stringMatching(/privilegiada/i)]),
+      );
+    },
+  );
+
   it("accepts a declared non-production isolated Supabase project", () => {
     expect(
       inspectTestEnvironment({

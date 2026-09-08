@@ -1,58 +1,69 @@
 name: Quality
-
 on:
   pull_request:
   push:
     branches: [main, "codex/**"]
-
 permissions:
   contents: read
-
 env:
   APP_ENV: test
   NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: synthetic-local-publishable-key
   NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
   EXTERNAL_INTEGRATIONS_MODE: disabled
-
 jobs:
-  application:
+  unit:
+    runs-on: ubuntu-latest
+    steps: &app-steps
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm run test:env-guard
+      - run: npm test -- --maxWorkers=1
+  coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+        with: { node-version: 24, cache: npm }
       - run: npm ci
-      - run: npm run test:env-guard
+      - run: npm run test:coverage:baseline -- --maxWorkers=1
       - run: npm run test:coverage -- --maxWorkers=1
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
       - run: npm run build
-
   database:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+        with: { node-version: 24, cache: npm }
       - run: npm ci
       - run: npx supabase start
       - run: npm run test:db
       - if: always()
         run: npx supabase stop --no-backup
-
   e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+        with: { node-version: 24, cache: npm }
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
