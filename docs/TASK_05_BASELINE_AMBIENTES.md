@@ -1,6 +1,6 @@
 # FLERNK — Baseline, ambientes e proteção de qualidade
 
-Data: 08/09/2026. Estado: infraestrutura implementada; QA-B local aprovado e pgTAP pendente em runner com Docker.
+Data: 08/09/2026. Estado: Task 05 concluída; QA-B local e CI aprovados.
 
 ## Baseline reproduzível
 
@@ -40,7 +40,7 @@ Os scripts são `test:env-guard`, `test`, `test:coverage:baseline`, `test:covera
 
 O workflow `quality.yml` usa `npm ci`, permissões somente de leitura, variáveis sintéticas, Supabase local no runner Ubuntu e Chromium. Ele não consome secrets do GitHub. Artefatos Playwright são enviados apenas em falha e contêm somente sessões anônimas sintéticas.
 
-Docker CLI não existe nesta máquina, então o pgTAP local não foi executado. Essa ausência não vira skip: o job de banco no Ubuntu inicia a stack local e executa migrations + pgTAP. A Task 06 só pode aceitar schema após evidência desse job ou execução em máquina descartável com Docker.
+Docker CLI não existe nesta máquina, então o pgTAP local não foi executado. O job `database` do [GitHub Actions 34200813929](https://github.com/Veritus-Lab/Project-Prototype/actions/runs/34200813929) iniciou a stack local, reaplicou as migrations e passou os 65 testes pgTAP. O primeiro run revelou um fixture antigo com `blocos` vazio; o fixture foi alinhado à constraint atual e o segundo run passou sem conexão remota.
 
 ## Vercel e Supabase observados
 

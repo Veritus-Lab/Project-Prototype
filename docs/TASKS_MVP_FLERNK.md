@@ -21,7 +21,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | 02 — Inventário e migração | **CONCLUÍDA tecnicamente (documental/read-only).** Mapa de origem/destino, duplicidades e gate de identificação registrado | 01 | Nenhuma exclusão presumida; identificar explicitamente a organização e aprovar dados reais antes de migrations de dados ou carga |
 | 03 — Jornadas e navegação | **CONCLUÍDA.** Fluxos dos sócios, professor, aluno e interessado; wireframes das telas essenciais em `TASK_03_JORNADAS_NAVEGACAO.md` | 01 | Jornada de cobrança e chamada completas; matriz de acesso validada |
 | 04 — Contrato técnico e integrações | **CONCLUÍDA documentalmente.** Modelo alvo, estados, Asaas Checkout, Meta Cloud API, motor interno único e Vercel Cron em `TASK_04_CONTRATO_TECNICO.md` | 01–03 | Uma fonte de geração de cobranças; autenticação, ownership, idempotência, eventos, falhas e reconciliação mapeados |
-| 05 — Baseline e ambientes | **IMPLEMENTADA; QA-B local passou e aguarda evidência pgTAP em Docker.** Baseline, guard fail-closed, CI, Playwright e estratégia de ambientes/rollback em `TASK_05_BASELINE_AMBIENTES.md` | 02, 04 | Baseline registrado; preview sem escrita financeira/envio real; estratégia de backup e rollback definida |
+| 05 — Baseline e ambientes | **CONCLUÍDA; QA-B aprovado.** Baseline, guard fail-closed, CI, Playwright, pgTAP e estratégia de ambientes/rollback em `TASK_05_BASELINE_AMBIENTES.md` | 02, 04 | Baseline registrado; preview read-only sem envio real; estratégia de backup e rollback definida |
 
 ## Fase B — Identidade FLERNK e acesso
 
