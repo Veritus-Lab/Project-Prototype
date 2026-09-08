@@ -1,6 +1,6 @@
 # FLERNK — Skills, agentes e validação por task
 
-Atualizado em 06/09/2026. Complementa `MVP_FLERNK_GESTAO.md` e `TASKS_MVP_FLERNK.md`. Estado: processo de testes incorporado ao planejamento; testes novos do produto ainda não implementados ou executados.
+Atualizado em 07/09/2026. Complementa `MVP_FLERNK_GESTAO.md` e `TASKS_MVP_FLERNK.md`. Estado: infraestrutura QA-B implementada; cobertura de 80% e pgTAP em Docker permanecem gates explícitos.
 
 ## 1. Inventário verificado
 
@@ -97,19 +97,19 @@ Skills Supabase são usadas após leitura das instruções e documentação pert
 
 ## 5. Task 05-QA — infraestrutura de testes antes da implementação funcional
 
-Subetapa obrigatória da Task 05. Não concluída por este documento.
+Subetapa obrigatória da Task 05. Infraestrutura concluída em `TASK_05_BASELINE_AMBIENTES.md`; itens marcados pendentes são gates verificáveis.
 
-- [ ] Registrar Node/npm usados, executar `npm ci` e os scripts atuais, com saída final e código de saída preservados.
-- [ ] Registrar baseline: `npm test -- --maxWorkers=1`, `npm run typecheck`, `npm run lint`, `npm run build`.
-- [ ] Configurar cobertura compatível com Vitest instalado em `vitest.config.ts` e `package.json`. Meta mínima de 80% para linhas, branches, funções e statements do código de aplicação incluído; medir baseline antes, registrar lacunas existentes e não excluir domínios críticos para atingir número.
-- [ ] Configurar Playwright em `playwright.config.ts`, scripts `test:e2e` e testes em `tests/e2e/`; instalar dependências e browser na execução desta subetapa. Não afirmar que os scripts já existem.
-- [ ] Excluir `tests/e2e/**` da descoberta do Vitest para não misturar runners.
-- [ ] Preparar fixtures para dois sócios, professor, dois alunos e anônimo em base isolada. Fixtures não incluem dados pessoais reais.
-- [ ] Criar validação que rejeita ambiente de testes apontando para produção por project ref/host e credenciais; `NODE_ENV` sozinho não é barreira suficiente.
-- [ ] Preparar execução pgTAP local com migrations e dados descartáveis. Consultar `supabase --help` e subcomandos antes de fixar o comando no CI.
-- [ ] Criar workflow `.github/workflows/quality.yml` com testes, tipos, lint, build, banco e E2E aplicáveis; sem segredos reais em PRs não confiáveis.
-- [ ] Definir `test:coverage` e `test:e2e` no package somente após configuração; registrar os comandos efetivamente validados.
-- [ ] Capturar relatório, trace e screenshot de falha com dados sintéticos; não publicar tokens/sessões em artefatos.
+- [x] Registrar Node/npm usados, executar `npm ci` e os scripts atuais, com saída final e código de saída preservados.
+- [x] Registrar baseline: `npm test -- --maxWorkers=1`, `npm run typecheck`, `npm run lint`, `npm run build`.
+- [x] Configurar cobertura compatível com Vitest instalado em `vitest.config.ts` e `package.json`. Meta de 80% ativa; baseline medido abaixo dela e mantido como gate.
+- [x] Configurar Playwright em `playwright.config.ts`, scripts `test:e2e` e testes em `tests/e2e/`; dependência e Chromium verificados.
+- [x] Excluir `tests/e2e/**` da descoberta do Vitest para não misturar runners.
+- [x] Preparar fixtures sintéticas tipadas para dois sócios, professor, dois alunos e anônimo.
+- [x] Criar validação testada que rejeita produção por ref/host, credenciais, modo live e contexto ambíguo.
+- [x] Preparar execução pgTAP local-only; help do CLI 2.115.0 confirmado. Execução local aguarda Docker e é obrigatória no CI.
+- [x] Criar workflow `.github/workflows/quality.yml` com testes, tipos, lint, build, banco local e E2E; sem segredos reais.
+- [x] Definir e validar `test:coverage`, `test:e2e`, `test:env-guard` e `test:db`.
+- [x] Capturar relatório, trace e screenshot de falha temporária anônima; remover o caso deliberadamente falho e ignorar artefatos.
 
 Aceite: baseline real registrado, infraestrutura reproduzível, teste de autenticação existente passando e tentativa de execução contra produção rejeitada. Falha conhecida fica identificada, não mascarada por skip ou retry.
 
