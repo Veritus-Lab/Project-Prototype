@@ -1,6 +1,6 @@
 # FLERNK — Skills, agentes e validação por task
 
-Atualizado em 07/09/2026. Complementa `MVP_FLERNK_GESTAO.md` e `TASKS_MVP_FLERNK.md`. Estado: infraestrutura QA-B implementada; gate crítico de cobertura aprovado e pgTAP em Docker pendente.
+Atualizado em 08/09/2026. Complementa `MVP_FLERNK_GESTAO.md` e `TASKS_MVP_FLERNK.md`. Estado: infraestrutura QA-B, gate crítico de cobertura e pgTAP em CI aprovados.
 
 ## 1. Inventário verificado
 

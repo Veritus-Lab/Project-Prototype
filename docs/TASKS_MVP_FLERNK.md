@@ -1,6 +1,6 @@
 # FLERNK — Tasks do planejamento à entrega
 
-Data: 07/09/2026. Tasks 01–04 CONCLUÍDAS; Task 05 IMPLEMENTADA com QA-B local aprovado e pgTAP pendente no CI/Docker; Tasks 06–34 NÃO INICIADAS. A Task 02 mantém o gate externo de identificação da organização e aprovação dos dados reais antes de qualquer migration de dados ou carga.
+Atualizado em 08/09/2026. Tasks 01–05 CONCLUÍDAS; QA-B e pgTAP aprovados no CI; Tasks 06–34 NÃO INICIADAS. A Task 02 mantém o gate externo de identificação da organização e aprovação dos dados reais antes de qualquer migration de dados ou carga.
 
 Registro da Task 01: [TASK_01_REGRAS_OPERACAO.md](TASK_01_REGRAS_OPERACAO.md).
 Registro da Task 02: [TASK_02_INVENTARIO_MIGRACAO.md](TASK_02_INVENTARIO_MIGRACAO.md).
