@@ -1,6 +1,6 @@
 # FLERNK — Task 06: fundação de dados
 
-Data: 08/09/2026. Estado: EM VALIDAÇÃO no banco descartável do CI. Branch: `codex/mvp-flernk`.
+Data: 09/09/2026. Estado: **CONCLUÍDA**; validação aprovada no banco descartável do CI. Branch: `codex/mvp-flernk`.
 
 ## Entrega
 
@@ -26,7 +26,7 @@ A migração real permanece bloqueada pelo gate da Task 02. Quando os sócios in
 ## Gates de validação
 
 - teste de contrato da migration executado em RED e depois GREEN;
-- executar pgTAP da fundação: 44 assertions de schema, RLS, grants, vínculos, centavos e unicidade;
-- executar pgTAP de compatibilidade: 9 assertions após upgrade de uma base legada sintética;
-- preservar a suíte pgTAP anterior;
-- aprovar typecheck, lint, unitários e build no mesmo gate de CI.
+- pgTAP da fundação passou com 44 assertions de schema, RLS, grants, vínculos, centavos e unicidade;
+- pgTAP de compatibilidade passou com 9 assertions após upgrade de uma base legada sintética;
+- suíte pgTAP anterior preservada;
+- typecheck, lint, unitários, cobertura, build e E2E passaram no mesmo gate de CI.
