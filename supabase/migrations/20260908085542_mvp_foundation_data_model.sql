@@ -45,7 +45,8 @@ create table public.enrollments (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null, student_id uuid not null,
   status public.enrollment_status not null default 'active', starts_on date not null, ends_on date,
   suspension_reason text, created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  unique (assessoria_id, id), foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
+  unique (assessoria_id, id), unique (assessoria_id, student_id, id),
+  foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
   check (ends_on is null or ends_on >= starts_on), check (status <> 'ended' or ends_on is not null)
 );
 create unique index enrollments_one_current_student_idx on public.enrollments(assessoria_id, student_id) where status in ('active', 'suspended');
@@ -69,10 +70,10 @@ create table public.classes (
 create table public.class_memberships (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null, class_id uuid not null, student_id uuid not null,
   enrollment_id uuid not null, starts_on date not null, ends_on date, created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  unique (assessoria_id, id),
+  unique (assessoria_id, id), unique (assessoria_id, class_id, student_id, id),
   foreign key (assessoria_id, class_id) references public.classes(assessoria_id, id) on delete restrict,
   foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, enrollment_id) references public.enrollments(assessoria_id, id) on delete restrict,
+  foreign key (assessoria_id, student_id, enrollment_id) references public.enrollments(assessoria_id, student_id, id) on delete restrict,
   check (ends_on is null or ends_on >= starts_on)
 );
 create unique index class_memberships_one_current_idx on public.class_memberships(assessoria_id, class_id, student_id) where ends_on is null;
@@ -93,8 +94,7 @@ create table public.attendances (
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
   unique (assessoria_id, id), unique (meeting_id, student_id),
   foreign key (assessoria_id, class_id, meeting_id) references public.class_meetings(assessoria_id, class_id, id) on delete restrict,
-  foreign key (assessoria_id, membership_id) references public.class_memberships(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
+  foreign key (assessoria_id, class_id, student_id, membership_id) references public.class_memberships(assessoria_id, class_id, student_id, id) on delete restrict,
   foreign key (assessoria_id, recorded_by_team_member_id) references public.team_members(assessoria_id, id) on delete restrict,
   check ((status = 'not_recorded' and recorded_at is null) or (status <> 'not_recorded' and recorded_at is not null))
 );
@@ -135,8 +135,9 @@ create table public.subscriptions (
   amount_cents bigint not null check (amount_cents >= 0), currency text not null default 'BRL' check (currency = 'BRL'),
   periodicity text not null check (periodicity in ('monthly','quarterly','semiannual','annual')), due_day integer not null check (due_day between 1 and 31),
   starts_on date not null, ends_on date, created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  unique (assessoria_id, id), foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, enrollment_id) references public.enrollments(assessoria_id, id) on delete restrict,
+  unique (assessoria_id, id), unique (assessoria_id, student_id, id),
+  foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
+  foreign key (assessoria_id, student_id, enrollment_id) references public.enrollments(assessoria_id, student_id, id) on delete restrict,
   foreign key (assessoria_id, plan_id, plan_version_id) references public.plan_versions(assessoria_id, plan_id, id) on delete restrict,
   check (ends_on is null or ends_on >= starts_on)
 );
@@ -153,9 +154,9 @@ create table public.subscription_history (
 
 create table public.billing_cycles (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null, subscription_id uuid not null,
-  cycle_key date not null, period_starts_on date not null, period_ends_on date not null, due_on date not null,
+  generation_run_id uuid not null, cycle_key date not null, period_starts_on date not null, period_ends_on date not null, due_on date not null,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  unique (assessoria_id, id), unique (subscription_id, cycle_key),
+  unique (assessoria_id, id), unique (assessoria_id, subscription_id, cycle_key, id), unique (subscription_id, cycle_key),
   foreign key (assessoria_id, subscription_id) references public.subscriptions(assessoria_id, id) on delete restrict,
   check (period_ends_on >= period_starts_on), check (due_on >= period_starts_on)
 );
@@ -171,6 +172,9 @@ create table public.billing_generation_runs (
   check ((status = 'running' and completed_at is null) or (status <> 'running' and completed_at is not null))
 );
 
+alter table public.billing_cycles add constraint billing_cycles_generation_run_fkey
+  foreign key (assessoria_id, generation_run_id) references public.billing_generation_runs(assessoria_id, id) on delete restrict;
+
 create table public.billing_generation_watermarks (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null, subscription_id uuid not null,
   last_cycle_key date not null, generation_run_id uuid not null, created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
@@ -185,10 +189,9 @@ create table public.charges (
   amount_cents bigint not null check (amount_cents >= 0), currency text not null default 'BRL' check (currency = 'BRL'), due_on date not null,
   paid_at timestamptz, effective_fact_at timestamptz, legacy_cobranca_id uuid,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  unique (assessoria_id, id), unique (subscription_id, cycle_key), unique (assessoria_id, legacy_cobranca_id),
-  foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, subscription_id) references public.subscriptions(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, billing_cycle_id) references public.billing_cycles(assessoria_id, id) on delete restrict,
+  unique (assessoria_id, id), unique (assessoria_id, student_id, id), unique (subscription_id, cycle_key), unique (assessoria_id, legacy_cobranca_id),
+  foreign key (assessoria_id, student_id, subscription_id) references public.subscriptions(assessoria_id, student_id, id) on delete restrict,
+  foreign key (assessoria_id, subscription_id, cycle_key, billing_cycle_id) references public.billing_cycles(assessoria_id, subscription_id, cycle_key, id) on delete restrict,
   foreign key (assessoria_id, legacy_cobranca_id) references public.cobrancas(assessoria_id, id) on delete restrict,
   check ((status in ('paid','reversed') and paid_at is not null) or (status not in ('paid','reversed') and paid_at is null))
 );
@@ -288,9 +291,21 @@ create table public.other_revenues (
 create table public.cash_movements (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null,
   direction text not null check (direction in ('in','out')), source_type text not null check (source_type in ('settlement','settlement_reversal','settlement_restoration','expense','expense_correction','other_revenue','other_revenue_correction')),
-  source_id uuid not null, idempotency_key text not null, amount_cents bigint not null check (amount_cents > 0),
+  source_id uuid not null, settlement_id uuid, expense_id uuid, other_revenue_id uuid,
+  idempotency_key text not null, amount_cents bigint not null check (amount_cents > 0),
   currency text not null default 'BRL' check (currency = 'BRL'), occurred_at timestamptz not null, created_at timestamptz not null default now(),
-  unique (assessoria_id, id), unique (assessoria_id, idempotency_key), foreign key (assessoria_id) references public.assessorias(id) on delete restrict
+  unique (assessoria_id, id), unique (assessoria_id, idempotency_key), unique (assessoria_id, source_type, source_id),
+  foreign key (assessoria_id) references public.assessorias(id) on delete restrict,
+  foreign key (assessoria_id, settlement_id) references public.payment_settlements(assessoria_id, id) on delete restrict,
+  foreign key (assessoria_id, expense_id) references public.expenses(assessoria_id, id) on delete restrict,
+  foreign key (assessoria_id, other_revenue_id) references public.other_revenues(assessoria_id, id) on delete restrict,
+  check (
+    (source_type in ('settlement','settlement_reversal','settlement_restoration') and settlement_id = source_id and expense_id is null and other_revenue_id is null)
+    or (source_type in ('expense','expense_correction') and expense_id = source_id and settlement_id is null and other_revenue_id is null)
+    or (source_type in ('other_revenue','other_revenue_correction') and other_revenue_id = source_id and settlement_id is null and expense_id is null)
+  ),
+  check ((direction = 'in' and source_type in ('settlement','settlement_restoration','other_revenue')) or
+         (direction = 'out' and source_type in ('settlement_reversal','expense','expense_correction','other_revenue_correction')))
 );
 
 create table public.provider_events (
@@ -298,7 +313,7 @@ create table public.provider_events (
   external_event_id text not null, event_type text not null, status public.provider_event_status not null default 'received',
   resource_type text, resource_external_id text, sanitized_payload jsonb not null default '{}'::jsonb check (jsonb_typeof(sanitized_payload) = 'object'),
   provider_occurred_at timestamptz, provider_sequence bigint, received_at timestamptz not null default now(),
-  processing_started_at timestamptz, lease_expires_at timestamptz, attempt_count integer not null default 0 check (attempt_count >= 0),
+  processing_started_at timestamptz, lease_expires_at timestamptz, next_attempt_at timestamptz not null default now(), attempt_count integer not null default 0 check (attempt_count >= 0),
   last_error_code text, processed_at timestamptz, created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
   unique (assessoria_id, id), unique (provider, external_event_id), foreign key (assessoria_id) references public.assessorias(id) on delete restrict
 );
@@ -327,26 +342,29 @@ create table public.message_templates (
   code text not null, version integer not null check (version > 0), provider text not null default 'meta', provider_template_name text,
   locale text not null default 'pt_BR', body_preview text not null, active boolean not null default false,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  unique (assessoria_id, id), unique (assessoria_id, code, version), foreign key (assessoria_id) references public.assessorias(id) on delete restrict
+  unique (assessoria_id, id), unique (assessoria_id, id, version), unique (assessoria_id, code, version),
+  foreign key (assessoria_id) references public.assessorias(id) on delete restrict
 );
 
 create table public.message_jobs (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null, charge_id uuid not null, student_id uuid not null,
   template_id uuid not null, template_version integer not null, cadence_offset integer not null,
   status public.message_status not null default 'queued', scheduled_for timestamptz not null,
-  claimed_at timestamptz, lease_expires_at timestamptz, attempt_count integer not null default 0 check (attempt_count >= 0),
+  claimed_at timestamptz, lease_expires_at timestamptz, next_attempt_at timestamptz not null default now(), attempt_count integer not null default 0 check (attempt_count >= 0),
   provider_message_id text, last_error_code text, submitted_at timestamptz,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
   unique (assessoria_id, id), unique (charge_id, cadence_offset, template_version),
-  foreign key (assessoria_id, charge_id) references public.charges(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, student_id) references public.students(assessoria_id, id) on delete restrict,
-  foreign key (assessoria_id, template_id) references public.message_templates(assessoria_id, id) on delete restrict
+  foreign key (assessoria_id, student_id, charge_id) references public.charges(assessoria_id, student_id, id) on delete restrict,
+  foreign key (assessoria_id, template_id, template_version) references public.message_templates(assessoria_id, id, version) on delete restrict
 );
 
 create table public.message_events (
   id uuid primary key default gen_random_uuid(), assessoria_id uuid not null, message_job_id uuid,
   provider text not null default 'meta', external_event_id text not null, provider_message_id text not null,
-  status public.message_status not null, provider_occurred_at timestamptz not null, received_at timestamptz not null default now(),
+  delivery_status public.message_status not null, processing_status public.provider_event_status not null default 'received',
+  provider_occurred_at timestamptz not null, received_at timestamptz not null default now(), processing_started_at timestamptz,
+  lease_expires_at timestamptz, next_attempt_at timestamptz not null default now(), attempt_count integer not null default 0 check (attempt_count >= 0),
+  processed_at timestamptz, last_error_code text,
   sanitized_payload jsonb not null default '{}'::jsonb check (jsonb_typeof(sanitized_payload) = 'object'), created_at timestamptz not null default now(),
   unique (assessoria_id, id), unique (provider, external_event_id),
   foreign key (assessoria_id, message_job_id) references public.message_jobs(assessoria_id, id) on delete restrict
@@ -389,8 +407,9 @@ create index class_meetings_schedule_idx on public.class_meetings(assessoria_id,
 create index attendances_student_status_idx on public.attendances(assessoria_id, student_id, status, id);
 create index subscriptions_assessoria_status_idx on public.subscriptions(assessoria_id, status, id);
 create index charges_due_status_idx on public.charges(assessoria_id, status, due_on, id) where status in ('open', 'overdue');
-create index provider_events_pending_idx on public.provider_events(status, received_at, id) where status in ('received', 'retryable_failure');
-create index message_jobs_pending_idx on public.message_jobs(status, scheduled_for, id) where status in ('queued', 'retryable_failure');
+create index provider_events_pending_idx on public.provider_events(status, next_attempt_at, id) where status in ('received', 'retryable_failure');
+create index message_jobs_pending_idx on public.message_jobs(status, next_attempt_at, scheduled_for, id) where status in ('queued', 'retryable_failure');
+create index message_events_pending_idx on public.message_events(processing_status, next_attempt_at, id) where processing_status in ('received', 'retryable_failure');
 create index payments_charge_idx on public.payments(assessoria_id, charge_id, created_at desc);
 create index cash_movements_period_idx on public.cash_movements(assessoria_id, occurred_at desc, id);
 create index leads_status_idx on public.leads(assessoria_id, status, created_at desc, id);
@@ -443,16 +462,17 @@ revoke all on table
   public.financial_categories, public.expenses, public.other_revenues, public.cash_movements,
   public.provider_events, public.integration_attempts, public.contact_preferences, public.message_templates, public.message_jobs, public.message_events,
   public.leads, public.lead_history, public.audit_entries
-from public, anon, authenticated;
+from public, anon, authenticated, service_role;
 
 grant select, insert, update, delete on table
   public.team_members, public.students, public.enrollments, public.classes, public.class_memberships, public.class_meetings,
   public.attendances, public.absence_justifications, public.plans, public.plan_versions, public.subscriptions,
-  public.billing_cycles, public.billing_generation_runs, public.billing_generation_watermarks, public.charges,
-  public.payment_checkouts, public.payments, public.payment_settlements, public.payment_refunds, public.payment_disputes,
-  public.financial_categories, public.expenses, public.other_revenues, public.provider_events, public.integration_attempts,
+  public.billing_cycles, public.billing_generation_runs, public.billing_generation_watermarks,
+  public.financial_categories, public.expenses, public.other_revenues,
   public.contact_preferences, public.message_templates, public.message_jobs, public.leads
 to service_role;
+grant select, insert, update on table public.charges, public.payment_checkouts, public.payments, public.payment_settlements,
+  public.payment_refunds, public.payment_disputes, public.provider_events, public.integration_attempts to service_role;
 grant select, insert on table public.enrollment_history, public.subscription_history, public.charge_adjustments,
   public.cash_movements, public.message_events, public.lead_history, public.audit_entries to service_role;
 

@@ -1,3 +1,6 @@
+import { MvpEnumConstants } from "./mvp-database.generated"
+import type { MvpEnums, MvpTables } from "./mvp-database.generated"
+
 export type Json =
   | string
   | number
@@ -38,7 +41,7 @@ export type Database = {
     }
   }
   public: {
-    Tables: {
+    Tables: MvpTables & {
       assessorias: {
         Row: {
           cor_primaria: string | null
@@ -1031,7 +1034,7 @@ export type Database = {
         }[]
       }
     }
-    Enums: {
+    Enums: MvpEnums & {
       origem_treino: "manual" | "ia" | "importado"
       papel_usuario: "treinador" | "atleta"
       status_convite: "pendente" | "aceito" | "revogado" | "expirado"
@@ -1165,6 +1168,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      ...MvpEnumConstants,
       origem_treino: ["manual", "ia", "importado"],
       papel_usuario: ["treinador", "atleta"],
       status_convite: ["pendente", "aceito", "revogado", "expirado"],

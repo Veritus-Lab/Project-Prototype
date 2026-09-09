@@ -107,6 +107,7 @@ As APIs são internas ao produto, versionadas em `/api/v1` quando consumidas pel
 
 | Operação | Contrato e autenticação | Idempotência, ownership e limites |
 | --- | --- | --- |
+| `GET /api/internal/cron/daily` | Única rota registrada no Vercel Cron Hobby; `Authorization: Bearer $CRON_SECRET`; uma execução diária em UTC | Orquestra as seis etapas internas abaixo em lotes limitados, registra resultado por etapa e permite retomada idempotente no dia seguinte |
 | `GET /api/internal/cron/billing/generate` | `Authorization: Bearer $CRON_SECRET`; produção Vercel; rejeita segredo ausente/inválido | Gera janela limitada por RPC; `unique(subscription_id, cycle_key)`; lock/advisory lock evita sobreposição; resposta traz contagens, sem PII |
 | `POST /api/v1/charges/{chargeId}/checkout` | Sessão Supabase do aluno; CSRF/origin conforme estratégia da Task 09; valida cobrança pertencente ao aluno autenticado | Requer `Idempotency-Key`; reutiliza checkout ativo; rate limit por usuário/cobrança/IP; só cria no Asaas após reserva interna |
 | `POST /api/v1/payments/manual` | Sessão de sócio e reautenticação quando definida; professor/aluno negados | Chave idempotente, transação única, estado esperado, motivo obrigatório e auditoria |
@@ -120,7 +121,7 @@ As APIs são internas ao produto, versionadas em `/api/v1` quando consumidas pel
 | `POST /api/v1/webhooks/meta` | Verifica assinatura da requisição com segredo do app antes de interpretar o corpo | Persiste evento único e responde rápido; não faz processamento demorado no webhook |
 | `GET /api/internal/cron/message-events/process` | `Authorization: Bearer $CRON_SECRET`; rota concreta do Vercel Cron consome eventos Meta persistidos | Claim com lease; deduplica por ID externo, aplica status de entrega de forma idempotente/monotônica, tolera reordenação e responde somente contagens sem PII |
 
-Os nomes são contrato de direção e podem mudar na Task de implementação somente por ADR equivalente e atualização desta rastreabilidade. Todos os disparadores agendados são `GET` compatíveis com o Vercel Cron e autenticados por `CRON_SECRET`; `POST` pode existir apenas como função/execução privada não configurada como cron. Webhooks devem tolerar campos novos, rejeitar tipos essenciais inválidos e armazenar apenas o necessário. Segundo a documentação do Asaas, a entrega de webhooks é pelo menos uma vez; o consumidor deve deduplicar pelo ID do evento, persistir antes do processamento e responder rapidamente ([idempotência](https://docs.asaas.com/docs/como-implementar-idempotencia-em-webhooks), [autenticação e recebimento](https://docs.asaas.com/docs/receba-eventos-do-asaas-no-seu-endpoint-de-webhook), consulta em 07/09/2026).
+Os nomes são contrato de direção e podem mudar na Task de implementação somente por ADR equivalente e atualização desta rastreabilidade. Apenas `/api/internal/cron/daily` é configurado no Vercel Cron Hobby. As seis rotas de etapa permanecem `GET` internas, autenticadas por `CRON_SECRET`, para composição, retomada e operação manual autorizada; elas não recebem agendas próprias. Webhooks devem tolerar campos novos, rejeitar tipos essenciais inválidos e armazenar apenas o necessário. Segundo a documentação do Asaas, a entrega de webhooks é pelo menos uma vez; o consumidor deve deduplicar pelo ID do evento, persistir antes do processamento e responder rapidamente ([idempotência](https://docs.asaas.com/docs/como-implementar-idempotencia-em-webhooks), [autenticação e recebimento](https://docs.asaas.com/docs/receba-eventos-do-asaas-no-seu-endpoint-de-webhook), consulta em 07/09/2026).
 
 ### Derivação do indicador do professor
 
@@ -225,7 +226,7 @@ Não estão comprovados nesta task: contas Asaas/Meta, credenciais, templates, p
 5. Falha entre mutações de baixa manual não persiste nenhuma parte.
 6. Professor recebe somente os quatro estados do enum; acesso direto/API a detalhes financeiros retorna negação. Sem configuração resulta em `nao_configurado`; isenção vigente com histórico consistente resulta em `em_dia` sem exigir ciclo; somente assinatura geradora exige watermark, e lacuna/run parcial resulta em `indisponivel`.
 7. Aluno não lê nem paga cobrança de outro aluno, mesmo alterando URL ou payload.
-8. Cron duplicado e workers concorrentes não duplicam cobranças ou mensagens; geração, eventos financeiros, reconciliação, enqueue, jobs de envio e eventos Meta têm seis disparadores `GET` autenticados configuráveis no Vercel Cron.
+8. Cron diário repetido e workers concorrentes não duplicam cobranças ou mensagens; um único `GET /api/internal/cron/daily` autenticado orquestra geração, eventos financeiros, reconciliação, enqueue, jobs de envio e eventos Meta, mantendo cada etapa retomável e idempotente.
 9. Pagamento confirmado antes do envio cancela o lembrete; opt-out também cancela.
 10. Falha externa esgotada chega a dead-letter visível e pode ser reprocessada com auditoria.
 11. Mês curto, primeiro vencimento, pausa e não renovação seguem os exemplos da Task 01 no fuso definido.

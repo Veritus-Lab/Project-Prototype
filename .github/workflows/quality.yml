@@ -38,6 +38,7 @@ jobs:
         with: { node-version: 24, cache: npm }
       - run: npm ci
       - run: npm run typecheck
+      - run: npm run check:foundation-types
       - run: npm run lint
   build:
     runs-on: ubuntu-latest

@@ -15,7 +15,8 @@
     "test:coverage:baseline": "vitest run --coverage",
     "test:e2e": "node --experimental-strip-types scripts/check-test-environment.ts && playwright test",
     "test:env-guard": "node --experimental-strip-types scripts/check-test-environment.ts",
-    "test:db": "node --experimental-strip-types scripts/run-pgtap.ts"
+    "test:db": "node --experimental-strip-types scripts/run-pgtap.ts",
+    "check:foundation-types": "node scripts/generate-mvp-foundation-types.mjs --check"
   },
   "keywords": [],
   "author": "",
