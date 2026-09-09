@@ -10,6 +10,22 @@ assertSafeTestEnvironment(process.env);
 
 const cli = fileURLToPath(new URL("../node_modules/supabase/dist/supabase.js", import.meta.url));
 const commands = [
+  [
+    "db",
+    "reset",
+    "--local",
+    "--version",
+    "20260829221000",
+    "--sql-paths",
+    "./compatibility/task_06_legacy_fixture.sql",
+  ],
+  ["migration", "up", "--local"],
+  [
+    "test",
+    "db",
+    "supabase/compatibility/task_06_legacy_preservation.sql",
+    "--local",
+  ],
   ["db", "reset", "--local", "--no-seed"],
   ["test", "db", "supabase/tests", "--local"],
 ] as const;

@@ -1,0 +1,16 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local role postgres;
+set local search_path = public, extensions, auth, private, pg_catalog;
+select plan(9);
+select is((select nome from public.assessorias where id='7a000000-0000-0000-0000-000000000001'),'Legacy Preserved','organization survives additive migration');
+select is((select count(*) from public.profiles where assessoria_id='7a000000-0000-0000-0000-000000000001'),2::bigint,'legacy profiles survive');
+select is((select count(*) from public.treinadores where assessoria_id='7a000000-0000-0000-0000-000000000001'),1::bigint,'legacy trainer survives');
+select is((select count(*) from public.atletas where assessoria_id='7a000000-0000-0000-0000-000000000001'),1::bigint,'legacy athlete survives');
+select is((select valor_centavos from public.assinaturas_atletas where id='72000000-0000-0000-0000-000000000001'),12345,'legacy subscription value survives');
+select is((select valor_centavos from public.cobrancas where id='73000000-0000-0000-0000-000000000001'),12345,'legacy charge value survives');
+select is((select count(*) from public.preferencias_comunicacao where assessoria_id='7a000000-0000-0000-0000-000000000001'),1::bigint,'legacy communication preference survives');
+select is((select count(*) from public.students),0::bigint,'structural migration does not infer students');
+select is((select count(*) from public.team_members),0::bigint,'structural migration does not infer team roles');
+select * from finish();
+rollback;
