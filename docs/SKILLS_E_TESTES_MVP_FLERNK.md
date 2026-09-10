@@ -74,7 +74,7 @@ Além das skills abaixo, tasks que implementem comportamento usam o ciclo de tes
 | 22 | `api-design`, `security-review`, documentação oficial WhatsApp/provedor | Segurança: autorização de contato, número, modelos e ambientes separados |
 | 23 | `backend-patterns`, `security-review`; skill de agendamento conforme decisão técnica | Testes: relógio controlado, fila, corrida pagamento/envio, opt-out e falhas |
 | 24 | `frontend-patterns`, `vercel:react-best-practices` | Testes + E2E: indicadores conferem com listas; erro não vira zero |
-| 25 | `frontend-patterns`, `vercel:nextjs`, `e2e-testing` | E2E: professor consulta somente `em dia`, `pendente`, `não configurado` ou `indisponível`, sem detalhes financeiros e aluno justifica sem modificar chamada |
+| 25 | `frontend-patterns`, `vercel:nextjs`, `e2e-testing` | E2E: professor consulta somente `em dia`, `pendente`, `não configurado` ou `indisponível`, sem detalhes financeiros; aluno consulta apenas seus dados administrativos e justifica sem modificar chamada |
 | 26 | `api-design`, `security-review`, `frontend-patterns` | Testes + E2E: spam, reenvio, conversão única e proibição de criação automática de conta |
 | 27 | `brand-discovery`, `brand-voice`, `frontend-patterns`; `imagegen` somente se necessário | E2E/revisor: CTA, formulário, teclado, celular, conteúdo factual e ausência de cadastro SaaS |
 | 28 | `supabase:supabase`, `security-review`; `spreadsheets:Spreadsheets` se houver arquivos para analisar | Dados: importação de ensaio, rejeições, saldo e reexecução sem duplicação |

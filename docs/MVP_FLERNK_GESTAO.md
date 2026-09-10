@@ -1,6 +1,6 @@
 # FLERNK — MVP de gestão e financeiro
 
-Data: 07/09/2026. Estado: definição documental das Tasks 01–04 concluída; implementação não iniciada.
+Data: 10/09/2026. Estado: migração aprovada para gestão administrativa e financeira; módulo de treino obsoleto e fora da experiência ativa.
 
 Este documento orienta o novo produto junto de `TASKS_MVP_FLERNK.md`. Para o novo MVP, substitui as prioridades dos roadmaps anteriores. Os documentos históricos continuam como evidência de implementações, não como sequência de execução atual.
 
@@ -26,7 +26,7 @@ Estas escolhas permitem delimitar o trabalho, mas não substituem respostas sobr
 - Dinheiro recebido diretamente na conta da FLERNK no provedor; sem split ou intermediação financeira da plataforma.
 - Conversão de interessado para aluno feita pela equipe; não haverá matrícula pública com ativação automática no MVP.
 - Cobrança não bloqueia automaticamente acesso ou presença; suspensão será uma ação administrativa explícita.
-- Preservar as funções de treino existentes como módulo secundário, sem novas integrações esportivas.
+- Preservar dados de treino existentes somente para retenção técnica; não expor nem evoluir essa funcionalidade.
 
 ## 3. Papéis e permissões
 
@@ -41,7 +41,6 @@ Cada pessoa usa conta própria. Dois sócios têm o mesmo papel e acesso complet
 | Despesas, caixa, exportação financeira | Gerencia | Sem acesso | Sem acesso |
 | Turmas, agenda e chamada | Gerencia | Gerencia | Consulta próprias turmas e presença |
 | Justificativas de falta | Decide | Decide | Solicita para si |
-| Treinos existentes | Gerencia | Gerencia | Consulta/registra os próprios |
 | Interessados e aula experimental | Gerencia | Acompanha atendimento e agenda | Formulário público |
 | Mensagens automáticas de cobrança | Configura e acompanha | Sem acesso | Recebe conforme preferências |
 | Usuários, permissões e integrações | Gerencia | Sem acesso | Sem acesso |
@@ -62,7 +61,6 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 
 - Agenda do dia, próximas turmas, lista de alunos e chamada pendente.
 - Faltas recorrentes e justificativas aguardando avaliação.
-- Cadastro operacional e treinos existentes.
 - Indicador em dia/pendente/não configurado/indisponível no cadastro e na lista de alunos; nenhum valor financeiro em tela ou resposta de API. O servidor entrega apenas a situação agregada, sem conceder leitura das tabelas financeiras ao professor.
 
 ### 4.3 Alunos e matrícula
@@ -122,7 +120,6 @@ Professor não pode elevar permissões, alterar matrícula comercial, dar baixa 
 - Histórico financeiro próprio, confirmação de pagamento e referência do comprovante disponível.
 - Agenda, frequência e solicitação de justificativa.
 - Perfil e preferências de contato editáveis dentro dos limites definidos.
-- Treinos existentes acessíveis como recurso secundário.
 - Canal para falar com a FLERNK. Sem acesso a outros alunos ou ao caixa da assessoria.
 
 ### 4.9 Landing page e captação
@@ -146,9 +143,9 @@ Formulário mínimo: nome, WhatsApp, objetivo opcional e preferência de turma q
 
 ## 5. Navegação proposta
 
-- Sócios: Visão geral; Alunos; Financeiro; Turmas e agenda; Frequência; Interessados; Mensagens; Treinos; Configurações.
-- Professor: Minha gestão; Alunos; Turmas e agenda; Frequência; Interessados; Treinos.
-- Aluno: Início; Meu financeiro; Agenda; Minha frequência; Meus treinos; Perfil.
+- Sócios: Visão geral; Alunos; Financeiro; Turmas; Frequência; Interessados; Mensagens; Equipe e configurações.
+- Professor: Minha gestão; Alunos; Turmas; Frequência.
+- Aluno: Início; Meu financeiro; Minha turma; Minha frequência; Perfil.
 
 ## 6. Estratégia técnica de transição
 
@@ -166,7 +163,7 @@ Migrations aditivas, migração explícita de papéis e testes de permissões. B
 
 ## 7. Fora do MVP
 
-Cadastro de outras assessorias; planos SaaS; marketplace; split; aplicativo nativo; chat com IA; redes sociais internas; integrações novas com relógios; novas ferramentas avançadas de prescrição; folha de pagamento; notas fiscais; contabilidade completa; automação de transferências; editor de landing page; campanhas de marketing em massa.
+Cadastro de outras assessorias; planos SaaS; marketplace; split; aplicativo nativo; chat com IA; redes sociais internas; integrações com relógios; prescrição, execução ou acompanhamento de treino; equipamentos; folha de pagamento; notas fiscais; contabilidade completa; automação de transferências; editor de landing page; campanhas de marketing em massa.
 
 ## 8. Critérios globais de entrega
 

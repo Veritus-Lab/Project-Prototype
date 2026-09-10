@@ -1,6 +1,6 @@
 # FLERNK — Tasks do planejamento à entrega
 
-Atualizado em 09/09/2026. Tasks 01–06 CONCLUÍDAS; Tasks 07–34 NÃO INICIADAS. A Task 02 mantém o gate externo de identificação da organização e aprovação dos dados reais antes de qualquer migration de dados ou carga.
+Atualizado em 10/09/2026. Tasks 01–06 CONCLUÍDAS; Task 07 em validação; Tasks 08–34 serão executadas sob o escopo de gestão administrativa e financeira. Treino é legado preservado, fora de toda experiência ativa.
 
 Registro da Task 01: [TASK_01_REGRAS_OPERACAO.md](TASK_01_REGRAS_OPERACAO.md).
 Registro da Task 02: [TASK_02_INVENTARIO_MIGRACAO.md](TASK_02_INVENTARIO_MIGRACAO.md).
@@ -30,7 +30,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | 06 — Fundação de dados | **CONCLUÍDA.** Migration aditiva, tipos gerados e migração planejada da organização em `TASK_06_FUNDACAO_DADOS.md` | 04–05 | Schema recriável em teste; vínculos e integridade verificados, sem perda de dados existentes |
 | 07 — Papéis e permissões | Sócio, professor e aluno; autorização em banco/servidor e migração dos papéis antigos | 06 | Testes negativos por papel e por aluno passam; professor consulta somente `em dia`, `pendente`, `não configurado` ou `indisponível`, sem detalhes financeiros |
 | 08 — Acesso exclusivo FLERNK | Encerrar cadastro público de assessoria e bootstrap antigo; convite de equipe; contas individuais dos dois sócios e professor | 07 | Fluxo antigo não cria organização nem eleva papel; último sócio protegido; contas provisionadas em ambiente apropriado |
-| 09 — Estrutura dos portais | Menus, layouts, acesso e recuperação de conta para os três papéis | 08, 03 | Cada papel chega ao painel correto em desktop/celular, sem exposição de dados indevidos |
+| 09 — Estrutura dos portais | Menus, layouts, acesso e recuperação de conta para os três papéis, sem módulo de treino | 08, 03 | Cada papel chega ao painel correto em desktop/celular, sem exposição de dados ou referências a treino |
 
 ## Fase C — Carteira e operação
 
@@ -66,9 +66,9 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 24 — Painel dos sócios | Indicadores financeiros, carteira, faltas e atalhos para ação | 13, 18, 20, 23 | Cada indicador corresponde à sua lista/mesmo período; falha de consulta não aparece como zero |
-| 25 — Painel do professor e portal do aluno | Agenda, chamada, frequência, justificativas e treinos reaproveitados | 09, 13, 21 | Operação diária com indicador `em dia`, `pendente`, `não configurado` ou `indisponível` para professor, sem valores ou detalhes; aluno só altera campos autorizados |
+| 25 — Painel do professor e portal do aluno | Turmas, chamada, frequência, justificativas e dados administrativos próprios | 09, 13, 21 | Operação diária com indicador `em dia`, `pendente`, `não configurado` ou `indisponível` para professor, sem valores ou detalhes; aluno só altera campos autorizados |
 | 26 — Funil de interessados | Cadastro público protegido, acompanhamento, experimental e conversão | 10, 12 | Formulário não cria conta/cobrança; conversão preserva origem e evita duplicidade |
-| 27 — Landing de prospecção | Conteúdo da FLERNK, equipe, locais, benefícios, CTA e acesso de alunos | 03, 26, materiais do cliente | Formulário e CTA funcionam no celular; sem cadastro de assessoria, prova social fictícia ou promessa não validada |
+| 27 — Landing de prospecção | Conteúdo da FLERNK, equipe, locais, benefícios, CTA e acesso de alunos; sem referências a treino | 03, 26, materiais do cliente | Formulário e CTA funcionam no celular; sem cadastro de assessoria, prova social fictícia, promessa não validada ou módulo de treino |
 
 ## Fase G — Homologação e entrega
 
