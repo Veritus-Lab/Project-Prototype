@@ -4,9 +4,6 @@ const mocks = vi.hoisted(() => ({
   createServerClient: vi.fn(),
   getUser: vi.fn(),
   from: vi.fn(),
-  select: vi.fn(),
-  eq: vi.fn(),
-  maybeSingle: vi.fn(),
   redirect: vi.fn(),
 }));
 
@@ -25,15 +22,38 @@ const authenticatedUser = {
   email: "atleta@flernk.app",
 };
 
-function mockProfile(papel: "treinador" | "atleta") {
-  mocks.maybeSingle.mockResolvedValue({
-    data: {
-      id: authenticatedUser.id,
-      nome: "Ana Corre",
-      papel,
-      assessoria_id: "assessoria-123",
-    },
-    error: null,
+type QueryResult = { data: unknown; error: unknown };
+
+function query(result: QueryResult) {
+  const builder = {
+    eq: vi.fn(() => builder),
+    maybeSingle: vi.fn().mockResolvedValue(result),
+    select: vi.fn(() => builder),
+  };
+  return builder;
+}
+
+function mockRoleResolution({
+  member,
+  student,
+}: {
+  member: QueryResult;
+  student: QueryResult;
+}) {
+  mocks.from.mockImplementation((table: string) => {
+    if (table === "profiles") {
+      return query({
+        data: {
+          id: authenticatedUser.id,
+          nome: "Ana Corre",
+          assessoria_id: "assessoria-123",
+        },
+        error: null,
+      });
+    }
+    if (table === "team_members") return query(member);
+    if (table === "students") return query(student);
+    throw new Error(`unexpected table: ${table}`);
   });
 }
 
@@ -44,37 +64,47 @@ describe("session authorization", () => {
       auth: { getUser: mocks.getUser },
       from: mocks.from,
     });
-    mocks.from.mockReturnValue({ select: mocks.select });
-    mocks.select.mockReturnValue({ eq: mocks.eq });
-    mocks.eq.mockReturnValue({ maybeSingle: mocks.maybeSingle });
     mocks.getUser.mockResolvedValue({ data: { user: authenticatedUser }, error: null });
   });
 
-  it("returns the persisted trainer profile, never client-selected role metadata", async () => {
-    mockProfile("treinador");
+  it("returns an active persisted team role, never client-selected metadata", async () => {
+    mockRoleResolution({
+      member: { data: { id: "member-1", role: "socio" }, error: null },
+      student: { data: null, error: null },
+    });
 
     await expect(requireUser()).resolves.toEqual({
       id: "user-123",
       email: "atleta@flernk.app",
       nome: "Ana Corre",
       papel: "treinador",
+      role: "socio",
       assessoriaId: "assessoria-123",
+      teamMemberId: "member-1",
+      studentId: null,
     });
     expect(mocks.from).toHaveBeenCalledWith("profiles");
-    expect(mocks.eq).toHaveBeenCalledWith("id", authenticatedUser.id);
+    expect(mocks.from).toHaveBeenCalledWith("team_members");
   });
 
-  it("allows a trainer into the trainer dashboard", async () => {
-    mockProfile("treinador");
+  it("allows a professor into the legacy trainer dashboard", async () => {
+    mockRoleResolution({
+      member: { data: { id: "member-2", role: "professor" }, error: null },
+      student: { data: null, error: null },
+    });
 
     await expect(requireRole("treinador")).resolves.toMatchObject({
       papel: "treinador",
+      role: "professor",
     });
     expect(mocks.redirect).not.toHaveBeenCalled();
   });
 
   it("redirects an athlete to the athlete dashboard when requesting a trainer route", async () => {
-    mockProfile("atleta");
+    mockRoleResolution({
+      member: { data: null, error: null },
+      student: { data: { id: "student-1" }, error: null },
+    });
     mocks.redirect.mockImplementation((destination: string) => {
       throw new Error(`NEXT_REDIRECT:${destination}`);
     });
@@ -94,7 +124,10 @@ describe("session authorization", () => {
   });
 
   it("fails safely when an authenticated user has no persisted profile", async () => {
-    mocks.maybeSingle.mockResolvedValue({ data: null, error: null });
+    mocks.from.mockImplementation((table: string) => {
+      if (table === "profiles") return query({ data: null, error: null });
+      throw new Error(`unexpected table: ${table}`);
+    });
 
     await expect(requireUser()).rejects.toThrow("conta ainda não está configurada");
   });

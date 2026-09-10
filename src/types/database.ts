@@ -1021,6 +1021,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_student_financial_status: {
+        Args: { target_student_id: string }
+        Returns: MvpEnums["student_financial_status"]
+      }
       aceitar_convite: {
         Args: { hash: string; nome: string; user_id: string }
         Returns: undefined

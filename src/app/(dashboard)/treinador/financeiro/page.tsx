@@ -8,7 +8,7 @@ import { createServerClient } from "@/lib/supabase/server";
 export const metadata = { title: "Financeiro - FLERNK" };
 
 export default async function FinancialPage() {
-  const user = await requireRole("treinador");
+  const user = await requireRole("socio");
   const [athleteResult, supabase] = await Promise.all([listTrainerAthletes(user), createServerClient()]);
   const [{ data: charges, error: chargesError }, { data: subscriptions, error: subscriptionsError }] = await Promise.all([
     supabase.from("cobrancas").select("id, atleta_id, valor_centavos, vencimento_em, status").eq("assessoria_id", user.assessoriaId).order("vencimento_em", { ascending: true }).limit(50),

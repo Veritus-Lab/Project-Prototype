@@ -66,6 +66,7 @@ describe("financial and communication actions", () => {
     await expect(createSubscriptionAction({}, data)).resolves.toEqual({ success: "Assinatura e primeira cobrança criadas." });
     mocks.createSubscription.mockResolvedValueOnce({ error: "falhou" });
     await expect(createSubscriptionAction({}, data)).resolves.toEqual({ error: "falhou" });
+    expect(mocks.requireRole).toHaveBeenCalledWith("socio");
   });
 
   it("marks charges paid and changes subscription status", async () => {
@@ -91,5 +92,6 @@ describe("financial and communication actions", () => {
     await expect(queueBillingReminderAction({}, reminder)).resolves.toEqual({ success: "Lembrete bloqueado por falta de consentimento." });
     mocks.queueBillingReminder.mockResolvedValueOnce({ error: "duplicado" });
     await expect(queueBillingReminderAction({}, reminder)).resolves.toEqual({ error: "duplicado" });
+    expect(mocks.requireRole).toHaveBeenLastCalledWith("socio");
   });
 });

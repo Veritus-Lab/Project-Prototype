@@ -6,7 +6,7 @@ import { listTrainerBillingReminders } from "@/lib/services/reminder-dashboard.s
 export const metadata = { title: "Mensagens - FLERNK" };
 
 export default async function TrainerMessagesPage() {
-  const user = await requireRole("treinador");
+  const user = await requireRole("socio");
   const remindersResult = await listTrainerBillingReminders(user, 20);
 
   return (

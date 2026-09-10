@@ -17,6 +17,7 @@ export type MvpEnums = {
   provider_event_status: "received" | "processing" | "processed" | "retryable_failure" | "dead_letter" | "ignored"
   message_status: "queued" | "claimed" | "submitted" | "delivered" | "read" | "retryable_failure" | "canceled" | "dead_letter"
   lead_status: "new" | "contacted" | "trial_scheduled" | "converted" | "closed"
+  student_financial_status: "em_dia" | "pendente" | "nao_configurado" | "indisponivel"
 }
 
 export const MvpEnumConstants = {
@@ -35,6 +36,7 @@ export const MvpEnumConstants = {
   provider_event_status: ["received", "processing", "processed", "retryable_failure", "dead_letter", "ignored"],
   message_status: ["queued", "claimed", "submitted", "delivered", "read", "retryable_failure", "canceled", "dead_letter"],
   lead_status: ["new", "contacted", "trial_scheduled", "converted", "closed"],
+  student_financial_status: ["em_dia", "pendente", "nao_configurado", "indisponivel"],
 } as const
 
 export type MvpTables = {

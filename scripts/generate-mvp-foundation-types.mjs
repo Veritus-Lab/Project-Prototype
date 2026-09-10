@@ -1,11 +1,13 @@
-import { readFileSync, writeFileSync } from "node:fs"
+import { readFileSync, readdirSync, writeFileSync } from "node:fs"
 import { resolve } from "node:path"
 
-const migrationPath = resolve(
-  "supabase/migrations/20260908085542_mvp_foundation_data_model.sql",
-)
+const migrationsDirectory = resolve("supabase/migrations")
 const outputPath = resolve("src/types/mvp-database.generated.ts")
-const sql = readFileSync(migrationPath, "utf8")
+const sql = readdirSync(migrationsDirectory)
+  .filter((fileName) => fileName >= "20260908085542_mvp_foundation_data_model.sql")
+  .sort()
+  .map((fileName) => readFileSync(resolve(migrationsDirectory, fileName), "utf8"))
+  .join("\n")
 
 function splitDefinitions(body) {
   const definitions = []
