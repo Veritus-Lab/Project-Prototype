@@ -1,12 +1,7 @@
-import AthleteCalendarPage from "../calendario/page";
+import { redirect } from "next/navigation";
 
 export const metadata = { title: "Meus treinos - FLERNK" };
 
 export default function AthleteTrainingsPage() {
-  return (
-    <AthleteCalendarPage
-      heading="Meus treinos"
-      subtitle="Consulte os treinos atribuídos e registre sua execução."
-    />
-  );
+  redirect("/atleta");
 }

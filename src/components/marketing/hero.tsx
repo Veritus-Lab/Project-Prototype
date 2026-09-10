@@ -1,4 +1,4 @@
-import { ArrowRight, Bolt, CalendarCheck, ChartNoAxesCombined } from "lucide-react";
+import { ArrowRight, Bolt, CalendarCheck, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { buttonClassName } from "../ui/button";
@@ -10,38 +10,34 @@ export function Hero() {
         <div className="hero-copy">
           <Badge>
             <Bolt size={15} aria-hidden="true" />
-            Plataforma de assessoria esportiva
+            Assessoria esportiva FLERNK
           </Badge>
           <h1 id="hero-title">
-            FLERNK: evolua.
+            Corra com a FLERNK.
             <br />
-            Supere. <em>Alcance mais.</em>
+            <em>Com acompanhamento de verdade.</em>
           </h1>
           <p className="hero-lead">
-            A plataforma ideal para treinadores e atletas alcançarem seus
-            melhores resultados juntos.
+            Uma assessoria para quem busca constância, comunidade e orientação
+            na corrida.
           </p>
           <div
             className="hero-actions"
             role="group"
             aria-label="Escolha como acessar"
           >
-            <Link className={buttonClassName()} href="/cadastro">
-              Sou Treinador
+            <Link className={buttonClassName()} href="#contato">
+              Quero correr com a FLERNK
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
             <Link className={buttonClassName("secondary")} href="/login">
-              Sou Atleta
+              Já sou aluno
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
           <ul className="hero-signals" aria-label="Destaques da plataforma">
-            <li>
-              <CalendarCheck aria-hidden="true" /> Treinos personalizados
-            </li>
-            <li>
-              <ChartNoAxesCombined aria-hidden="true" /> Evolução visível
-            </li>
+            <li><CalendarCheck aria-hidden="true" /> Turmas e rotina organizada</li>
+            <li><UsersRound aria-hidden="true" /> Gestão próxima dos alunos</li>
           </ul>
         </div>
 

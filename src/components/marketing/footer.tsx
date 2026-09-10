@@ -8,15 +8,14 @@ export function Footer() {
         <div className="footer-brand">
           <Brand />
           <p>
-            Tecnologia e metodologia para atletas que buscam evolução
-            constante e resultados reais.
+            Gestão próxima para uma experiência de corrida organizada e acolhedora.
           </p>
         </div>
         <nav aria-label="Links do rodapé">
           <a href="#recursos">Recursos</a>
           <a href="#para-quem">Para quem</a>
           <Link href="/login">Entrar</Link>
-          <Link href="/cadastro">Cadastrar</Link>
+          <a href="#contato">Falar com a FLERNK</a>
         </nav>
       </div>
       <div className="container footer-bottom">

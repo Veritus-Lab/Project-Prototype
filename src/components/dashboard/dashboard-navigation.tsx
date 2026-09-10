@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type ComponentType } from "react";
 import {
   CalendarDays,
-  Dumbbell,
   LayoutDashboard,
   Menu,
   MessageSquare,
@@ -27,8 +26,6 @@ const itemIcons: Record<string, ComponentType<{ "aria-hidden"?: boolean }>> = {
   Painel: LayoutDashboard,
   Convites: UserPlus,
   Atletas: UsersRound,
-  Treinos: Dumbbell,
-  "Meus treinos": Dumbbell,
   "Calendário": CalendarDays,
   Financeiro: WalletCards,
   Mensagens: MessageSquare,

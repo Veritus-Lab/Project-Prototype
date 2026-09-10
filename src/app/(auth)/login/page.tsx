@@ -1,4 +1,3 @@
-import Link from "next/link";
 
 import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
@@ -17,9 +16,7 @@ export default function LoginPage() {
           Acesse a sua conta na plataforma.
         </p>
         <LoginForm />
-        <p className="auth-footer">
-          Não tem uma conta? <Link href="/cadastro">Cadastre-se</Link>
-        </p>
+        <p className="auth-footer">Seu acesso é fornecido pela equipe FLERNK.</p>
       </Card>
     </AuthShell>
   );

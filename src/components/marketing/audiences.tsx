@@ -1,4 +1,4 @@
-import { ArrowUpRight, Dumbbell, UsersRound } from "lucide-react";
+import { ArrowUpRight, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { buttonClassName } from "../ui/button";
 
@@ -11,33 +11,31 @@ export function Audiences() {
     >
       <div className="container">
         <header className="section-heading section-heading-left">
-          <p>PARA ATLETAS E TREINADORES</p>
-          <h2 id="audiences-title">Uma equipe. O mesmo objetivo.</h2>
+          <p>PARA QUEM QUER CORRER COM A FLERNK</p>
+          <h2 id="audiences-title">Uma assessoria perto da sua rotina.</h2>
         </header>
         <div className="audience-grid">
           <article className="audience-block coach-block">
             <UsersRound aria-hidden="true" />
-            <p className="eyebrow">Para treinadores</p>
-            <h3>Mais gestão. Mais atletas em evolução.</h3>
+            <p className="eyebrow">Para novos alunos</p>
+            <h3>Comece com uma equipe que acompanha você.</h3>
             <p>
-              Prescreva treinos, acompanhe resultados e mantenha sua assessoria
-              conectada em uma única rotina.
+              Conheça a FLERNK, encontre a turma adequada e fale com a equipe.
             </p>
-            <Link className={buttonClassName()} href="/cadastro">
-              Cadastrar minha assessoria
+            <Link className={buttonClassName()} href="#contato">
+              Quero conhecer a FLERNK
               <ArrowUpRight size={18} aria-hidden="true" />
             </Link>
           </article>
           <article className="audience-block athlete-block">
-            <Dumbbell aria-hidden="true" />
-            <p className="eyebrow">Para atletas</p>
-            <h3>Seu próximo resultado começa no plano de hoje.</h3>
+            <UsersRound aria-hidden="true" />
+            <p className="eyebrow">Para alunos</p>
+            <h3>Seu acesso reúne o que importa para sua rotina.</h3>
             <p>
-              Receba orientações, registre seus treinos e enxergue sua evolução
-              com clareza.
+              Consulte sua turma, presença e informações financeiras em um só lugar.
             </p>
             <Link className={buttonClassName("secondary")} href="/login">
-              Acessar meus treinos
+              Acessar minha conta
               <ArrowUpRight size={18} aria-hidden="true" />
             </Link>
           </article>
