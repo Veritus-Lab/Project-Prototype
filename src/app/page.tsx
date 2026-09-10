@@ -1,4 +1,5 @@
 import { Audiences } from "../components/marketing/audiences";
+import { Contact } from "../components/marketing/contact";
 import { Features } from "../components/marketing/features";
 import { Footer } from "../components/marketing/footer";
 import { Header } from "../components/marketing/header";
@@ -12,6 +13,7 @@ export default function HomePage() {
         <Hero />
         <Features />
         <Audiences />
+        <Contact />
       </main>
       <Footer />
     </>

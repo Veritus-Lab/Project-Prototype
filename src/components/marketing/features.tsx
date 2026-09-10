@@ -1,37 +1,31 @@
-import {
-  CalendarDays,
-  ChartColumnIncreasing,
-  Cloud,
-  MessagesSquare,
-  Trophy,
-} from "lucide-react";
+import { CalendarDays, CircleDollarSign, HeartHandshake, UsersRound } from "lucide-react";
 import { Card } from "../ui/card";
 
 const features = [
   {
     icon: CalendarDays,
-    title: "Treinos personalizados",
-    text: "Planos de treino feitos sob medida para cada objetivo e evolução.",
+    title: "Turmas organizadas",
+    text: "Uma rotina clara para você acompanhar sua participação.",
   },
   {
-    icon: ChartColumnIncreasing,
-    title: "Acompanhe sua evolução",
-    text: "Resultados claros, métricas úteis e decisões orientadas por dados.",
+    icon: UsersRound,
+    title: "Equipe próxima",
+    text: "Uma assessoria que organiza a experiência dos seus alunos.",
   },
   {
-    icon: MessagesSquare,
-    title: "Comunicação direta",
-    text: "Treinador e atleta alinhados antes, durante e depois de cada treino.",
+    icon: CircleDollarSign,
+    title: "Financeiro transparente",
+    text: "Consulte suas cobranças e pagamentos no seu próprio acesso.",
   },
   {
-    icon: Trophy,
-    title: "Provas e resultados",
-    text: "Histórico organizado para transformar cada conquista em aprendizado.",
+    icon: HeartHandshake,
+    title: "Atendimento humano",
+    text: "Fale com a FLERNK para conhecer as opções disponíveis.",
   },
   {
-    icon: Cloud,
-    title: "Acesse de qualquer lugar",
-    text: "A rotina da assessoria disponível com segurança onde você estiver.",
+    icon: CalendarDays,
+    title: "Acesso simples",
+    text: "Informações da sua jornada reunidas em um só lugar.",
   },
 ];
 
