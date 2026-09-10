@@ -27,7 +27,7 @@ export function Hero() {
             aria-label="Escolha como acessar"
           >
             <Link className={buttonClassName()} href="#contato">
-              Quero correr com a FLERNK
+              A chama que te move.
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
             <Link className={buttonClassName("secondary")} href="/login">
