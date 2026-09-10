@@ -8,6 +8,8 @@ export type ServiceResult<T> =
 
 export const genericSignupError =
   "Não foi possível criar sua conta agora. Tente novamente.";
+export const legacySignupDisabledError =
+  "O acesso à FLERNK é criado pela equipe responsável. Fale com a assessoria para receber um convite.";
 
 export const genericSignInError =
   "Não foi possível entrar agora. Tente novamente.";
@@ -58,37 +60,8 @@ function translateSignUpError(message: string) {
 export async function signUpTrainer(
   input: TrainerSignupInput,
 ): Promise<ServiceResult<{ email: string }>> {
-  const origin = getConfiguredAppOrigin();
-
-  if (!origin) {
-    return { error: genericSignupError };
-  }
-
-  try {
-    assertApplicationMutationAllowed();
-    const supabase = await createServerClient();
-    const emailRedirectTo = new URL("/auth/callback", origin).toString();
-    const { error } = await supabase.auth.signUp({
-      email: input.email,
-      password: input.senha,
-      options: {
-        emailRedirectTo,
-        data: {
-          nome: input.nome,
-          assessoria_nome: input.assessoria,
-          papel: "treinador",
-        },
-      },
-    });
-
-    if (error) {
-      return { error: translateSignUpError(error.message) };
-    }
-
-    return { data: { email: input.email } };
-  } catch {
-    return { error: genericSignupError };
-  }
+  void input;
+  return { error: legacySignupDisabledError };
 }
 
 function translateSignInError(message: string) {
