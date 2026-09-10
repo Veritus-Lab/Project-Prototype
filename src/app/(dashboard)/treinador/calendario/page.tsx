@@ -1,50 +1,25 @@
-import { TrainingScheduleForm } from "@/components/dashboard/training-schedule-form";
-import { TrainerWeeklyCalendar } from "@/components/dashboard/trainer-weekly-calendar";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
-import { listTrainerAthletes } from "@/lib/services/athlete.service";
-import { getTrainerWeeklySchedule } from "@/lib/services/trainer-calendar.service";
-import { listTrainerTrainings } from "@/lib/services/training.service";
 
-export const metadata = { title: "Calendário - FLERNK" };
+export const metadata = { title: "Turmas — FLERNK" };
 
-export default async function TrainerCalendarPage() {
-  const user = await requireRole("treinador");
-  const [athleteResult, trainingResult, weeklyScheduleResult] = await Promise.all([
-    listTrainerAthletes(user),
-    listTrainerTrainings(user),
-    getTrainerWeeklySchedule(user),
-  ]);
-  const athletes = "data" in athleteResult && athleteResult.data ? athleteResult.data : [];
-  const trainings = "data" in trainingResult && trainingResult.data ? trainingResult.data : [];
+export default async function ClassesPage() {
+  await requireRole("socio", "professor");
 
   return (
-    <div className="dashboard-page trainer-calendar-page">
-      <p className="eyebrow">Painel do treinador</p>
-      <h1 className="dashboard-title">Calendário</h1>
-      <p className="dashboard-subtitle">Planeje os próximos treinos da assessoria.</p>
-
-      <section className="dashboard-section">
-        <Card elevated className="trainer-calendar-card">
-          <h2>Agenda desta semana</h2>
-          {"data" in weeklyScheduleResult ? (
-            <TrainerWeeklyCalendar schedule={weeklyScheduleResult.data} />
-          ) : (
-            <p className="form-error" role="alert">{weeklyScheduleResult.error}</p>
-          )}
-        </Card>
-      </section>
+    <div className="dashboard-page">
+      <p className="eyebrow">Gestão operacional</p>
+      <h1 className="dashboard-title">Turmas</h1>
+      <p className="dashboard-subtitle">
+        Acompanhe a organização das turmas e a presença dos alunos.
+      </p>
 
       <section className="dashboard-section">
         <Card elevated>
-          <h2>Novo agendamento</h2>
-          {"error" in athleteResult || "error" in trainingResult ? (
-            <p className="form-error" role="alert">
-              Não foi possível carregar os dados de agendamento.
-            </p>
-          ) : (
-            <TrainingScheduleForm athletes={athletes} trainings={trainings} />
-          )}
+          <h2>Agenda de turmas</h2>
+          <p className="dashboard-empty-state">
+            O cadastro de turmas e o registro de faltas serão disponibilizados nesta área na próxima etapa.
+          </p>
         </Card>
       </section>
     </div>

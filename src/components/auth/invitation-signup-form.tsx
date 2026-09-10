@@ -88,7 +88,7 @@ export function InvitationSignupForm({
       {state.confirmationRequired ? (
         <p className="field-hint" role="status">
           Enviamos um link de confirmação para seu e-mail. Abra-o para concluir
-          seu acesso de atleta.
+          seu acesso à FLERNK.
         </p>
       ) : null}
 

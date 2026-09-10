@@ -5,32 +5,29 @@ import { requireRole } from "@/lib/auth/session";
 import { listTrainerAthletes } from "@/lib/services/athlete.service";
 
 export const metadata = {
-  title: "Atletas — FLERNK",
+  title: "Alunos — FLERNK",
 };
 
 export default async function TrainerAthletesPage() {
-  const user = await requireRole("treinador");
+  const user = await requireRole("socio", "professor");
   const result = await listTrainerAthletes(user);
   const athletes = "data" in result && result.data ? result.data : [];
 
   return (
     <div className="dashboard-page">
-      <p className="eyebrow">Painel do treinador</p>
+      <p className="eyebrow">Gestão de alunos</p>
       <div className="page-heading-actions">
         <div>
-          <h1 className="dashboard-title">Atletas</h1>
+          <h1 className="dashboard-title">Alunos</h1>
           <p className="dashboard-subtitle">
-            Acompanhe os atletas vinculados à sua assessoria.
+            Acompanhe os alunos vinculados à assessoria.
           </p>
         </div>
-        <Link className="button bg-brand button-primary" href="/treinador/convites">
-          Convidar atleta
-        </Link>
       </div>
 
       <section className="dashboard-section">
         <Card elevated>
-          <h2>Atletas ativos</h2>
+          <h2>Alunos ativos</h2>
           {"error" in result ? (
             <p className="form-error" role="alert">{result.error}</p>
           ) : athletes.length > 0 ? (
@@ -56,9 +53,7 @@ export default async function TrainerAthletesPage() {
               ))}
             </div>
           ) : (
-            <p className="dashboard-empty-state">
-              Nenhum atleta vinculado ainda. Envie um convite para começar.
-            </p>
+            <p className="dashboard-empty-state">Nenhum aluno vinculado ainda.</p>
           )}
         </Card>
       </section>

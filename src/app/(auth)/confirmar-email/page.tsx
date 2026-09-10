@@ -22,8 +22,8 @@ export default async function ConfirmEmailPage({
             O link pode ter expirado ou já ter sido usado. Solicite um novo link
             para tentar novamente.
           </p>
-          <Link className="button button-secondary" href="/cadastro">
-            Tentar novamente
+          <Link className="button button-secondary" href="/login">
+            Voltar para entrar
           </Link>
         </Card>
       </AuthShell>

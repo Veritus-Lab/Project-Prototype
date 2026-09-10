@@ -11,7 +11,7 @@ export default async function TrainerMessagesPage() {
 
   return (
     <div className="dashboard-page trainer-messages-page">
-      <p className="eyebrow">Painel do treinador</p>
+      <p className="eyebrow">Comunicação financeira</p>
       <h1 className="dashboard-title">Mensagens</h1>
       <p className="dashboard-subtitle">
         Acompanhe os lembretes financeiros preparados para a operação.

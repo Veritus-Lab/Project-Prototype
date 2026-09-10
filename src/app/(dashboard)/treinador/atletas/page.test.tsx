@@ -39,9 +39,9 @@ describe("TrainerAthletesPage", () => {
 
     render(await TrainerAthletesPage());
 
-    expect(mocks.requireRole).toHaveBeenCalledWith("treinador");
+    expect(mocks.requireRole).toHaveBeenCalledWith("socio", "professor");
     expect(mocks.listTrainerAthletes).toHaveBeenCalledWith(user);
-    expect(screen.getByRole("heading", { name: "Atletas" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Alunos" })).toBeInTheDocument();
     expect(screen.getByText("Bia Corredora")).toBeInTheDocument();
     expect(screen.getByText("Vinculado a você")).toBeInTheDocument();
   });
@@ -59,7 +59,7 @@ describe("TrainerAthletesPage", () => {
     render(await TrainerAthletesPage());
 
     expect(
-      screen.getByText("Nenhum atleta vinculado ainda. Envie um convite para começar."),
+      screen.getByText("Nenhum aluno vinculado ainda."),
     ).toBeInTheDocument();
   });
 });

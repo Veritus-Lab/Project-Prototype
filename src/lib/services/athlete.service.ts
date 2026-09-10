@@ -169,14 +169,18 @@ export async function listTrainerAthletes(
   user: SessionUser,
 ): Promise<AthleteResult<TrainerAthleteSummary[]>> {
   const supabase = await createServerClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("atletas")
     .select(
       "id, treinador_id, created_at, profiles!atletas_profile_fkey(nome, created_at)",
     )
-    .eq("assessoria_id", user.assessoriaId)
-    .eq("treinador_id", user.id)
-    .order("created_at", { ascending: false });
+    .eq("assessoria_id", user.assessoriaId);
+
+  if (user.role !== "socio") {
+    query = query.eq("treinador_id", user.id);
+  }
+
+  const { data, error } = await query.order("created_at", { ascending: false });
 
   if (error || !data) {
     return { error: "Não foi possível carregar os atletas agora." };

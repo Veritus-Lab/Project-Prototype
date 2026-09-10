@@ -106,6 +106,23 @@ describe("athlete service", () => {
     });
   });
 
+  it("lists the full assessment portfolio for a partner", async () => {
+    const order = vi.fn().mockResolvedValue({ data: [], error: null });
+    const assessoriaEq = vi.fn().mockReturnValue({ order });
+    const select = vi.fn().mockReturnValue({ eq: assessoriaEq });
+
+    mocks.createServerClient.mockResolvedValue({
+      from: vi.fn(() => ({ select })),
+    });
+
+    await expect(listTrainerAthletes({ ...trainerUser, role: "socio" })).resolves.toEqual({
+      data: [],
+    });
+
+    expect(assessoriaEq).toHaveBeenCalledWith("assessoria_id", "assessoria-1");
+    expect(order).toHaveBeenCalledWith("created_at", { ascending: false });
+  });
+
   it("returns a public error when Supabase cannot load athletes", async () => {
     const order = vi.fn().mockResolvedValue({
       data: null,

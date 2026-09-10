@@ -13,6 +13,7 @@ const sidebarItems: Record<FlernkRole, DashboardNavigationItem[]> = {
     { label: "Turmas", href: "/treinador/calendario" },
     { label: "Financeiro", href: "/treinador/financeiro" },
     { label: "Mensagens", href: "/treinador/mensagens" },
+    { label: "Equipe", href: "/treinador/equipe" },
   ],
   professor: [
     { label: "Minha gestão", href: "/treinador" },

@@ -1,23 +1,14 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 
 import { signInAction } from "@/app/(auth)/login/actions";
 import { initialLoginActionState } from "@/app/(auth)/login/state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type PapelPreferencia = "atleta" | "treinador";
-
-const preferenciaLead: Record<PapelPreferencia, string> = {
-  atleta: "Acompanhe seus treinos e converse com o seu treinador.",
-  treinador: "Organize os treinos e acompanhe os seus atletas.",
-};
-
 function FieldError({ errors }: { errors?: string[] }) {
-  if (!errors?.[0]) {
-    return null;
-  }
+  if (!errors?.[0]) return null;
 
   return <p className="field-error" role="alert">{errors[0]}</p>;
 }
@@ -27,25 +18,10 @@ export function LoginForm() {
     signInAction,
     initialLoginActionState,
   );
-  const [preferencia, setPreferencia] =
-    useState<PapelPreferencia>("treinador");
-
-  function handlePreferenciaTeclas(event: React.KeyboardEvent) {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
-      return;
-    }
-
-    event.preventDefault();
-    setPreferencia((atual) =>
-      atual === "treinador" ? "atleta" : "treinador",
-    );
-  }
 
   return (
     <form className="login-form" action={formAction} noValidate>
-      <p className="field-hint" aria-live="polite">
-        {preferenciaLead[preferencia]}
-      </p>
+      <p className="field-hint">Acesse a gestão da FLERNK com seus dados cadastrados.</p>
 
       <div className="form-field">
         <label htmlFor="email">E-mail</label>
@@ -73,32 +49,6 @@ export function LoginForm() {
           required
         />
         <div id="senha-error"><FieldError errors={state.fieldErrors?.senha} /></div>
-      </div>
-
-      <div
-        className="role-preference"
-        role="radiogroup"
-        aria-label="Como você acessa a plataforma?"
-        onKeyDown={handlePreferenciaTeclas}
-      >
-        {/* Visual preference only: no `name`, so nothing is ever submitted
-            and authorization always comes from the persisted profile. */}
-        <label className={preferencia === "treinador" ? "is-active" : undefined}>
-          <input
-            type="radio"
-            checked={preferencia === "treinador"}
-            onChange={() => setPreferencia("treinador")}
-          />
-          Treinador
-        </label>
-        <label className={preferencia === "atleta" ? "is-active" : undefined}>
-          <input
-            type="radio"
-            checked={preferencia === "atleta"}
-            onChange={() => setPreferencia("atleta")}
-          />
-          Atleta
-        </label>
       </div>
 
       {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}

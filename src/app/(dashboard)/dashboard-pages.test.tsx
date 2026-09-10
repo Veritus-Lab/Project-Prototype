@@ -2,13 +2,6 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  getAthleteDashboardData: vi.fn(),
-  getAthleteDailyFeed: vi.fn(),
-  getAthleteEquipment: vi.fn(),
-  getTrainerDashboardData: vi.fn(),
-  getTrainerPerformanceData: vi.fn(),
-  getTrainerWeeklySchedule: vi.fn(),
-  listTrainerBillingReminders: vi.fn(),
   requireRole: vi.fn(),
 }));
 
@@ -16,177 +9,42 @@ vi.mock("@/lib/auth/session", () => ({
   requireRole: mocks.requireRole,
 }));
 
-vi.mock("@/lib/services/dashboard.service", () => ({
-  getAthleteDashboardData: mocks.getAthleteDashboardData,
-  getTrainerDashboardData: mocks.getTrainerDashboardData,
-}));
+import ManagementDashboard from "./treinador/page";
 
-vi.mock("@/lib/services/athlete-feed.service", () => ({
-  getAthleteDailyFeed: mocks.getAthleteDailyFeed,
-}));
-
-vi.mock("@/lib/services/athlete-equipment.service", () => ({
-  getAthleteEquipment: mocks.getAthleteEquipment,
-}));
-
-vi.mock("@/lib/services/trainer-calendar.service", () => ({
-  getTrainerWeeklySchedule: mocks.getTrainerWeeklySchedule,
-}));
-
-vi.mock("@/lib/services/trainer-performance.service", () => ({
-  getTrainerPerformanceData: mocks.getTrainerPerformanceData,
-}));
-
-vi.mock("@/lib/services/reminder-dashboard.service", () => ({
-  listTrainerBillingReminders: mocks.listTrainerBillingReminders,
-}));
-
-import AtletaDashboard from "./atleta/page";
-import TreinadorDashboard from "./treinador/page";
-
-describe("dashboard pages", () => {
-  it("renders trainer dashboard data from the dashboard service", async () => {
-    const user = {
-      id: "trainer-1",
-      email: "treinador@example.com",
+describe("management dashboard", () => {
+  it("shows the complete management areas for a partner", async () => {
+    mocks.requireRole.mockResolvedValueOnce({
+      id: "partner-1",
+      email: "socio@example.com",
       nome: "Ana",
       papel: "treinador",
+      role: "socio",
       assessoriaId: "assessoria-1",
-    };
-    mocks.requireRole.mockResolvedValueOnce(user);
-    mocks.getTrainerDashboardData.mockResolvedValueOnce({
-      metrics: [
-        {
-          label: "Atletas ativos",
-          value: "4",
-          hint: "Atletas vinculados à sua assessoria.",
-        },
-      ],
-      trainings: [
-        {
-          id: "treino-1",
-          titulo: "Tiro de 400m",
-          quando: "Criado em 25/08/2026",
-          detalhe: "8 x 400m",
-        },
-      ],
     });
-    mocks.getTrainerWeeklySchedule.mockResolvedValueOnce({
-      data: { days: [], timezone: "America/Sao_Paulo" },
-    });
-    mocks.getTrainerPerformanceData.mockResolvedValueOnce({
-      data: {
-        days: [],
-        metrics: [
-          {
-            label: "Execuções concluídas",
-            value: "2",
-            hint: "Registros concluídos nesta semana.",
-          },
-        ],
-        rpeAverage: null,
-      },
-    });
-    mocks.listTrainerBillingReminders.mockResolvedValueOnce({ data: [] });
 
-    render(await TreinadorDashboard());
+    render(await ManagementDashboard());
 
-    expect(mocks.requireRole).toHaveBeenCalledWith("treinador");
-    expect(mocks.getTrainerDashboardData).toHaveBeenCalledWith(user);
+    expect(mocks.requireRole).toHaveBeenCalledWith("socio", "professor");
     expect(screen.getByRole("heading", { name: "Olá, Ana" })).toBeInTheDocument();
-    expect(screen.getByText("4")).toBeInTheDocument();
-    expect(screen.getByText("Tiro de 400m")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Calendário da semana" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Agenda de treinos" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Atletas em destaque" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Ritmo da equipe nesta semana" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Lembretes preparados" })).toBeInTheDocument();
-    expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Financeiro/ })).toHaveAttribute("href", "/treinador/financeiro");
+    expect(screen.getByRole("link", { name: /Equipe/ })).toHaveAttribute("href", "/treinador/equipe");
+    expect(screen.queryByText(/treino/i)).not.toBeInTheDocument();
   });
 
-  it("renders athlete dashboard data from the dashboard service", async () => {
-    const user = {
-      id: "athlete-1",
-      email: "atleta@example.com",
+  it("limits the professor to operational management", async () => {
+    mocks.requireRole.mockResolvedValueOnce({
+      id: "professor-1",
+      email: "professor@example.com",
       nome: "Bia",
-      papel: "atleta",
+      papel: "treinador",
+      role: "professor",
       assessoriaId: "assessoria-1",
-    };
-    mocks.requireRole.mockResolvedValueOnce(user);
-    mocks.getAthleteDashboardData.mockResolvedValueOnce({
-      metrics: [
-        {
-          label: "Treinos atribuídos",
-          value: "5",
-          hint: "Treinos vinculados ao seu perfil.",
-        },
-      ],
-      trainings: [
-        {
-          id: "assignment-1",
-          titulo: "Regenerativo",
-          quando: "Atribuído em 25/08/2026",
-          detalhe: "6km leve",
-        },
-      ],
-    });
-    mocks.getAthleteDailyFeed.mockResolvedValueOnce({
-      data: {
-        priority: null,
-        recent: [],
-      },
-    });
-    mocks.getAthleteEquipment.mockResolvedValueOnce({
-      data: { equipment: [], availableExecutions: [] },
     });
 
-    render(await AtletaDashboard());
+    render(await ManagementDashboard());
 
-    expect(mocks.requireRole).toHaveBeenCalledWith("atleta");
-    expect(mocks.getAthleteDashboardData).toHaveBeenCalledWith(user);
-    expect(mocks.getAthleteDailyFeed).toHaveBeenCalledWith(user);
-    expect(mocks.getAthleteEquipment).toHaveBeenCalledWith(user);
-    expect(screen.getByRole("heading", { name: "Olá, Bia" })).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
-    expect(screen.getByText("Regenerativo")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Regenerativo/ })).toHaveAttribute(
-      "href",
-      "/atleta/treinos",
-    );
-    expect(screen.queryByText(/Dados de demonstração/i)).not.toBeInTheDocument();
-  });
-
-  it("preserves athlete dashboard metrics when the daily feed fails", async () => {
-    const user = {
-      id: "athlete-2",
-      email: "atleta2@example.com",
-      nome: "Caio",
-      papel: "atleta",
-      assessoriaId: "assessoria-1",
-    };
-    mocks.requireRole.mockResolvedValueOnce(user);
-    mocks.getAthleteDashboardData.mockResolvedValueOnce({
-      metrics: [
-        {
-          label: "Treinos atribuídos",
-          value: "3",
-          hint: "Treinos vinculados ao seu perfil.",
-        },
-      ],
-      trainings: [],
-    });
-    mocks.getAthleteDailyFeed.mockResolvedValueOnce({
-      error: "Não foi possível carregar seu treino de hoje.",
-    });
-    mocks.getAthleteEquipment.mockResolvedValueOnce({
-      data: { equipment: [], availableExecutions: [] },
-    });
-
-    render(await AtletaDashboard());
-
-    expect(screen.getByText("3")).toBeInTheDocument();
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Não foi possível carregar seu treino de hoje.",
-    );
+    expect(screen.getByRole("link", { name: /Alunos/ })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Financeiro/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Equipe/ })).not.toBeInTheDocument();
   });
 });
