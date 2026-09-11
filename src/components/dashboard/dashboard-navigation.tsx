@@ -29,6 +29,7 @@ const itemIcons: Record<string, ComponentType<{ "aria-hidden"?: boolean }>> = {
   Alunos: UsersRound,
   Turmas: CalendarDays,
   "Minha turma": CalendarDays,
+  "Meu financeiro": WalletCards,
   "Minha gestão": LayoutDashboard,
   Equipe: UsersRound,
   "Calendário": CalendarDays,

@@ -10,6 +10,7 @@ vi.mock("@/lib/auth/session", () => ({
 }));
 
 import ManagementDashboard from "./treinador/page";
+import StudentDashboard from "./atleta/page";
 
 describe("management dashboard", () => {
   it("shows the complete management areas for a partner", async () => {
@@ -46,5 +47,24 @@ describe("management dashboard", () => {
     expect(screen.getByRole("link", { name: /Alunos/ })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Financeiro/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Equipe/ })).not.toBeInTheDocument();
+  });
+
+  it("shows only the student's own administrative areas", async () => {
+    mocks.requireRole.mockResolvedValueOnce({
+      id: "student-1",
+      email: "aluno@example.com",
+      nome: "Caio",
+      papel: "atleta",
+      role: "aluno",
+      assessoriaId: "assessoria-1",
+    });
+
+    render(await StudentDashboard());
+
+    expect(mocks.requireRole).toHaveBeenCalledWith("aluno");
+    expect(screen.getByRole("heading", { name: "Olá, Caio" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Minha turma/ })).toHaveAttribute("href", "/atleta/calendario");
+    expect(screen.getByRole("link", { name: /Meu financeiro/ })).toHaveAttribute("href", "/atleta/financeiro");
+    expect(screen.queryByText(/treino/i)).not.toBeInTheDocument();
   });
 });
