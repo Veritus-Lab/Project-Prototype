@@ -1,62 +1,20 @@
-import Link from "next/link";
-
+import { StudentForm } from "@/components/dashboard/student-form";
 import { Card } from "@/components/ui/card";
 import { requireRole } from "@/lib/auth/session";
-import { listTrainerAthletes } from "@/lib/services/athlete.service";
+import { listStudents } from "@/lib/services/student.service";
 
-export const metadata = {
-  title: "Alunos — FLERNK",
-};
+export const metadata = { title: "Alunos — FLERNK" };
 
-export default async function TrainerAthletesPage() {
-  const user = await requireRole("socio", "professor");
-  const result = await listTrainerAthletes(user);
-  const athletes = "data" in result && result.data ? result.data : [];
+export default async function StudentsPage() {
+  await requireRole("socio", "professor");
+  const result = await listStudents();
+  const students = ("data" in result ? result.data : []) ?? [];
 
-  return (
-    <div className="dashboard-page">
-      <p className="eyebrow">Gestão de alunos</p>
-      <div className="page-heading-actions">
-        <div>
-          <h1 className="dashboard-title">Alunos</h1>
-          <p className="dashboard-subtitle">
-            Acompanhe os alunos vinculados à assessoria.
-          </p>
-        </div>
-      </div>
-
-      <section className="dashboard-section">
-        <Card elevated>
-          <h2>Alunos ativos</h2>
-          {"error" in result ? (
-            <p className="form-error" role="alert">{result.error}</p>
-          ) : athletes.length > 0 ? (
-            <div className="athlete-list">
-              {athletes.map((athlete) => (
-                <article className="athlete-row" key={athlete.id}>
-                  <div>
-                    <p className="athlete-name">{athlete.nome}</p>
-                    <p className="dashboard-list-detail">
-                      Entrada em {athlete.criadoEm}
-                    </p>
-                  </div>
-                  <div className="athlete-row-actions">
-                    <span className="athlete-status">{athlete.vinculo}</span>
-                    <Link
-                      className="dashboard-link"
-                      href={`/treinador/atletas/${athlete.id}`}
-                    >
-                      Ver detalhes
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <p className="dashboard-empty-state">Nenhum aluno vinculado ainda.</p>
-          )}
-        </Card>
-      </section>
-    </div>
-  );
+  return <div className="dashboard-page">
+    <p className="eyebrow">Gestão de alunos</p>
+    <h1 className="dashboard-title">Alunos</h1>
+    <p className="dashboard-subtitle">Cadastre e acompanhe os alunos da assessoria antes da criação do acesso individual.</p>
+    <section className="dashboard-section"><Card elevated><h2>Novo aluno</h2><StudentForm /></Card></section>
+    <section className="dashboard-section"><Card elevated><h2>Alunos cadastrados</h2>{"error" in result ? <p className="form-error" role="alert">{result.error}</p> : students.length ? <ul className="dashboard-list">{students.map((student) => <li key={student.id}><span className="dashboard-list-title">{student.name}</span><span className="dashboard-list-detail">{student.email ?? student.phone ?? "Sem contato informado"}</span></li>)}</ul> : <p className="dashboard-empty-state">Nenhum aluno cadastrado.</p>}</Card></section>
+  </div>;
 }
