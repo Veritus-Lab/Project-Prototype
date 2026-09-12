@@ -102,9 +102,13 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 9. Outro aluno tenta acessar cobrança/presença alheia e tem acesso negado.
 10. Recuperação de acesso e restauração ensaiada têm procedimento documentado.
 
-## Não iniciado neste planejamento
+## Escopo ainda não iniciado
 
-Nenhuma mudança em telas, rotas, schema, usuários, pagamentos, envios ou deployments. Somente estes documentos de escopo e tasks foram criados.
+As funcionalidades de produto, integrações, pagamentos oficiais, envios e publicação final continuam condicionadas às tasks do roadmap. O pré-cadastro operacional descrito abaixo é uma carga de dados isolada e não substitui essas entregas.
+
+## Pré-cadastro operacional carregado
+
+O pré-cadastro solicitado para setembro/2026 foi aplicado na assessoria principal da FLERNK: 44 alunos em quatro turmas, 44 matrículas ativas e 44 vínculos de turma. Os 16 pagos e 28 pendentes foram preservados como informação declarada nas observações dos alunos; não foram criadas cobranças ou pagamentos oficiais. Detalhes: [PRE_CADASTRO_FLERNK_SETEMBRO_2026.md](PRE_CADASTRO_FLERNK_SETEMBRO_2026.md).
 
 ## Diretriz de execução confirmada
 
