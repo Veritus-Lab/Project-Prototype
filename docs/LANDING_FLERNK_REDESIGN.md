@@ -1,6 +1,6 @@
 # Landing FLERNK — plano de redesign
 
-Data: 12/09/2026. Status: etapa 1 concluída; etapas 2 a 6 pendentes.
+Data: 12/09/2026. Status: etapas 1 e 2 concluídas; etapas 3 a 6 pendentes.
 
 ## Objetivo e direção aprovada pelo pedido
 
@@ -35,6 +35,8 @@ Skills previstas: frontend-design-direction, frontend-patterns.
 Desenhar e implementar primeiro para celular, com adaptação para desktop. Ordem das seções: hero; convite para quem está começando; benefícios da assessoria; como começar (conversar, conhecer as opções, concluir inscrição com a equipe); apresentação das turmas; dúvidas frequentes; contato final. Usar as quatro turmas existentes sem expor listas ou informações pessoais dos alunos. Equipe, locais, horários e depoimentos entram apenas com conteúdo confirmado.
 
 Aceite: slogan legível, hierarquia clara, boa alternância de seções e imagens com recortes adequados. Fotografia real depende do fornecimento de material; enquanto isso, usar composição tipográfica e elementos da marca, sem apresentar imagens geradas como comunidade real.
+
+Resultado em 12/09/2026: a landing ganhou a sequência de acolhimento, benefícios, como começar, turmas, dúvidas e contato. As quatro turmas atuais foram apresentadas sem nomes de alunos, locais, horários ou alegações não confirmadas. A composição usa tipografia, grade, contraste e elementos gráficos da marca enquanto não há fotos autorizadas da comunidade.
 
 ### 3. Captação funcional
 

@@ -3,8 +3,8 @@ import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-regis
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FLERNK",
-  description: "Plataforma para assessorias esportivas de corrida.",
+  title: "FLERNK | Assessoria de corrida",
+  description: "A chama que te move. Conheça a assessoria de corrida FLERNK.",
   appleWebApp: { capable: true, title: "FLERNK" },
 };
 export const viewport: Viewport = { themeColor: "#101315" };

@@ -15,6 +15,9 @@ it("guides new runners to the FLERNK contact journey", () => {
     "href",
     "#contato",
   );
+  expect(screen.getByRole("heading", { name: /o primeiro quilômetro também conta/i })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: /encontre o ponto de partida/i })).toBeInTheDocument();
+  expect(screen.getByText("Turma 1 · Iniciantes")).toBeInTheDocument();
   const studentLinks = screen.getAllByRole("link", { name: /já sou aluno/i });
   expect(studentLinks).not.toHaveLength(0);
   for (const link of studentLinks) {

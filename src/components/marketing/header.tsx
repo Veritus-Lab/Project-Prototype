@@ -8,8 +8,9 @@ export function Header() {
       <div className="container header-inner">
         <Brand />
         <nav className="primary-nav" aria-label="Navegação principal">
-          <a href="#recursos">A FLERNK</a>
-          <a href="#para-quem">Como começar</a>
+          <a href="#flernk">A FLERNK</a>
+          <a href="#como-comecar">Como começar</a>
+          <a href="#turmas">Turmas</a>
           <a href="#contato">Contato</a>
         </nav>
         <Link className={buttonClassName("ghost", "header-login")} href="/login">

@@ -8,7 +8,8 @@ test("landing pública acolhe iniciantes e permite ir ao login", async ({ page }
   await expect(primaryCta).toHaveAttribute("href", "#contato");
   await primaryCta.click();
   await expect(page).toHaveURL(/#contato$/);
-  await expect(page.getByRole("heading", { name: "Quer dar seu primeiro passo?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Seu próximo passo pode começar agora." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /encontre o ponto de partida/i })).toBeVisible();
   await page.getByRole("banner").getByRole("link", { name: "Entrar" }).click();
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByRole("heading", { level: 1, name: "Entrar" })).toBeVisible();
