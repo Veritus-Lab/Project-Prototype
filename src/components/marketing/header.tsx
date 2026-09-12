@@ -9,7 +9,7 @@ export function Header() {
         <Brand />
         <nav className="primary-nav" aria-label="Navegação principal">
           <a href="#recursos">A FLERNK</a>
-          <a href="#para-quem">Para alunos</a>
+          <a href="#para-quem">Como começar</a>
           <a href="#contato">Contato</a>
         </nav>
         <Link className={buttonClassName("ghost", "header-login")} href="/login">

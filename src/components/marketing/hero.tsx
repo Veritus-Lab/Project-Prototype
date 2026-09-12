@@ -1,4 +1,4 @@
-import { ArrowRight, Bolt, CalendarCheck, UsersRound } from "lucide-react";
+import { ArrowRight, Bolt, Footprints, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { buttonClassName } from "../ui/button";
@@ -13,13 +13,12 @@ export function Hero() {
             Assessoria esportiva FLERNK
           </Badge>
           <h1 id="hero-title">
-            Corra com a FLERNK.
-            <br />
-            <em>Com acompanhamento de verdade.</em>
+            <span>A chama</span>{" "}
+            <em>que te move.</em>
           </h1>
           <p className="hero-lead">
-            Uma assessoria para quem busca constância, comunidade e orientação
-            na corrida.
+            Começar na corrida é mais leve quando você tem uma equipe por perto.
+            Conheça a FLERNK e encontre uma forma de dar seu primeiro passo.
           </p>
           <div
             className="hero-actions"
@@ -27,7 +26,7 @@ export function Hero() {
             aria-label="Escolha como acessar"
           >
             <Link className={buttonClassName()} href="#contato">
-              A chama que te move.
+              Quero começar na FLERNK
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
             <Link className={buttonClassName("secondary")} href="/login">
@@ -35,38 +34,24 @@ export function Hero() {
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
-          <ul className="hero-signals" aria-label="Destaques da plataforma">
-            <li><CalendarCheck aria-hidden="true" /> Turmas e rotina organizada</li>
-            <li><UsersRound aria-hidden="true" /> Gestão próxima dos alunos</li>
+          <ul className="hero-signals" aria-label="Destaques da assessoria">
+            <li><Footprints aria-hidden="true" /> Para quem está começando</li>
+            <li><UsersRound aria-hidden="true" /> Uma equipe para caminhar junto</li>
           </ul>
         </div>
 
-        <aside className="performance-panel" aria-label="Exemplo de evolução de atleta">
+        <aside className="beginner-panel" aria-label="Como começar na FLERNK">
           <div className="panel-topline">
-            <span>SEMANA 08</span>
-            <span className="live-status">NO RITMO</span>
+            <span>SEU PRIMEIRO PASSO</span>
+            <span className="live-status">COMEÇA AQUI</span>
           </div>
-          <p className="panel-kicker">Volume acumulado</p>
-          <strong className="panel-value">48,2 km</strong>
-          <div className="pace-bars" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-          </div>
-          <dl className="panel-metrics">
-            <div>
-              <dt>Ritmo médio</dt>
-              <dd>04:20 /km</dd>
-            </div>
-            <div>
-              <dt>Evolução</dt>
-              <dd>+12,4%</dd>
-            </div>
-          </dl>
+          <h2>Você não precisa chegar pronto.</h2>
+          <p>Conte o que você busca. A equipe ajuda a entender como a FLERNK pode fazer parte da sua rotina.</p>
+          <ol className="beginner-steps">
+            <li><span>01</span><div><strong>Converse com a equipe</strong><small>Compartilhe seu momento e suas dúvidas.</small></div></li>
+            <li><span>02</span><div><strong>Conheça as opções</strong><small>Entenda como participar da assessoria.</small></div></li>
+            <li><span>03</span><div><strong>Comece no seu momento</strong><small>Encontre uma nova forma de se movimentar.</small></div></li>
+          </ol>
           <Bolt className="panel-bolt" aria-hidden="true" />
         </aside>
       </div>
