@@ -1,0 +1,13 @@
+"use client";
+import { useActionState } from "react";
+import { Button } from "@/components/ui/button";
+import { cancelClassMeetingAction, createClassAction, createClassMeetingAction } from "@/app/(dashboard)/treinador/calendario/actions";
+type ClassRow = { id: string; name: string };
+type Meeting = { id: string; class_id: string; starts_at: string; ends_at: string; canceled_at: string | null; cancellation_reason: string | null };
+type State = { error?: string; success?: boolean };
+const initial: State = {};
+export function ClassManagement({ classes, meetings }: { classes: ClassRow[]; meetings: Meeting[] }) {
+  const [classState, classAction, creatingClass] = useActionState(createClassAction, initial);
+  const [meetingState, meetingAction, creatingMeeting] = useActionState(createClassMeetingAction, initial);
+  return <><div className="training-form-grid"><form action={classAction} className="invitation-form"><h3>Nova turma</h3><input className="input" name="name" placeholder="Nome da turma" required /><textarea className="input" name="description" placeholder="Descrição (opcional)" rows={2} /><Button type="submit" disabled={creatingClass}>{creatingClass ? "Criando..." : "Criar turma"}</Button>{classState.error ? <p className="form-error" role="alert">{classState.error}</p> : null}</form>{classes.length ? <form action={meetingAction} className="invitation-form"><h3>Agendar encontro</h3><select className="input" name="classId" required>{classes.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select><input className="input" name="startsAt" type="datetime-local" required /><input className="input" name="endsAt" type="datetime-local" required /><Button type="submit" disabled={creatingMeeting}>{creatingMeeting ? "Agendando..." : "Agendar"}</Button>{meetingState.error ? <p className="form-error" role="alert">{meetingState.error}</p> : null}</form> : null}</div><ul className="dashboard-list">{meetings.map((meeting) => <li key={meeting.id}><span className="dashboard-list-title">{classes.find((item) => item.id === meeting.class_id)?.name ?? "Turma"}</span><span className="dashboard-list-detail">{new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(meeting.starts_at))} · {meeting.canceled_at ? `Cancelado: ${meeting.cancellation_reason}` : "Agendado"}</span>{!meeting.canceled_at ? <form action={cancelClassMeetingAction} className="enrollment-inline-form"><input type="hidden" name="meetingId" value={meeting.id} /><input className="input" name="reason" placeholder="Motivo do cancelamento" required /><Button type="submit" variant="secondary">Cancelar</Button></form> : null}</li>)}</ul></>;
+}

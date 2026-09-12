@@ -10,6 +10,7 @@ export type StudentEnrollment = {
   starts_on: string;
   ends_on: string | null;
   suspension_reason: string | null;
+  history: Array<{ id: string; previous_status: EnrollmentStatus | null; new_status: EnrollmentStatus; reason: string | null; occurred_at: string }>;
 };
 
 export async function createStudent(input: StudentInput) {
@@ -46,14 +47,26 @@ export async function listStudents() {
 
   const { data: enrollments, error: enrollmentsError } = await supabase
     .from("enrollments")
-    .select("id, student_id, status, starts_on, ends_on, suspension_reason")
+    .select("id, student_id, status, starts_on, ends_on, suspension_reason, created_at")
     .eq("assessoria_id", user.assessoriaId)
     .in("student_id", data.map((student) => student.id));
   if (enrollmentsError) return { error: "Não foi possível carregar as matrículas agora." } as const;
 
-  const enrollmentByStudent = new Map((enrollments ?? []).map((enrollment) => [enrollment.student_id, enrollment]));
+  const currentEnrollments = new Map<string, (typeof enrollments)[number]>();
+  for (const enrollment of enrollments ?? []) {
+    const current = currentEnrollments.get(enrollment.student_id);
+    const isCurrent = enrollment.status === "active" || enrollment.status === "suspended";
+    if (!current || (isCurrent && current.status === "ended") || (isCurrent === (current.status === "active" || current.status === "suspended") && enrollment.created_at > current.created_at)) currentEnrollments.set(enrollment.student_id, enrollment);
+  }
+  const selectedIds = [...currentEnrollments.values()].map((enrollment) => enrollment.id).filter((id): id is string => Boolean(id));
+  const { data: history } = selectedIds.length ? await supabase.from("enrollment_history").select("id, enrollment_id, previous_status, new_status, reason, occurred_at").eq("assessoria_id", user.assessoriaId).in("enrollment_id", selectedIds).order("occurred_at", { ascending: false }) : { data: [] };
+  const historyByEnrollment = new Map<string, NonNullable<typeof history>>();
+  for (const item of history ?? []) historyByEnrollment.set(item.enrollment_id, [...(historyByEnrollment.get(item.enrollment_id) ?? []), item]);
   return {
-    data: data.map((student) => ({ ...student, enrollment: enrollmentByStudent.get(student.id) ?? null })),
+    data: data.map((student) => {
+      const enrollment = currentEnrollments.get(student.id);
+      return { ...student, enrollment: enrollment ? { ...enrollment, history: historyByEnrollment.get(enrollment.id) ?? [] } : null };
+    }),
   } as const;
 }
 
