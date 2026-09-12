@@ -2,6 +2,7 @@ import { ArrowRight, Bolt, Footprints, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { buttonClassName } from "../ui/button";
+import { FLERNK_INSTAGRAM_URL } from "./contact-channel";
 
 export function Hero() {
   return (
@@ -25,10 +26,15 @@ export function Hero() {
             role="group"
             aria-label="Escolha como acessar"
           >
-            <Link className={buttonClassName()} href="#contato">
+            <a
+              className={buttonClassName()}
+              href={FLERNK_INSTAGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
               Quero começar na FLERNK
               <ArrowRight size={18} aria-hidden="true" />
-            </Link>
+            </a>
             <Link className={buttonClassName("secondary")} href="/login">
               Já sou aluno
               <ArrowRight size={18} aria-hidden="true" />

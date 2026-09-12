@@ -1,6 +1,6 @@
 import { ArrowUpRight, Flag } from "lucide-react";
-import Link from "next/link";
 import { buttonClassName } from "../ui/button";
+import { FLERNK_INSTAGRAM_URL } from "./contact-channel";
 
 const classes = [
   { label: "Adaptado", title: "Para começar com cuidado e presença.", text: "Uma porta de entrada para quem quer se movimentar e descobrir a corrida no seu tempo." },
@@ -31,10 +31,15 @@ export function Classes() {
             </article>
           ))}
         </div>
-        <Link className={buttonClassName("secondary", "classes-cta")} href="#contato">
-          Quero conhecer uma turma
+        <a
+          className={buttonClassName("secondary", "classes-cta")}
+          href={FLERNK_INSTAGRAM_URL}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Falar sobre uma turma
           <ArrowUpRight size={18} aria-hidden="true" />
-        </Link>
+        </a>
       </div>
     </section>
   );

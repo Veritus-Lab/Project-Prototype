@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { buttonClassName } from "../ui/button";
+import { FLERNK_INSTAGRAM_URL } from "./contact-channel";
 
 export function Contact() {
   return (
@@ -8,10 +9,17 @@ export function Contact() {
       <div className="container section-heading">
         <p>VAMOS CONVERSAR</p>
         <h2 id="contact-title">Seu próximo passo pode começar agora.</h2>
-        <p className="hero-lead">A FLERNK recebe quem está começando. Conheça as turmas e, quando estiver pronto, converse com a equipe sobre como participar.</p>
+        <p className="hero-lead">A FLERNK recebe quem está começando. Fale com a equipe no Instagram para tirar dúvidas e conhecer as opções para participar.</p>
         <div className="hero-actions">
-          <Link className={buttonClassName()} href="/login">Já sou aluno</Link>
-          <a className={buttonClassName("secondary")} href="#turmas">Conhecer as turmas</a>
+          <a
+            className={buttonClassName()}
+            href={FLERNK_INSTAGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Falar com a FLERNK no Instagram
+          </a>
+          <Link className={buttonClassName("secondary")} href="/login">Já sou aluno</Link>
         </div>
       </div>
     </section>

@@ -42,9 +42,11 @@ Resultado em 12/09/2026: a landing ganhou a sequência de acolhimento, benefíci
 
 Skills previstas: frontend-patterns; api-design e security-review caso haja formulário persistido.
 
-Fazer todos os CTAs de novos alunos chegarem ao mesmo atendimento real. A opção inicial proposta é um link para o WhatsApp oficial, com texto sugerido que o visitante envia por decisão própria. Confirmar o número antes de publicar esse destino. Se o funil de interessados já estiver funcional, avaliar reaproveitar seu formulário em vez de criar uma segunda entrada. Login continua acessível pelo cabeçalho.
+Fazer todos os CTAs de novos alunos chegarem ao mesmo atendimento real. O canal confirmado é o Instagram da FLERNK, aberto por decisão do visitante em uma nova aba. Se o funil de interessados já estiver funcional, avaliar reaproveitar seu formulário em vez de criar uma segunda entrada. Login continua acessível pelo cabeçalho.
 
 Aceite: CTA funciona em celular e desktop, não entra em ciclo entre seções e não encaminha o interessado ao login. Não instalar dependências pagas nem adicionar disparos automáticos nesta etapa.
+
+Resultado em 12/09/2026: os CTAs de captação apontam para o perfil oficial informado da FLERNK no Instagram e são abertos em nova aba com `rel="noreferrer"`. Não há captura, persistência ou rastreamento de dados nesta etapa.
 
 ### 4. Animações e transições
 
