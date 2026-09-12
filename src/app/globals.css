@@ -925,6 +925,116 @@ input {
   letter-spacing: -0.02em;
 }
 
+.class-management {
+  display: grid;
+  gap: 2.25rem;
+}
+
+.class-management-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.class-summary-item {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 1rem 1.15rem;
+}
+
+.class-summary-item + .class-summary-item { border-left: 1px solid var(--color-border); }
+.class-summary-value { color: var(--color-accent); font-size: 1.5rem; font-weight: 900; line-height: 1; }
+.class-summary-label { color: var(--color-text-muted); font-size: 0.78rem; }
+
+.class-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.class-section-heading h3 { margin: 0; font-size: 1.1rem; }
+.class-section-heading .field-hint { margin: 0.35rem 0 0; }
+.class-section-count { color: var(--color-text-muted); font-size: 0.78rem; font-weight: 800; white-space: nowrap; }
+
+.class-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.class-overview-card,
+.class-action-panel {
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.class-overview-card[open],
+.class-action-panel[open] { border-color: #49515b; background: var(--color-surface-elevated); }
+
+.class-overview-card summary,
+.class-action-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding: 1rem 1.15rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.class-overview-card summary::-webkit-details-marker,
+.class-action-panel summary::-webkit-details-marker { display: none; }
+
+.class-overview-card-heading { display: grid; gap: 0.2rem; min-width: 0; }
+.class-overview-card-title { overflow-wrap: anywhere; font-weight: 850; }
+.class-overview-card-meta { color: var(--color-text-muted); font-size: 0.8rem; }
+.class-overview-card-chevron { color: var(--color-text-muted); font-size: 1.35rem; line-height: 1; transition: transform 160ms ease; }
+.class-overview-card[open] .class-overview-card-chevron { color: var(--color-accent); transform: rotate(180deg); }
+.class-overview-description { margin: 0; padding: 0 1.15rem 0.9rem; color: var(--color-text-muted); font-size: 0.82rem; }
+
+.class-overview-card-body {
+  display: grid;
+  gap: 1.1rem;
+  padding: 0 1.15rem 1.15rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.class-overview-label { margin: 1rem 0 0.35rem; color: var(--color-text-muted); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.class-overview-value { margin: 0; font-size: 0.9rem; font-weight: 750; }
+.class-overview-muted { color: var(--color-text-muted); font-weight: 500; }
+.class-member-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem 1rem; margin: 0; padding: 0; list-style: none; }
+.class-member-list li { min-width: 0; color: var(--color-text); font-size: 0.84rem; overflow-wrap: anywhere; }
+.class-member-list li::before { content: ""; display: inline-block; width: 0.35rem; height: 0.35rem; margin: 0 0.45rem 0.1rem 0; border-radius: 50%; background: var(--color-accent); }
+
+.class-management-actions,
+.class-meetings { border-top: 1px solid var(--color-border); padding-top: 2rem; }
+.class-actions-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+.class-action-panel summary { min-height: 3.5rem; font-weight: 800; }
+.class-action-panel summary::after { content: "+"; color: var(--color-accent); font-size: 1.3rem; font-weight: 400; }
+.class-action-panel[open] summary::after { content: "−"; }
+.class-action-panel .invitation-form { padding: 0 1.15rem 1.15rem; }
+.class-action-panel .form-field span { font-size: 0.82rem; font-weight: 750; }
+.class-action-panel small { color: var(--color-text-muted); font-weight: 500; }
+.class-action-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.class-meeting-list { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+.class-meeting-list li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.8fr); gap: 1rem; align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0.85rem 1rem; background: var(--color-surface); }
+.class-meeting-list li.is-canceled { opacity: 0.72; }
+.class-meeting-title, .class-meeting-detail { display: block; }
+.class-meeting-title { font-weight: 800; }
+.class-meeting-detail { margin-top: 0.25rem; color: var(--color-text-muted); font-size: 0.82rem; }
+.class-meeting-cancel-form { display: flex; gap: 0.5rem; align-items: center; }
+.class-meeting-cancel-form .input { min-width: 0; }
+
 .dashboard-list {
   display: grid;
   gap: 0.75rem;
@@ -2201,6 +2311,19 @@ input {
     min-height: 0;
   }
 
+  .class-overview-grid,
+  .class-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .class-meeting-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .class-meeting-cancel-form {
+    align-items: stretch;
+  }
+
   .invitation-grid {
     grid-template-columns: 1fr;
   }
@@ -2263,6 +2386,35 @@ input {
 
   .athlete-operational-form {
     grid-template-columns: 1fr;
+  }
+
+  .class-summary-item {
+    padding-inline: 0.85rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .class-management-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .class-summary-item + .class-summary-item {
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+
+  .class-member-list,
+  .class-action-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .class-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .class-meeting-cancel-form {
+    flex-direction: column;
   }
 }
 
