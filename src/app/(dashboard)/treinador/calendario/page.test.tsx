@@ -4,11 +4,14 @@ const mocks = vi.hoisted(() => ({
   requireRole: vi.fn().mockResolvedValue(undefined),
   listClasses: vi.fn().mockResolvedValue({ data: [{ id: "class-1", name: "Iniciantes" }] }),
   listClassMeetings: vi.fn().mockResolvedValue({ data: [] }),
+  listClassMemberships: vi.fn().mockResolvedValue({ data: [] }),
+  listStudents: vi.fn().mockResolvedValue({ data: [] }),
   ClassManagement: vi.fn(() => <div data-testid="class-management" />),
 }))
 
 vi.mock("@/lib/auth/session", () => ({ requireRole: mocks.requireRole }))
-vi.mock("@/lib/services/class.service", () => ({ listClasses: mocks.listClasses, listClassMeetings: mocks.listClassMeetings }))
+vi.mock("@/lib/services/class.service", () => ({ listClasses: mocks.listClasses, listClassMeetings: mocks.listClassMeetings, listClassMemberships: mocks.listClassMemberships }))
+vi.mock("@/lib/services/student.service", () => ({ listStudents: mocks.listStudents }))
 vi.mock("@/components/dashboard/class-management", () => ({ ClassManagement: mocks.ClassManagement }))
 
 import ClassesPage from "./page"
