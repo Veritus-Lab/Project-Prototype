@@ -132,7 +132,8 @@ input {
   font-weight: 800;
   line-height: 1.15;
   transition: background-color 160ms ease, border-color 160ms ease,
-    color 160ms ease, transform 160ms ease;
+    color 160ms ease, transform 160ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 160ms ease;
 }
 
 .bg-brand,
@@ -145,6 +146,12 @@ input {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
 }
+
+.button:active { transform: translateY(0) scale(0.98); }
+
+.button:hover svg { transform: translateX(0.15rem); }
+
+.button svg { transition: transform 160ms cubic-bezier(0.2, 0, 0, 1); }
 
 .button-secondary {
   border-color: var(--color-control-border);
@@ -2443,6 +2450,7 @@ input {
   border: 1.25rem solid var(--color-accent);
   opacity: 0.08;
   transform: skew(-12deg) rotate(12deg);
+  animation: hero-mark-enter 620ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 
 .hero-grid {
@@ -2492,6 +2500,7 @@ input {
   margin: 0;
   color: var(--color-text-muted);
   font-size: clamp(1rem, 2vw, 1.2rem);
+  animation: hero-copy-enter 460ms 180ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 .hero-actions {
@@ -2499,6 +2508,7 @@ input {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 2rem;
+  animation: hero-copy-enter 420ms 260ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 .hero-signals {
@@ -2512,6 +2522,7 @@ input {
   list-style: none;
   font-size: 0.85rem;
   font-weight: 650;
+  animation: hero-copy-enter 400ms 340ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 .hero-signals li {
@@ -2534,6 +2545,7 @@ input {
   overflow: hidden;
   background: var(--color-surface-elevated);
   box-shadow: 1rem 1rem 0 var(--color-accent);
+  animation: hero-panel-enter 520ms 160ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 .panel-topline {
@@ -2846,6 +2858,8 @@ input {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
 
@@ -2898,6 +2912,7 @@ input {
   letter-spacing: -0.065em;
   line-height: 0.94;
   text-transform: uppercase;
+  animation: hero-copy-enter 500ms 100ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 .beginning-copy {
@@ -3135,6 +3150,7 @@ input {
 .faq-list details {
   border-bottom: 1px solid var(--color-border);
   padding: 1.25rem 0;
+  transition: border-color 180ms ease, background-color 180ms ease;
 }
 
 .faq-list summary {
@@ -3146,6 +3162,7 @@ input {
   font-size: clamp(1rem, 2vw, 1.15rem);
   font-weight: 800;
   list-style: none;
+  transition: color 180ms ease;
 }
 
 .faq-list summary::-webkit-details-marker { display: none; }
@@ -3158,6 +3175,8 @@ input {
   font-weight: 400;
 }
 
+.faq-list details[open] { border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border)); }
+.faq-list details[open] summary { color: var(--color-accent); }
 .faq-list details[open] summary::after { content: "−"; }
 
 .faq-list details p {
@@ -3166,6 +3185,19 @@ input {
   color: var(--color-text-muted);
   font-size: 0.94rem;
   line-height: 1.6;
+}
+
+@supports selector(details::details-content) {
+  .faq-list details::details-content {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+    transition: opacity 220ms ease, transform 220ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .faq-list details[open]::details-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 900px) {
@@ -3200,4 +3232,35 @@ input {
   .classes-cta.button { display: flex; }
   .faq-list details { padding: 1.1rem 0; }
   .faq-list details p { margin-right: 0; }
+}
+
+@keyframes hero-copy-enter {
+  from { opacity: 0; transform: translate3d(0, 1.25rem, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes hero-panel-enter {
+  from { opacity: 0; transform: translate3d(1rem, 1.5rem, 0) scale(0.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes hero-mark-enter {
+  from { opacity: 0; transform: translate3d(2rem, 0, 0) skew(-12deg) rotate(12deg); }
+  to { opacity: 0.08; transform: translate3d(0, 0, 0) skew(-12deg) rotate(12deg); }
+}
+
+.scroll-reveal { --reveal-delay: 0ms; }
+
+.scroll-reveal.is-ready:not(.is-visible) {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+}
+
+.scroll-reveal.is-ready.is-visible {
+  animation: section-reveal 460ms var(--reveal-delay) cubic-bezier(0.05, 0.7, 0.1, 1) both;
+}
+
+@keyframes section-reveal {
+  from { opacity: 0; transform: translate3d(0, 1.25rem, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ScrollReveal } from "./scroll-reveal";
 
 const questions = [
   {
@@ -19,20 +20,24 @@ export function Faq() {
   return (
     <section className="section faq-section" aria-labelledby="faq-title">
       <div className="container faq-grid">
-        <header className="section-heading section-heading-left faq-heading">
-          <p>DÚVIDAS DE QUEM COMEÇA</p>
-          <h2 id="faq-title">Antes do primeiro passo, uma boa conversa.</h2>
-          <p className="section-body-copy">Se você já faz parte da FLERNK, suas informações ficam no seu acesso.</p>
-          <Link href="/login">Entrar na minha conta</Link>
-        </header>
-        <div className="faq-list">
-          {questions.map(({ question, answer }) => (
-            <details key={question}>
-              <summary>{question}</summary>
-              <p>{answer}</p>
-            </details>
-          ))}
-        </div>
+        <ScrollReveal>
+          <header className="section-heading section-heading-left faq-heading">
+            <p>DÚVIDAS DE QUEM COMEÇA</p>
+            <h2 id="faq-title">Antes do primeiro passo, uma boa conversa.</h2>
+            <p className="section-body-copy">Se você já faz parte da FLERNK, suas informações ficam no seu acesso.</p>
+            <Link href="/login">Entrar na minha conta</Link>
+          </header>
+        </ScrollReveal>
+        <ScrollReveal delay="120ms">
+          <div className="faq-list">
+            {questions.map(({ question, answer }) => (
+              <details key={question}>
+                <summary>{question}</summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

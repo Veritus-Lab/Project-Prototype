@@ -26,3 +26,15 @@ test("login anônimo expõe campos acessíveis sem enviar credenciais", async ({
   await expect(page.getByLabel("Senha")).toHaveAttribute("type", "password");
   await expect(page.getByRole("button", { name: "Entrar" })).toBeEnabled();
 });
+
+test("landing continua legível com movimento reduzido e expande dúvidas", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { level: 1, name: /a chama que te move/i })).toBeVisible();
+  const firstQuestion = page.locator(".faq-list details").first();
+  await firstQuestion.scrollIntoViewIfNeeded();
+  await firstQuestion.locator("summary").click();
+  await expect(firstQuestion).toHaveAttribute("open", "");
+  await expect(firstQuestion).toContainText(/a flernk recebe pessoas que estão começando/i);
+});

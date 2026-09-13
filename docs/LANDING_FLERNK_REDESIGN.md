@@ -1,6 +1,6 @@
 # Landing FLERNK — plano de redesign
 
-Data: 12/09/2026. Status: etapas 1 e 2 concluídas; etapas 3 a 6 pendentes.
+Data: 12/09/2026. Status: etapas 1 a 4 concluídas; etapas 5 e 6 pendentes.
 
 ## Objetivo e direção aprovada pelo pedido
 
@@ -55,6 +55,8 @@ Skills previstas: motion-design, frontend-patterns.
 Personalidade: energética com movimentos curtos e controlados. Entrada do slogan com deslocamento discreto e opacidade; sequência breve para apoio e CTA; revelação de seções ao entrar na tela; transições de botões e ícones; abertura suave das perguntas frequentes; traço gráfico da marca como movimento ambiente pontual. Tempos de referência: feedback entre 120 e 180 ms, transições entre 200 e 300 ms e entrada principal até 500 ms. Priorizar CSS e recursos nativos antes de adicionar biblioteca.
 
 Aceite: movimento orienta o olhar sem atrasar a leitura, bloquear cliques, controlar a rolagem ou causar deslocamentos de layout. Respeitar prefers-reduced-motion; conteúdo deve continuar legível sem JavaScript. Evitar vídeos automáticos e efeitos contínuos pesados.
+
+Resultado em 12/09/2026: hero com entrada sequencial curta, revelação de blocos ao entrarem na tela e feedback de botões, todos em CSS e sem dependências novas. A revelação por rolagem é aprimoramento com `IntersectionObserver`: sem JavaScript ou com redução de movimento, o conteúdo permanece visível. As perguntas frequentes têm abertura visual suave.
 
 ### 5. Revisão visual, acessibilidade e testes
 

@@ -1,4 +1,5 @@
 import { ArrowDown, MessageCircleMore, SearchCheck, UserRoundPlus } from "lucide-react";
+import { ScrollReveal } from "./scroll-reveal";
 
 const steps = [
   {
@@ -22,24 +23,28 @@ export function HowItWorks() {
   return (
     <section className="section journey-section" id="como-comecar" aria-labelledby="journey-title">
       <div className="container">
-        <header className="section-heading section-heading-left journey-heading">
-          <p>COMO COMEÇAR</p>
-          <h2 id="journey-title">Um passo de cada vez.</h2>
-          <span className="section-intro">Você não precisa resolver tudo sozinho. A conversa inicial mostra o caminho para chegar à FLERNK.</span>
-        </header>
-        <ol className="journey-list">
-          {steps.map(({ icon: Icon, title, text }, index) => (
-            <li key={title}>
-              <span className="journey-number">0{index + 1}</span>
-              <Icon aria-hidden="true" />
-              <div>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </div>
-              {index < steps.length - 1 && <ArrowDown className="journey-arrow" aria-hidden="true" />}
-            </li>
-          ))}
-        </ol>
+        <ScrollReveal>
+          <header className="section-heading section-heading-left journey-heading">
+            <p>COMO COMEÇAR</p>
+            <h2 id="journey-title">Um passo de cada vez.</h2>
+            <span className="section-intro">Você não precisa resolver tudo sozinho. A conversa inicial mostra o caminho para chegar à FLERNK.</span>
+          </header>
+        </ScrollReveal>
+        <ScrollReveal delay="120ms">
+          <ol className="journey-list">
+            {steps.map(({ icon: Icon, title, text }, index) => (
+              <li key={title}>
+                <span className="journey-number">0{index + 1}</span>
+                <Icon aria-hidden="true" />
+                <div>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+                {index < steps.length - 1 && <ArrowDown className="journey-arrow" aria-hidden="true" />}
+              </li>
+            ))}
+          </ol>
+        </ScrollReveal>
       </div>
     </section>
   );

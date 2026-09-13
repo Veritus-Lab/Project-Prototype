@@ -1,6 +1,7 @@
 import { ArrowUpRight, Flag } from "lucide-react";
 import { buttonClassName } from "../ui/button";
 import { FLERNK_INSTAGRAM_URL } from "./contact-channel";
+import { ScrollReveal } from "./scroll-reveal";
 
 const classes = [
   { label: "Adaptado", title: "Para começar com cuidado e presença.", text: "Uma porta de entrada para quem quer se movimentar e descobrir a corrida no seu tempo." },
@@ -13,33 +14,37 @@ export function Classes() {
   return (
     <section className="section classes-section" id="turmas" aria-labelledby="classes-title">
       <div className="container">
-        <header className="section-heading section-heading-left classes-heading">
-          <p>TURMAS FLERNK</p>
-          <h2 id="classes-title">Encontre o ponto de partida que combina com você.</h2>
-          <span className="section-intro">As turmas representam momentos diferentes de uma mesma jornada. A equipe ajuda você a entender qual delas conhecer primeiro.</span>
-        </header>
-        <div className="classes-grid">
-          {classes.map((item, index) => (
-            <article className="class-card" key={item.label}>
-              <div className="class-card-topline">
-                <span>{item.label}</span>
-                <span>0{index + 1}</span>
-              </div>
-              <Flag aria-hidden="true" />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
-        </div>
-        <a
-          className={buttonClassName("secondary", "classes-cta")}
-          href={FLERNK_INSTAGRAM_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Falar sobre uma turma
-          <ArrowUpRight size={18} aria-hidden="true" />
-        </a>
+        <ScrollReveal>
+          <header className="section-heading section-heading-left classes-heading">
+            <p>TURMAS FLERNK</p>
+            <h2 id="classes-title">Encontre o ponto de partida que combina com você.</h2>
+            <span className="section-intro">As turmas representam momentos diferentes de uma mesma jornada. A equipe ajuda você a entender qual delas conhecer primeiro.</span>
+          </header>
+        </ScrollReveal>
+        <ScrollReveal delay="120ms">
+          <div className="classes-grid">
+            {classes.map((item, index) => (
+              <article className="class-card" key={item.label}>
+                <div className="class-card-topline">
+                  <span>{item.label}</span>
+                  <span>0{index + 1}</span>
+                </div>
+                <Flag aria-hidden="true" />
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))}
+          </div>
+          <a
+            className={buttonClassName("secondary", "classes-cta")}
+            href={FLERNK_INSTAGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Falar sobre uma turma
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </a>
+        </ScrollReveal>
       </div>
     </section>
   );

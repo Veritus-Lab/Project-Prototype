@@ -1,9 +1,10 @@
 import { Sparkles } from "lucide-react";
+import { ScrollReveal } from "./scroll-reveal";
 
 export function Beginning() {
   return (
     <section className="beginning-section" aria-labelledby="beginning-title">
-      <div className="container beginning-grid">
+      <ScrollReveal className="container beginning-grid">
         <div className="beginning-mark" aria-hidden="true">
           <Sparkles />
           <span>01</span>
@@ -15,7 +16,7 @@ export function Beginning() {
         <p className="beginning-copy">
           Ela começa quando você decide se dar uma chance. Na FLERNK, o seu primeiro passo tem espaço para ser do seu jeito.
         </p>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }
