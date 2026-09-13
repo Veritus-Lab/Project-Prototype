@@ -13,12 +13,6 @@ export const legacySignupDisabledError =
 export const genericSignInError =
   "Não foi possível entrar agora. Tente novamente.";
 
-const accountExistsPatterns = [
-  "already registered",
-  "already exists",
-  "user already registered",
-];
-
 const invalidCredentialsPattern = "invalid login credentials";
 const emailNotConfirmedPattern = "email not confirmed";
 const productionAppOrigin = "https://project-prototype-ashy.vercel.app";
@@ -33,7 +27,7 @@ export function getConfiguredAppOrigin(): string | undefined {
 
   try {
     const url = new URL(
-      configuredUrl.startsWith("http") ? configuredUrl : `https://${configuredUrl}`,
+      configuredUrl.includes("://") ? configuredUrl : `https://${configuredUrl}`,
     );
 
     if (url.protocol !== "http:" && url.protocol !== "https:") {
@@ -44,16 +38,6 @@ export function getConfiguredAppOrigin(): string | undefined {
   } catch {
     return undefined;
   }
-}
-
-function translateSignUpError(message: string) {
-  const normalizedMessage = message.toLowerCase();
-
-  if (accountExistsPatterns.some((pattern) => normalizedMessage.includes(pattern))) {
-    return "Já existe uma conta com este e-mail. Se ela for sua, entre para continuar.";
-  }
-
-  return genericSignupError;
 }
 
 export async function signUpTrainer(

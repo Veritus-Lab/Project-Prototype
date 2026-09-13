@@ -13,6 +13,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 import {
   legacySignupDisabledError,
+  getConfiguredAppOrigin,
   signIn,
   signOut,
   signUpTrainer,
@@ -50,6 +51,23 @@ describe("signUpTrainer", () => {
     expect(mocks.createServerClient).not.toHaveBeenCalled();
     expect(mocks.signUp).not.toHaveBeenCalled();
   });
+
+  it.each([
+    ["development", "https://app.flernk.test/entrada", undefined, undefined, "https://app.flernk.test"],
+    ["development", "ftp://app.flernk.test", undefined, undefined, undefined],
+    ["production", undefined, "https://flernk.example.com/prd", undefined, "https://flernk.example.com"],
+    ["production", undefined, undefined, "preview.flernk.example.com", "https://preview.flernk.example.com"],
+  ])(
+    "resolves the callback origin safely in %s",
+    (nodeEnvironment, siteUrl, productionUrl, vercelUrl, expected) => {
+      vi.stubEnv("NODE_ENV", nodeEnvironment);
+      if (siteUrl) vi.stubEnv("NEXT_PUBLIC_SITE_URL", siteUrl);
+      if (productionUrl) vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", productionUrl);
+      if (vercelUrl) vi.stubEnv("VERCEL_URL", vercelUrl);
+
+      expect(getConfiguredAppOrigin()).toBe(expected);
+    },
+  );
 
   it.each([
     [null, { data: { email: validTrainer.email } }],
