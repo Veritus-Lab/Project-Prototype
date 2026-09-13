@@ -50,8 +50,8 @@ input {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-text-muted);
-  outline-offset: 2px;
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 ::selection {
@@ -3158,6 +3158,7 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  min-height: 2.75rem;
   cursor: pointer;
   font-size: clamp(1rem, 2vw, 1.15rem);
   font-weight: 800;

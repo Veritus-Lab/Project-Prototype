@@ -1,6 +1,6 @@
 # Landing FLERNK — plano de redesign
 
-Data: 12/09/2026. Status: etapas 1 a 4 concluídas; etapas 5 e 6 pendentes.
+Data: 13/09/2026. Status: etapas 1 a 5 concluídas; etapa 6 pendente.
 
 ## Objetivo e direção aprovada pelo pedido
 
@@ -65,6 +65,8 @@ Skills previstas: e2e-testing, verification-before-completion; accessibility par
 Validar em navegador com Playwright: desktop e celular, texto e imagens, expansão das perguntas, navegação por teclado, destinos de CTA/login, movimento reduzido e ausência de rolagem horizontal. Usar dados sintéticos em testes. Revisar a página em larguras de 360, 390, 768 e 1440 px, conferir contraste e foco e verificar carregamento das imagens. Executar testes relevantes, lint, TypeScript e build. Caso delegada, a revisão de testes deve receber este roteiro e relatar evidências e limitações.
 
 Aceite: sem erros bloqueantes nas jornadas; nenhum conteúdo importante depende de animação; sem exposição de dados dos alunos. Registrar evidências visuais e resultados medidos, sem afirmar aprovação apenas com a build.
+
+Resultado em 13/09/2026: revisão visual realizada em 360, 390, 768 e 1440 px. O foco visível foi reforçado e as perguntas frequentes receberam alvo de toque de 44 px. O Playwright validou navegação, login, Instagram, FAQ por teclado, redução de movimento, ausência de rolagem horizontal nas quatro larguras e visibilidade das seções durante a rolagem: 12 cenários aprovados em desktop e celular. Teste de página, TypeScript, ESLint e build também aprovados.
 
 ### 6. Publicação e handoff
 
