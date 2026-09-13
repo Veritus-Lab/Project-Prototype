@@ -6,8 +6,15 @@ import { z } from "zod";
 const studentIdSchema = z.uuid();
 
 function authorizationResponse(error: unknown) {
-  const message = String(error);
-  const status = message.includes("NEXT_REDIRECT:/login") ? 401 : 403;
+  const digest =
+    typeof error === "object" && error !== null && "digest" in error
+      ? String(error.digest)
+      : "";
+  const status =
+    String(error).includes("NEXT_REDIRECT:/login") ||
+    digest.includes("NEXT_REDIRECT;replace;/login;")
+      ? 401
+      : 403;
   return NextResponse.json({ error: "Financial status unavailable" }, { status });
 }
 

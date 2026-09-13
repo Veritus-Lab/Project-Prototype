@@ -35,9 +35,10 @@ describe("GET /api/v1/professor/students/[studentId]/financial-status", () => {
   });
 
   it("rejects an unauthenticated request without exposing details", async () => {
-    mocks.getProfessorStudentFinancialStatus.mockRejectedValue(
-      new Error("NEXT_REDIRECT:/login"),
-    );
+    const redirectError = Object.assign(new Error("NEXT_REDIRECT"), {
+      digest: "NEXT_REDIRECT;replace;/login;307;",
+    });
+    mocks.getProfessorStudentFinancialStatus.mockRejectedValue(redirectError);
 
     const response = await GET(new Request("https://flernk.app/api"), context());
 
