@@ -1,6 +1,6 @@
 # Landing FLERNK — plano de redesign
 
-Data: 13/09/2026. Status: etapas 1 a 5 concluídas; etapa 6 pendente.
+Data: 13/09/2026. Status: etapas 1 a 6 concluídas.
 
 ## Objetivo e direção aprovada pelo pedido
 
@@ -76,10 +76,11 @@ Revisar o diff final, versionar e publicar conforme a autorização já existent
 
 Aceite: Vercel READY, URL de produção verificada e breve registro da entrega. A conclusão desta melhoria visual não encerra as demais tasks financeiras ou administrativas do MVP.
 
+Resultado em 13/09/2026: revisão final de Git realizada, deployment da Vercel confirmado como `READY` e produção verificada em [project-prototype-ashy.vercel.app](https://project-prototype-ashy.vercel.app). O smoke test foi executado diretamente nessa URL: 12 cenários aprovados em desktop e celular, incluindo CTA para Instagram, login, movimento reduzido, teclado, FAQ, responsividade e revelação por rolagem. A landing está entregue; as próximas melhorias dependem de novos insumos comerciais ou das tasks administrativas e financeiras do MVP.
+
 ## Insumos externos
 
-- Número oficial de atendimento para concluir a etapa 3.
 - Fotos autorizadas da FLERNK para a composição fotográfica; não bloqueiam o trabalho de estrutura e tipografia.
 - Endereços, horários e respostas comerciais confirmadas antes de publicar essas informações.
 
-O pedido atual define as etapas. O próximo passo de implementação é a etapa 1, seguida da composição visual da etapa 2.
+A landing está concluída. Os insumos restantes são melhorias futuras de conteúdo, não bloqueios para a publicação atual.
