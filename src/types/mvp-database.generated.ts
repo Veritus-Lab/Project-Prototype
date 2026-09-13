@@ -2064,4 +2064,44 @@ export type MvpTables = {
       },
     ]
   }
+  team_invitations: {
+    Row: {
+      id: string | null
+      assessoria_id: string
+      email: string
+      role: MvpEnums["team_member_role"]
+      token_hash: string
+      expires_at: string
+      accepted_at: string | null
+      revoked_at: string | null
+      created_by_profile_id: string
+      created_at: string
+    }
+    Insert: {
+      id?: string | null
+      assessoria_id: string
+      email: string
+      role: MvpEnums["team_member_role"]
+      token_hash: string
+      expires_at: string
+      accepted_at?: string | null
+      revoked_at?: string | null
+      created_by_profile_id: string
+      created_at?: string
+    }
+    Update: {
+      id?: string | null
+      assessoria_id?: string
+      email?: string
+      role?: MvpEnums["team_member_role"]
+      token_hash?: string
+      expires_at?: string
+      accepted_at?: string | null
+      revoked_at?: string | null
+      created_by_profile_id?: string
+      created_at?: string
+    }
+    Relationships: [
+    ]
+  }
 }

@@ -68,7 +68,11 @@ export async function requireUser(): Promise<SessionUser> {
     .eq("status", "active")
     .maybeSingle();
 
-  if (!memberError && member?.id && (member.role === "socio" || member.role === "professor")) {
+  if (memberError) {
+    throw new Error(missingProfileError);
+  }
+
+  if (member?.id && (member.role === "socio" || member.role === "professor")) {
     return {
       id: profile.id,
       email: authData.user.email ?? "",

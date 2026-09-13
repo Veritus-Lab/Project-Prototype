@@ -3,7 +3,6 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const guardedFunctions: Record<string, string[]> = {
-  "src/lib/services/auth.service.ts": ["signUpTrainer"],
   "src/lib/services/invitation.service.ts": [
     "createInvitation",
     "revokeInvitation",

@@ -2,18 +2,20 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local role postgres;
-select plan(10);
+select plan(15);
 
 insert into auth.users (id, email)
 values
   ('70000000-0000-4000-8000-000000000001', 'socio@example.invalid'),
   ('70000000-0000-4000-8000-000000000002', 'professor@example.invalid'),
   ('70000000-0000-4000-8000-000000000003', 'aluno-a@example.invalid'),
-  ('70000000-0000-4000-8000-000000000004', 'aluno-b@example.invalid');
+  ('70000000-0000-4000-8000-000000000004', 'aluno-b@example.invalid'),
+  ('70000000-0000-4000-8000-000000000005', 'aluno-outra-assessoria@example.invalid');
 
 insert into public.assessorias (id, nome, slug)
 values
-  ('70000000-0000-4000-8000-000000000100', 'FLERNK Teste', 'flernk-task-07');
+  ('70000000-0000-4000-8000-000000000100', 'FLERNK Teste', 'flernk-task-07'),
+  ('70000000-0000-4000-8000-000000000101', 'Outra Assessoria', 'outra-task-07');
 
 insert into public.profiles (id, assessoria_id, nome, papel)
 values
@@ -30,11 +32,22 @@ values
 insert into public.students (id, assessoria_id, auth_user_id, name)
 values
   ('70000000-0000-4000-8000-000000000021', '70000000-0000-4000-8000-000000000100', '70000000-0000-4000-8000-000000000003', 'Aluno A'),
-  ('70000000-0000-4000-8000-000000000022', '70000000-0000-4000-8000-000000000100', '70000000-0000-4000-8000-000000000004', 'Aluno B');
+  ('70000000-0000-4000-8000-000000000022', '70000000-0000-4000-8000-000000000100', '70000000-0000-4000-8000-000000000004', 'Aluno B'),
+  ('70000000-0000-4000-8000-000000000023', '70000000-0000-4000-8000-000000000101', '70000000-0000-4000-8000-000000000005', 'Aluno de outra assessoria');
 
 select ok(has_table_privilege('authenticated', 'public.students', 'SELECT'), 'authenticated can reach the protected students table');
 select ok(not has_table_privilege('anon', 'public.students', 'SELECT'), 'anon cannot reach students');
 select ok(not has_table_privilege('authenticated', 'public.charges', 'SELECT'), 'financial details remain unavailable through direct Data API access');
+select ok(not has_function_privilege('authenticated', 'private.is_active_team_member(uuid)', 'EXECUTE'), 'authenticated cannot invoke the private team helper');
+select ok(not has_function_privilege('authenticated', 'private.is_active_socio(uuid)', 'EXECUTE'), 'authenticated cannot invoke the private socio helper');
+select ok(not has_function_privilege('authenticated', 'private.is_student_owner(uuid, uuid)', 'EXECUTE'), 'authenticated cannot invoke the private student helper');
+
+set local role anon;
+select throws_ok(
+  $$select public.get_student_financial_status('70000000-0000-4000-8000-000000000021')$$,
+  '42501', null,
+  'anon cannot call the professor financial-status RPC'
+);
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub', '70000000-0000-4000-8000-000000000003', true);
@@ -60,6 +73,11 @@ select results_eq(
   $$select public.get_student_financial_status('70000000-0000-4000-8000-000000000021')::text$$,
   array['nao_configurado'],
   'professor receives only the aggregate enum for a student in the same assessoria'
+);
+select throws_ok(
+  $$select public.get_student_financial_status('70000000-0000-4000-8000-000000000023')$$,
+  '42501', null,
+  'professor cannot read the aggregate status of a student from another assessoria'
 );
 
 select set_config('request.jwt.claim.sub', '70000000-0000-4000-8000-000000000004', true);

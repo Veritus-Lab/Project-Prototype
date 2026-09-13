@@ -14,9 +14,9 @@ describe("ConfirmEmailPage", () => {
       screen.getByRole("heading", { name: "Não foi possível confirmar seu e-mail." }),
     ).toBeInTheDocument();
     expect(screen.getByText(/link pode ter expirado ou já ter sido usado/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Tentar novamente" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Voltar para entrar" })).toHaveAttribute(
       "href",
-      "/cadastro",
+      "/login",
     );
   });
 });

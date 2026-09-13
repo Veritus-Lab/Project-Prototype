@@ -1,5 +1,4 @@
 import { createServerClient } from "@/lib/supabase/server";
-import { assertApplicationMutationAllowed } from "@/lib/environment/external-effects-policy";
 import type { SignInInput, TrainerSignupInput } from "@/lib/validators/auth";
 
 export type ServiceResult<T> =

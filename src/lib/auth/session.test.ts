@@ -131,4 +131,13 @@ describe("session authorization", () => {
 
     await expect(requireUser()).rejects.toThrow("conta ainda não está configurada");
   });
+
+  it("fails closed when the persisted team-membership lookup is unavailable", async () => {
+    mockRoleResolution({
+      member: { data: null, error: new Error("database unavailable") },
+      student: { data: { id: "student-1" }, error: null },
+    });
+
+    await expect(requireUser()).rejects.toThrow("conta ainda não está configurada");
+  });
 });
