@@ -55,7 +55,16 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24, cache: npm }
       - run: npm ci
-      - run: npx supabase start --ignore-health-check --exclude gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+      - name: Start local Supabase database
+        run: |
+          set +e
+          npx supabase start --exclude gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor --debug 2>&1 | tee supabase-start.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            diagnostic=$(tail -n 30 supabase-start.log | tr '\n' ' ' | sed 's/%/%25/g')
+            echo "::error title=Supabase local startup failed::$diagnostic"
+            exit "$status"
+          fi
       - run: npm run test:db
       - if: always()
         run: npx supabase stop --no-backup
