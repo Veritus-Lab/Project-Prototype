@@ -27,6 +27,12 @@ test("login anônimo expõe campos acessíveis sem enviar credenciais", async ({
   await expect(page.getByRole("button", { name: "Entrar" })).toBeEnabled();
 });
 
+test("cadastro público legado não abre uma conta ou assessoria", async ({ page }) => {
+  await page.goto("/cadastro");
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Entrar" })).toBeVisible();
+});
+
 test("landing continua legível com movimento reduzido e expande dúvidas", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");

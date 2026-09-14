@@ -4,6 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { Card } from "@/components/ui/card";
 import { createServerClient } from "@/lib/supabase/server";
 import { acceptTeamInvitationAction } from "./actions";
+import { TeamInvitationSignupForm } from "@/components/auth/team-invitation-signup-form";
 
 export const metadata = { title: "Convite de equipe — FLERNK" };
 
@@ -23,9 +24,10 @@ export default async function TeamInvitePage({
       <AuthShell>
         <Card className="auth-card" elevated>
           <p className="eyebrow">Convite FLERNK</p>
-          <h1>Entre para aceitar o convite</h1>
-          <p className="auth-lead">Use o e-mail que recebeu este convite e volte a abrir este link.</p>
-          <Link className="button button-primary" href="/login">Entrar</Link>
+          <h1>Crie seu acesso à equipe</h1>
+          <p className="auth-lead">Use o mesmo e-mail que recebeu o convite. Sua função será definida pela equipe da FLERNK.</p>
+          <TeamInvitationSignupForm token={token} />
+          <p className="field-hint">Já tem conta? <Link href="/login">Entre e abra este link novamente.</Link></p>
         </Card>
       </AuthShell>
     );

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { getConfiguredAppOrigin } from "@/lib/services/auth.service";
 import { completeInvitationAcceptance } from "@/lib/services/invitation.service";
+import { acceptTeamInvitation } from "@/lib/services/team-invitation.service";
 import { createServerClient } from "@/lib/supabase/server";
 
 function confirmationUrl(origin: string) {
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest) {
 
   const code = request.nextUrl.searchParams.get("code");
   const invitationToken = request.nextUrl.searchParams.get("convite");
+  const teamInvitationToken = request.nextUrl.searchParams.get("convite_equipe");
   const athleteName = request.nextUrl.searchParams.get("nome");
 
   if (!code) {
@@ -31,6 +33,19 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     return NextResponse.redirect(confirmationUrl(origin));
+  }
+
+  if (teamInvitationToken) {
+    if (!athleteName) {
+      return NextResponse.redirect(confirmationUrl(origin));
+    }
+
+    const completion = await acceptTeamInvitation(teamInvitationToken, athleteName);
+    if ("error" in completion) {
+      return NextResponse.redirect(confirmationUrl(origin));
+    }
+
+    return NextResponse.redirect(new URL("/treinador", origin));
   }
 
   if (invitationToken || athleteName) {

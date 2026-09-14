@@ -25,4 +25,15 @@ export const acceptInvitationSchema = z.object({
     .regex(/\d/, "A senha deve incluir pelo menos um número."),
 });
 
+// Team invitations are the only public account-provisioning path. They use
+// the same credential requirements as a student invitation, but do not carry
+// any client-controlled role or organization field.
+export const acceptTeamInvitationSchema = acceptInvitationSchema.pick({
+  token: true,
+  nome: true,
+  email: true,
+  senha: true,
+});
+
 export type AcceptInvitationInput = z.infer<typeof acceptInvitationSchema>;
+export type AcceptTeamInvitationInput = z.infer<typeof acceptTeamInvitationSchema>;
