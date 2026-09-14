@@ -4,14 +4,24 @@ create extension if not exists pgtap with schema extensions;
 set local role postgres;
 set local search_path = public, extensions, auth, private, pg_catalog;
 
-select plan(12);
+select plan(13);
 
 insert into auth.users (id, email)
 values
   ('80000000-0000-4000-8000-000000000001', 'socio-1@task08.test'),
   ('80000000-0000-4000-8000-000000000002', 'socio-2@task08.test'),
   ('80000000-0000-4000-8000-000000000003', 'professor@task08.test'),
-  ('80000000-0000-4000-8000-000000000004', 'invitee@task08.test');
+  ('80000000-0000-4000-8000-000000000004', 'invitee@task08.test'),
+  ('80000000-0000-4000-8000-000000000005', 'unconfirmed@task08.test');
+
+update auth.users
+set email_confirmed_at = now()
+where id in (
+  '80000000-0000-4000-8000-000000000001',
+  '80000000-0000-4000-8000-000000000002',
+  '80000000-0000-4000-8000-000000000003',
+  '80000000-0000-4000-8000-000000000004'
+);
 
 insert into public.assessorias (id, nome, slug)
 values ('80000000-0000-4000-8000-000000000100', 'FLERNK Task 08', 'flernk-task-08');
@@ -39,6 +49,17 @@ select set_config('request.jwt.claims', '{"sub":"80000000-0000-4000-8000-0000000
 select throws_ok(
   $$select public.create_team_invitation('blocked@task08.test', 'professor', encode(extensions.digest('blocked-token', 'sha256'), 'hex'))$$,
   '42501', 'Only socios may invite team members', 'professor cannot create a team invitation'
+);
+
+select set_config('request.jwt.claims', '{"sub":"80000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+select lives_ok(
+  $$select public.create_team_invitation('unconfirmed@task08.test', 'professor', encode(extensions.digest('unconfirmed-token', 'sha256'), 'hex'))$$,
+  'active socio may invite an account before it confirms its email'
+);
+select set_config('request.jwt.claims', '{"sub":"80000000-0000-4000-8000-000000000005","role":"authenticated"}', true);
+select throws_ok(
+  $$select public.accept_team_invitation('unconfirmed-token', 'Unconfirmed Person')$$,
+  '42501', 'Invitation email is not confirmed', 'unconfirmed email cannot accept a team invitation'
 );
 
 select set_config('request.jwt.claims', '{"sub":"80000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
