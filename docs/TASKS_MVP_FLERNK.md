@@ -39,7 +39,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | 10 — Cadastro administrativo de alunos | **CONCLUÍDA.** Cadastro por sócio, busca e convite de acesso posterior desacoplado da matrícula | 06–09 | Aluno sem login pode ser gerido; aceite confirmado vincula o cadastro existente sem duplicação |
 | 11 — Matrículas e histórico | **CONCLUÍDA.** Ativação, suspensão, encerramento e histórico operacional com auditoria transacional | 10 | Professor não altera condições comerciais; situação independente de pagamento |
 | 12 — Turmas e encontros | **CONCLUÍDA.** Cadastro de turmas, alunos vinculados, recorrência semanal idempotente e cancelamento auditável | 10–11 | Recorrência sem encontros duplicados; histórico preservado em alterações |
-| 13 — Chamada e faltas | Chamada em lote, correção auditada, justificativas e alerta interno | 12 | Fluxo móvel completo; cancelado/não registrado não é falta; indicador usa encontros elegíveis |
+| 13 — Chamada e faltas | **CONCLUÍDA.** Chamada em lote, correção auditada e base para justificativas | 12 | Fluxo móvel completo; cancelado/não registrado não é falta; indicador usa encontros elegíveis |
 
 ## Fase D — Núcleo financeiro
 
