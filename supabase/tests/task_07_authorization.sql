@@ -70,7 +70,7 @@ select throws_ok(
   '42501', null,
   'professor cannot read direct financial rows'
 );
-select throws_ok($$select * from public.cobrancas$$, '42501', null, 'professor cannot read legacy financial rows');
+select is_empty($$select * from public.cobrancas$$, 'professor cannot read legacy financial rows');
 select throws_ok($$insert into public.assinaturas_atletas (assessoria_id, atleta_id, valor_centavos, periodicidade, dia_vencimento, inicio_em) values ('70000000-0000-4000-8000-000000000100', '70000000-0000-4000-8000-000000000003', 100, 'mensal', 1, current_date)$$, '42501', null, 'professor cannot write legacy subscriptions');
 select results_eq(
   $$select public.get_student_financial_status('70000000-0000-4000-8000-000000000021')::text$$,

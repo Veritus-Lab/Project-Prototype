@@ -113,7 +113,7 @@ select ok(has_function_privilege('authenticated', 'private.current_assessoria_id
 select ok(not has_function_privilege('anon', 'private.is_treinador(uuid)', 'EXECUTE'), 'anon cannot execute role helper');
 select ok(has_function_privilege('authenticated', 'private.is_treinador(uuid)', 'EXECUTE'), 'authenticated may execute the role helper required by policies');
 
--- The auth trigger creates all trainer records atomically from validated metadata.
+-- Public sign-up no longer provisions organizations or privileged memberships.
 select lives_ok(
   $$
     insert into auth.users (
@@ -134,11 +134,11 @@ select lives_ok(
       now(), now(), '', '', '', ''
     )
   $$,
-  'trainer bootstrap succeeds with valid metadata'
+  'legacy trainer metadata no longer provisions an organization'
 );
-select is((select count(*) from public.assessorias where nome = 'Assessoria Bootstrap'), 1::bigint, 'bootstrap creates one tenant');
-select is((select count(*) from public.profiles where id = '10000000-0000-0000-0000-000000000009' and papel = 'treinador'), 1::bigint, 'bootstrap creates trainer profile');
-select is((select count(*) from public.treinadores where id = '10000000-0000-0000-0000-000000000009'), 1::bigint, 'bootstrap creates trainer extension');
+select is((select count(*) from public.assessorias where nome = 'Assessoria Bootstrap'), 0::bigint, 'legacy metadata does not create a tenant');
+select is((select count(*) from public.profiles where id = '10000000-0000-0000-0000-000000000009'), 0::bigint, 'legacy metadata does not create a privileged profile');
+select is((select count(*) from public.treinadores where id = '10000000-0000-0000-0000-000000000009'), 0::bigint, 'legacy metadata does not create a trainer extension');
 
 set local role anon;
 select results_eq(
