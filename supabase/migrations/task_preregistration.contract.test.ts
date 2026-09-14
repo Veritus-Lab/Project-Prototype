@@ -26,6 +26,8 @@ describe("FLERNK September pre-registration data contract", () => {
 
   it("targets the principal FLERNK assessoria and all four classes", () => {
     expect(sql).toContain("b8b49b94-ce66-49b6-8e4c-2dd98081abcf")
+    expect(sql).toMatch(/insert into public\.assessorias/i)
+    expect(sql).toMatch(/on conflict \(id\) do nothing/i)
     for (const className of [
       "Turma Adaptado",
       "Turma 1 — Iniciantes",

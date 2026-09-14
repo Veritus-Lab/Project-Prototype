@@ -2,6 +2,17 @@ begin;
 
 -- Pré-cadastro operacional da FLERNK. A competência e o status informado ficam
 -- em notes até que o motor financeiro gere cobranças oficiais.
+-- O primeiro registro da FLERNK surgiu pelo fluxo legado de autenticação. Como
+-- esse fluxo foi desativado, a migração precisa provisionar o tenant estável
+-- para continuar reproduzível em uma base vazia.
+insert into public.assessorias (id, nome, slug)
+values (
+  'b8b49b94-ce66-49b6-8e4c-2dd98081abcf'::uuid,
+  'Flernk',
+  'flernk-7ea5483f-0aa5-4613-9b94-7ff873e6f62a'
+)
+on conflict (id) do nothing;
+
 with source(student_name, class_name, payment_status) as (
   values
     ('Carly Costa', 'Turma Adaptado', 'pendente'),
