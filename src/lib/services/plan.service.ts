@@ -54,3 +54,11 @@ export async function changeManagedSubscriptionStatus(input: { subscriptionId: s
   if (error) return { error: "Não foi possível atualizar o status do contrato." } as const;
   return { success: true } as const;
 }
+
+export async function recordManagedManualPayment(input: { chargeId: string; paidAt: string; reason: string }) {
+  assertApplicationMutationAllowed(); await requireRole("socio");
+  if (!input.chargeId || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(input.paidAt) || input.reason.trim().length < 2 || input.reason.trim().length > 1000) return { error: "Informe a data e o motivo do recebimento." } as const;
+  const supabase = await createServerClient(); const { error } = await supabase.rpc("record_manual_payment" as never, { target_charge_id: input.chargeId, target_paid_at: new Date(input.paidAt).toISOString(), target_reason: input.reason.trim() } as never);
+  if (error) return { error: "Não foi possível registrar o pagamento agora." } as const;
+  return { success: true } as const;
+}
