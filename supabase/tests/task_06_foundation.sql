@@ -39,13 +39,13 @@ select is(
   'all target tables force RLS'
 );
 
-select is((select count(*) from information_schema.role_table_grants where grantee in ('anon','authenticated') and table_schema = 'public' and table_name = any(array[
+select is((select count(*) from information_schema.role_table_grants where grantee = 'anon' and table_schema = 'public' and table_name = any(array[
   'team_members','students','enrollments','enrollment_history','classes','class_memberships','class_meetings','attendances','absence_justifications',
   'plans','plan_versions','subscriptions','subscription_history','billing_cycles','billing_generation_runs','billing_generation_watermarks','charges',
   'charge_adjustments','payment_checkouts','payments','payment_settlements','payment_refunds','payment_disputes','financial_categories','expenses',
   'other_revenues','cash_movements','provider_events','integration_attempts','contact_preferences','message_templates','message_jobs','message_events',
   'leads','lead_history','audit_entries'
-])), 0::bigint, 'Data API roles receive no early grants on any target table');
+])), 0::bigint, 'anonymous Data API receives no grants on target tables');
 select ok(has_table_privilege('service_role', 'public.students', 'SELECT,INSERT,UPDATE,DELETE'), 'service role can manage mutable foundation rows');
 select ok(not has_table_privilege('service_role', 'public.audit_entries', 'UPDATE'), 'append-only audit rows cannot be updated by service role');
 select ok(not has_table_privilege('service_role', 'public.cash_movements', 'DELETE'), 'cash facts cannot be deleted by service role');

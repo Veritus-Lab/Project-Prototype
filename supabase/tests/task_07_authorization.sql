@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local role postgres;
-select plan(15);
+select plan(18);
 
 insert into auth.users (id, email)
 values
@@ -38,9 +38,12 @@ values
 select ok(has_table_privilege('authenticated', 'public.students', 'SELECT'), 'authenticated can reach the protected students table');
 select ok(not has_table_privilege('anon', 'public.students', 'SELECT'), 'anon cannot reach students');
 select ok(not has_table_privilege('authenticated', 'public.charges', 'SELECT'), 'financial details remain unavailable through direct Data API access');
-select ok(not has_function_privilege('authenticated', 'private.is_active_team_member(uuid)', 'EXECUTE'), 'authenticated cannot invoke the private team helper');
-select ok(not has_function_privilege('authenticated', 'private.is_active_socio(uuid)', 'EXECUTE'), 'authenticated cannot invoke the private socio helper');
-select ok(not has_function_privilege('authenticated', 'private.is_student_owner(uuid, uuid)', 'EXECUTE'), 'authenticated cannot invoke the private student helper');
+select ok(not has_function_privilege('anon', 'private.is_active_team_member(uuid)', 'EXECUTE'), 'anon cannot execute the private team helper');
+select ok(not has_function_privilege('anon', 'private.is_active_socio(uuid)', 'EXECUTE'), 'anon cannot execute the private socio helper');
+select ok(not has_function_privilege('anon', 'private.is_student_owner(uuid, uuid)', 'EXECUTE'), 'anon cannot execute the private student helper');
+select ok(has_function_privilege('authenticated', 'private.is_active_team_member(uuid)', 'EXECUTE'), 'authenticated can execute the team helper required by RLS');
+select ok(has_function_privilege('authenticated', 'private.is_active_socio(uuid)', 'EXECUTE'), 'authenticated can execute the socio helper required by RLS');
+select ok(has_function_privilege('authenticated', 'private.is_student_owner(uuid, uuid)', 'EXECUTE'), 'authenticated can execute the student helper required by RLS');
 
 set local role anon;
 select throws_ok(
