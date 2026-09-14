@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { destinationForPapel, requireUser } from "@/lib/auth/session";
+import { destinationForRole, requireUser } from "@/lib/auth/session";
 import { genericSignInError, signIn } from "@/lib/services/auth.service";
 import { signInSchema } from "@/lib/validators/auth";
 import type { LoginActionState } from "./state";
@@ -33,5 +33,5 @@ export async function signInAction(
   // The session cookie is already set by signInWithPassword, so the
   // destination is decided by the persisted profile, never by the form.
   const user = await requireUser();
-  redirect(destinationForPapel(user.papel));
+  redirect(destinationForRole(user.role ?? (user.papel === "atleta" ? "aluno" : "professor")));
 }

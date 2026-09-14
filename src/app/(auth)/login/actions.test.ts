@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({
   redirect: vi.fn(),
   signIn: vi.fn(),
   requireUser: vi.fn(),
+  destinationForRole: vi.fn((role: string) => role === "aluno" ? "/aluno" : "/professor"),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -16,8 +17,7 @@ vi.mock("@/lib/services/auth.service", () => ({
 }));
 
 vi.mock("@/lib/auth/session", () => ({
-  destinationForPapel: (papel: "treinador" | "atleta") =>
-    papel === "treinador" ? "/treinador" : "/atleta",
+  destinationForRole: mocks.destinationForRole,
   requireUser: mocks.requireUser,
 }));
 
@@ -64,7 +64,7 @@ describe("signInAction", () => {
 
   it("redirects using the persisted profile role after successful sign in", async () => {
     mocks.signIn.mockResolvedValueOnce({ data: { email: "ana@example.com" } });
-    mocks.requireUser.mockResolvedValueOnce({ papel: "atleta" });
+    mocks.requireUser.mockResolvedValueOnce({ papel: "atleta", role: "aluno" });
     mocks.redirect.mockImplementationOnce((destination: string) => {
       throw new Error(`NEXT_REDIRECT:${destination}`);
     });
@@ -74,7 +74,7 @@ describe("signInAction", () => {
         initialLoginActionState,
         formData({ email: "ana@example.com", senha: "Segura123" }),
       ),
-    ).rejects.toThrow("NEXT_REDIRECT:/atleta");
-    expect(mocks.redirect).toHaveBeenCalledWith("/atleta");
+    ).rejects.toThrow("NEXT_REDIRECT:/aluno");
+    expect(mocks.redirect).toHaveBeenCalledWith("/aluno");
   });
 });

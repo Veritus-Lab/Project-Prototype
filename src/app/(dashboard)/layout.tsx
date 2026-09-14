@@ -8,22 +8,22 @@ import { requireUser, type FlernkRole } from "@/lib/auth/session";
 // by design until their features are implemented.
 const sidebarItems: Record<FlernkRole, DashboardNavigationItem[]> = {
   socio: [
-    { label: "Painel", href: "/treinador" },
-    { label: "Alunos", href: "/treinador/atletas" },
-    { label: "Turmas", href: "/treinador/calendario" },
-    { label: "Financeiro", href: "/treinador/financeiro" },
-    { label: "Mensagens", href: "/treinador/mensagens" },
-    { label: "Equipe", href: "/treinador/equipe" },
+    { label: "Painel", href: "/socio" },
+    { label: "Alunos", href: "/socio/alunos" },
+    { label: "Turmas", href: "/socio/turmas" },
+    { label: "Financeiro", href: "/socio/financeiro" },
+    { label: "Mensagens", href: "/socio/mensagens" },
+    { label: "Equipe", href: "/socio/equipe" },
   ],
   professor: [
-    { label: "Minha gestão", href: "/treinador" },
-    { label: "Alunos", href: "/treinador/atletas" },
-    { label: "Turmas", href: "/treinador/calendario" },
+    { label: "Minha gestão", href: "/professor" },
+    { label: "Alunos", href: "/professor/alunos" },
+    { label: "Turmas", href: "/professor/turmas" },
   ],
   aluno: [
-    { label: "Painel", href: "/atleta" },
-    { label: "Minha turma", href: "/atleta/calendario" },
-    { label: "Meu financeiro", href: "/atleta/financeiro" },
+    { label: "Painel", href: "/aluno" },
+    { label: "Minha turma", href: "/aluno/turma" },
+    { label: "Meu financeiro", href: "/aluno/financeiro" },
   ],
 };
 

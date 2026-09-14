@@ -12,6 +12,8 @@ export const legacySignupDisabledError =
 
 export const genericSignInError =
   "Não foi possível entrar agora. Tente novamente.";
+export const passwordRecoveryConfirmation =
+  "Se houver uma conta com este e-mail, você receberá as instruções para redefinir a senha.";
 
 const invalidCredentialsPattern = "invalid login credentials";
 const emailNotConfirmedPattern = "email not confirmed";
@@ -88,5 +90,27 @@ export async function signOut(): Promise<void> {
   } catch {
     // Logging out always leads back to /login; a failed server-side
     // signOut must not trap the user inside the protected area.
+  }
+}
+
+export async function requestPasswordRecovery(email: string): Promise<ServiceResult<void>> {
+  const origin = getConfiguredAppOrigin();
+  if (!origin) return { data: undefined };
+  try {
+    const supabase = await createServerClient();
+    await supabase.auth.resetPasswordForEmail(email, { redirectTo: new URL("/auth/callback?recuperacao=1", origin).toString() });
+  } catch {
+    // Keep this response indistinguishable to avoid account discovery.
+  }
+  return { data: undefined };
+}
+
+export async function updatePassword(senha: string): Promise<ServiceResult<void>> {
+  try {
+    const supabase = await createServerClient();
+    const { error } = await supabase.auth.updateUser({ password: senha });
+    return error ? { error: "Não foi possível atualizar sua senha agora. Tente novamente." } : { data: undefined };
+  } catch {
+    return { error: "Não foi possível atualizar sua senha agora. Tente novamente." };
   }
 }

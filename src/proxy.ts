@@ -10,6 +10,10 @@ export const config = {
   matcher: [
     "/atleta/:path*",
     "/treinador/:path*",
+    "/aluno/:path*",
+    "/socio/:path*",
+    "/professor/:path*",
+    "/redefinir-senha",
     "/auth/callback",
   ],
 };

@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
   const invitationToken = request.nextUrl.searchParams.get("convite");
   const teamInvitationToken = request.nextUrl.searchParams.get("convite_equipe");
+  const passwordRecovery = request.nextUrl.searchParams.get("recuperacao");
   const athleteName = request.nextUrl.searchParams.get("nome");
 
   if (!code) {
@@ -47,6 +48,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(new URL("/treinador", origin));
   }
+
+  if (passwordRecovery === "1") return NextResponse.redirect(new URL("/redefinir-senha", origin));
 
   if (invitationToken || athleteName) {
     if (!invitationToken || !athleteName) {

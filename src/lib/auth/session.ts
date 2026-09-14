@@ -27,11 +27,13 @@ function legacyPapelForRole(role: FlernkRole): PapelUsuario {
 }
 
 export function destinationForRole(role: FlernkRole) {
-  return role === "aluno" ? "/atleta" : "/treinador";
+  if (role === "socio") return "/socio";
+  if (role === "professor") return "/professor";
+  return "/aluno";
 }
 
 export function destinationForPapel(papel: PapelUsuario) {
-  return papel === "treinador" ? "/treinador" : "/atleta";
+  return papel === "treinador" ? "/professor" : "/aluno";
 }
 
 function roleMatchesRequirement(role: FlernkRole, requirement: FlernkRoleRequirement) {

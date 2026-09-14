@@ -38,7 +38,7 @@ const itemIcons: Record<string, ComponentType<{ "aria-hidden"?: boolean }>> = {
 };
 
 function isCurrentPath(pathname: string, href: string) {
-  return pathname === href || (href !== "/treinador" && href !== "/atleta" && pathname.startsWith(`${href}/`));
+  return pathname === href || !["/socio", "/professor", "/aluno"].includes(href) && pathname.startsWith(`${href}/`);
 }
 
 function NavigationLinks({

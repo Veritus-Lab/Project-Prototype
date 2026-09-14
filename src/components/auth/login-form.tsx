@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 
 import { signInAction } from "@/app/(auth)/login/actions";
 import { initialLoginActionState } from "@/app/(auth)/login/state";
@@ -56,6 +57,7 @@ export function LoginForm() {
       <Button type="submit" disabled={isPending}>
         {isPending ? "Entrando…" : "Entrar"}
       </Button>
+      <Link className="field-hint" href="/recuperar-acesso">Recuperar acesso</Link>
     </form>
   );
 }
