@@ -16,5 +16,7 @@ export async function createStudentAction(
   });
   if ("error" in result) return { error: result.error ?? "Não foi possível cadastrar o aluno agora." };
   revalidatePath("/treinador/atletas");
+  revalidatePath("/socio/alunos");
+  revalidatePath("/professor/alunos");
   return { success: true };
 }

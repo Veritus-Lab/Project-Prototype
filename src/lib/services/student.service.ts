@@ -18,7 +18,7 @@ export async function createStudent(input: StudentInput) {
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Dados do aluno inválidos." } as const;
 
   assertApplicationMutationAllowed();
-  const user = await requireRole("socio", "professor");
+  const user = await requireRole("socio");
   const student = parsed.data;
   const supabase = await createServerClient();
   const { error } = await supabase.from("students").insert({
@@ -34,14 +34,19 @@ export async function createStudent(input: StudentInput) {
   return { data: undefined } as const;
 }
 
-export async function listStudents() {
+export async function listStudents(search = "") {
   const user = await requireRole("socio", "professor");
   const supabase = await createServerClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("students")
     .select("id, name, email, phone, created_at")
     .eq("assessoria_id", user.assessoriaId)
     .order("name", { ascending: true });
+  // PostgREST uses punctuation in its filter grammar. Keep the search term
+  // literal so a name or contact cannot alter the generated predicate.
+  const term = search.trim().replace(/[,%_().]/g, "");
+  if (term) query = query.or(`name.ilike.%${term}%,email.ilike.%${term}%,phone.ilike.%${term}%`);
+  const { data, error } = await query;
   if (error || !data) return { error: "Não foi possível carregar os alunos agora." } as const;
   if (data.length === 0) return { data: [] } as const;
 
@@ -72,7 +77,7 @@ export async function listStudents() {
 
 export async function createEnrollment(studentId: string, startsOn: string) {
   assertApplicationMutationAllowed();
-  await requireRole("socio", "professor");
+  await requireRole("socio");
   if (!studentId || !/^\d{4}-\d{2}-\d{2}$/.test(startsOn)) {
     return { error: "Informe o aluno e uma data de início válida." } as const;
   }
@@ -91,7 +96,7 @@ export async function changeEnrollmentStatus(
   reason?: string,
 ) {
   assertApplicationMutationAllowed();
-  await requireRole("socio", "professor");
+  await requireRole("socio");
   if (!enrollmentId || !["active", "suspended", "ended"].includes(status)) {
     return { error: "Situação de matrícula inválida." } as const;
   }

@@ -400,6 +400,10 @@ input {
 .button-danger:hover { background: rgba(255, 104, 104, 0.12); color: #ffb1b1; }
 .invitation-link-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
 .invitation-link-actions .form-error { width: 100%; margin: 0; }
+.dashboard-filter-form { display: grid; gap: 0.45rem; margin: 1rem 0; }
+.dashboard-filter-form label { font-size: 0.9rem; font-weight: 750; }
+.dashboard-filter-form > div { display: flex; gap: 0.5rem; }
+.dashboard-filter-form .input { max-width: 28rem; }
 
 .dashboard-nav-link svg,
 .dashboard-nav-item svg {
