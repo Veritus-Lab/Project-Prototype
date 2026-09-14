@@ -1,4 +1,7 @@
-import FinancialPage from "@/app/(dashboard)/treinador/financeiro/page";
 import { requireRole } from "@/lib/auth/session";
+import { Card } from "@/components/ui/card";
+import { listPlansAndSubscriptions } from "@/lib/services/plan.service";
+import { listStudents } from "@/lib/services/student.service";
+import { PlanManagement } from "@/components/dashboard/plan-management";
 export const metadata = { title: "Financeiro — FLERNK" };
-export default async function SocioFinancialPage() { await requireRole("socio"); return FinancialPage(); }
+export default async function SocioFinancialPage() { await requireRole("socio"); const [financial, studentsResult] = await Promise.all([listPlansAndSubscriptions(), listStudents()]); const students = "data" in studentsResult ? studentsResult.data ?? [] : []; return <div className="dashboard-page"><p className="eyebrow">Gestão financeira</p><h1 className="dashboard-title">Planos e contratos</h1><p className="dashboard-subtitle">Condições comerciais ficam registradas por versão e preservadas em cada contrato.</p><section className="dashboard-section"><Card elevated>{"error" in financial?<p className="form-error" role="alert">{financial.error}</p>:<PlanManagement plans={financial.data.plans as never} versions={financial.data.versions as never} subscriptions={financial.data.subscriptions as never} students={students as never}/>}</Card></section></div>; }

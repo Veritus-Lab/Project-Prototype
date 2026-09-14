@@ -1,0 +1,7 @@
+"use server";
+import { revalidatePath } from "next/cache";
+import { createManagedSubscription, createPlan, createPlanRevision, type PlanPeriodicity } from "@/lib/services/plan.service";
+type State = { error?: string; success?: boolean };
+export async function createPlanAction(_s: State, f: FormData): Promise<State> { const r = await createPlan({ name:String(f.get("name")??""),description:String(f.get("description")??""),amountCents:Math.round(Number(f.get("amount")??0)*100),periodicity:String(f.get("periodicity")??"") as PlanPeriodicity,dueDay:Number(f.get("dueDay")??0),effectiveFrom:String(f.get("effectiveFrom")??"") }); if("error" in r)return r; revalidatePath("/socio/financeiro"); return r; }
+export async function createManagedSubscriptionAction(_s: State, f: FormData): Promise<State> { const r = await createManagedSubscription({studentId:String(f.get("studentId")??""),enrollmentId:String(f.get("enrollmentId")??""),planVersionId:String(f.get("planVersionId")??""),startsOn:String(f.get("startsOn")??"")}); if("error" in r)return r; revalidatePath("/socio/financeiro"); return r; }
+export async function createPlanRevisionAction(_s: State, f: FormData): Promise<State> { const r = await createPlanRevision({planId:String(f.get("planId")??""),amountCents:Math.round(Number(f.get("amount")??0)*100),periodicity:String(f.get("periodicity")??"") as PlanPeriodicity,dueDay:Number(f.get("dueDay")??0),effectiveFrom:String(f.get("effectiveFrom")??"")}); if("error" in r)return r; revalidatePath("/socio/financeiro"); return r; }
