@@ -46,7 +46,7 @@ Cada task deve terminar com evidência do aceite e atualização de status. A se
 | Task | Entrega | Depende de | Critério de aceite |
 | --- | --- | --- | --- |
 | 14 — Planos e assinaturas | **CONCLUÍDA.** Catálogo versionado, condições contratadas e vínculo ao aluno | 04, 11 | Mudança de preço não reescreve passado; renovação e parcela separadas |
-| 15 — Motor de cobranças | Geração por ciclo, datas, suspensão/cancelamento e restrições contra duplicação | 14 | Casos de mês curto, início após vencimento e repetição do processamento passam |
+| 15 — Motor de cobranças | **CONCLUÍDA.** Geração por ciclo, datas, suspensão/cancelamento e restrições contra duplicação | 14 | Casos de mês curto, início após vencimento e repetição do processamento passam |
 | 16 — Pagamentos manuais e auditoria | Baixa, correção, motivos e histórico consistente | 15 | Falha não deixa operação parcialmente concluída; lançamento repetido não duplica recebimento |
 | 17 — Despesas e receitas avulsas | Categorias, contas a pagar e lançamentos realizados | 06–07, 16 | Receitas avulsas não duplicam mensalidades; apenas sócios acessam |
 | 18 — Caixa e relatórios | Saldo inicial, realizado/previsto, confirmado a liquidar, bruto/taxas/líquido e CSV | 16–17 | Somente liquidação recebida entra no realizado; totais conferem com fixtures e listas; saldo não é apresentado como lucro |
