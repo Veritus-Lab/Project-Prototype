@@ -14,4 +14,6 @@ O status informado pelo cliente fica registrado na observação do cadastro, com
 
 Cada aluno recebe matrícula ativa com início em 01/09/2026 e vínculo à sua turma para permitir a operação administrativa. O script usa verificações de existência por assessoria e nome/turma, portanto pode ser reaplicado sem duplicar alunos, matrículas ou vínculos.
 
+Em 14/09/2026, a condição comercial atual foi registrada: plano mensal editável de **R$ 109,90**, vencimento no dia **1** e vigência a partir de **01/09/2026**. Os 44 alunos com matrícula ativa receberam um contrato ativo com esse snapshot. Nenhuma cobrança foi gerada nessa operação.
+
 Esta carga não encerra a Task 28: a importação financeira oficial continua dependendo do motor de cobranças, reconciliação e validação da FLERNK.
