@@ -10,7 +10,15 @@ select is((select count(*) from public.atletas where assessoria_id='7a000000-000
 select is((select valor_centavos from public.assinaturas_atletas where id='72000000-0000-0000-0000-000000000001'),12345,'legacy subscription value survives');
 select is((select valor_centavos from public.cobrancas where id='73000000-0000-0000-0000-000000000001'),12345,'legacy charge value survives');
 select is((select count(*) from public.preferencias_comunicacao where assessoria_id='7a000000-0000-0000-0000-000000000001'),1::bigint,'legacy communication preference survives');
-select is((select count(*) from public.students),0::bigint,'structural migration does not infer students');
-select is((select count(*) from public.team_members),0::bigint,'structural migration does not infer team roles');
+select is(
+  (select count(*) from public.students where assessoria_id='7a000000-0000-0000-0000-000000000001' and legacy_atleta_id is not null),
+  1::bigint,
+  'legacy athlete is explicitly backfilled into the administrative student record'
+);
+select is(
+  (select role::text from public.team_members where assessoria_id='7a000000-0000-0000-0000-000000000001' and profile_id='71000000-0000-0000-0000-000000000001'),
+  'socio',
+  'legacy trainer is explicitly backfilled as the initial socio'
+);
 select * from finish();
 rollback;
