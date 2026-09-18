@@ -98,7 +98,7 @@ describe("FLERNK role session", () => {
       throw new Error(`NEXT_REDIRECT:${destination}`);
     });
 
-    await expect(requireRole("socio")).rejects.toThrow("NEXT_REDIRECT:/treinador");
+    await expect(requireRole("socio")).rejects.toThrow("NEXT_REDIRECT:/professor");
   });
 
   it("fails closed after a team membership is removed and no student ownership exists", async () => {

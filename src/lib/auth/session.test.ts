@@ -109,8 +109,8 @@ describe("session authorization", () => {
       throw new Error(`NEXT_REDIRECT:${destination}`);
     });
 
-    await expect(requireRole("treinador")).rejects.toThrow("NEXT_REDIRECT:/atleta");
-    expect(mocks.redirect).toHaveBeenCalledWith("/atleta");
+    await expect(requireRole("treinador")).rejects.toThrow("NEXT_REDIRECT:/aluno");
+    expect(mocks.redirect).toHaveBeenCalledWith("/aluno");
   });
 
   it("redirects anonymous users to login", async () => {

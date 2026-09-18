@@ -1,3 +1,5 @@
+import { enforceActionRateLimit, RATE_LIMIT_PRESETS } from "@/lib/security/rate-limit";
+import { enqueueJob, registerJobHandler } from "@/lib/queue/job-queue.service";
 import { requireRole } from "@/lib/auth/session";
 import { sendInvitationEmail } from "@/lib/email/invitation-email";
 import {
@@ -145,6 +147,8 @@ export async function createInvitation(
   try {
     assertApplicationMutationAllowed();
     const user = await requireRole("treinador");
+    const rateLimitCheck = enforceActionRateLimit(`invitation:${user.assessoriaId}`, RATE_LIMIT_PRESETS.INVITATIONS);
+    if (!rateLimitCheck.success) return { error: rateLimitCheck.error };
     const supabase = await createServerClient();
     const now = new Date();
     const { token, hash } = createInvitationToken();
@@ -194,6 +198,19 @@ export async function createInvitation(
     }
 
     try {
+      await enqueueJob({
+        type: "send_invitation_email",
+        payload: {
+          to: email,
+          assessoriaNome: assessoria.nome,
+          invitationUrl: new URL(`/convite/${token}`, origin).toString(),
+          expiresAt: data.expira_em,
+          invitationId: data.id,
+        },
+        assessoriaId: user.assessoriaId,
+        idempotencyKey: `invitation-email-${data.id}`,
+      });
+
       const sentEmail = await sendInvitationEmail({
         to: email,
         assessoriaNome: assessoria.nome,
@@ -451,3 +468,7 @@ export async function acceptInvitation(
     return { error: genericAcceptanceError };
   }
 }
+
+registerJobHandler("send_invitation_email", async (payload) => {
+  await sendInvitationEmail(payload);
+});

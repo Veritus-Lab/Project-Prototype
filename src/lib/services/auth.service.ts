@@ -1,3 +1,4 @@
+import { enforceActionRateLimit, RATE_LIMIT_PRESETS } from "@/lib/security/rate-limit";
 import { createServerClient } from "@/lib/supabase/server";
 import type { SignInInput, TrainerSignupInput } from "@/lib/validators/auth";
 
@@ -66,6 +67,16 @@ function translateSignInError(message: string) {
 export async function signIn(
   input: SignInInput,
 ): Promise<ServiceResult<{ email: string }>> {
+  const normalizedEmail = input.email.trim().toLowerCase();
+  const rateLimitCheck = enforceActionRateLimit(
+    `auth:login:${normalizedEmail}`,
+    RATE_LIMIT_PRESETS.AUTH_LOGIN,
+  );
+
+  if (!rateLimitCheck.success) {
+    return { error: rateLimitCheck.error };
+  }
+
   try {
     const supabase = await createServerClient();
     const { error } = await supabase.auth.signInWithPassword({
@@ -94,6 +105,16 @@ export async function signOut(): Promise<void> {
 }
 
 export async function requestPasswordRecovery(email: string): Promise<ServiceResult<void>> {
+  const normalizedEmail = email.trim().toLowerCase();
+  const rateLimitCheck = enforceActionRateLimit(
+    `auth:recovery:${normalizedEmail}`,
+    RATE_LIMIT_PRESETS.AUTH_LOGIN,
+  );
+
+  if (!rateLimitCheck.success) {
+    return { data: undefined }; // Resposta indistinguível para evitar vazamento
+  }
+
   const origin = getConfiguredAppOrigin();
   if (!origin) return { data: undefined };
   try {
